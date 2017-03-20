@@ -12,10 +12,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Explore"
-            android:label="Explore">
+            android:label="@string/title_activity_explore"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -25,7 +25,7 @@
         <activity android:name=".About" />
         <activity android:name=".MovieView" />
         <activity android:name=".MyBucket" />
-        <activity android:name=".MyHistory"></activity>
+        <activity android:name=".MyHistory" />
     </application>
 
 </manifest>
