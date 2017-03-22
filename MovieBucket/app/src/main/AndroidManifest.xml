@@ -22,10 +22,7 @@
         <activity
             android:name=".Settings"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".About" />
         <activity android:name=".MovieView" />
-        <activity android:name=".MyBucket" />
-        <activity android:name=".MyHistory" />
     </application>
 
 </manifest>
