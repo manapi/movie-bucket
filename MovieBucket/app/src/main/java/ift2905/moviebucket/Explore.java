@@ -1,7 +1,6 @@
 package ift2905.moviebucket;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Intent;
@@ -18,13 +17,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.ListView;
+
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbDiscover;
 import info.movito.themoviedbapi.TmdbMovies;
+import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.model.Artwork;
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 public class Explore extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,6 +39,10 @@ public class Explore extends AppCompatActivity
     private ListFragment exploreFragment, myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
     private String[] suggestions, myBucket, myHistory;
+
+    final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+    final String LANG = "en";
+    final Boolean ADULT = false; //include adult movies in search results
 
 
     @Override
@@ -50,17 +61,15 @@ public class Explore extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TODO: Display suggestions on startup
-        //Testing api to display content **to be replaced with fetching suggestions or reading them from db**
-        FetchMovie fetcher = new FetchMovie();
+        // Displaying suggestions on startup : currently, popular movies (other options possible, what do we want?)
+        FetchSuggestions fetcher = new FetchSuggestions();
         fetcher.execute();
 
         //Initialize explore fragment by default
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         exploreFragment = new ListFragment();
-        fragmentTransaction.add(R.id.fragment_container, exploreFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.add(R.id.fragment_container, exploreFragment).commit();
+        setTitle("Explore");
 
         // TODO: Read everything from local data base
         //To be replaced with actual data
@@ -111,29 +120,28 @@ public class Explore extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-        //TODO: Update app bar title when switching views
+        //TODO: Show/hide app bar search field when switching views
         if (id == R.id.nav_explore) {
-            fragmentTransaction.replace(R.id.fragment_container, exploreFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.replace(R.id.fragment_container, exploreFragment).commit();
+            setTitle("Explore");
 
         } else if (id == R.id.nav_mybucket) {
             if(myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
                 myBucketFragment.setListAdapter(new SimpleListAdapter(myBucket));
             }
-            fragmentTransaction.replace(R.id.fragment_container, myBucketFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
+            setTitle("My Bucket");
 
         } else if (id == R.id.nav_myhistory) {
             if(myHistoryFragment == null) {
                 myHistoryFragment = new ListFragment();
                 myHistoryFragment.setListAdapter(new SimpleListAdapter(myHistory));
             }
-            fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
+            setTitle("My History");
 
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(Explore.this, Settings.class);
@@ -143,10 +151,13 @@ public class Explore extends AppCompatActivity
             if(aboutFragment == null) {
                 aboutFragment = new Fragment();
             }
-            fragmentTransaction.replace(R.id.fragment_container, aboutFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.replace(R.id.fragment_container, aboutFragment).commit();
+            setTitle("About");
         }
 
+        /*Bundle args = new Bundle();
+        args.putInt("INDEX",0);
+        aboutFragment.setArguments(args);*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -158,8 +169,8 @@ public class Explore extends AppCompatActivity
         // TODO: Save everything to local data base
     }
 
-    // TODO: Replace with custom defined adapter
-    // Suggestions and search results should use the same one, and my history and my bucket a similar simpler one
+    // TODO: Expend adapter to include buttons, on click listeners, etc
+    // TODO: should take MovieDb instead of Strings
     public class SimpleListAdapter extends BaseAdapter {
 
         String list[];
@@ -195,44 +206,115 @@ public class Explore extends AppCompatActivity
             }
 
             TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
-            tv.setText(list[position % 5]);
+            tv.setText(list[position]);
 
             return convertView;
         }
     }
 
-    // TODO : replace with proper suggestions and/or search calls to API
-    public class FetchMovie extends AsyncTask<String, Object, MovieDb[]> {
+    // Adapter for suggestions and search
+    // TODO : display images, on click listener...
+    public class DetailedListAdapter extends BaseAdapter {
 
-        @Override
-        protected MovieDb[] doInBackground(String... params) {
+        List<MovieDb> movies;
 
-            // Fetcher un film
-            MovieDb[] movies = new MovieDb[5];
-
-            final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
-            TmdbApi api = new TmdbApi(API_KEY);
-
-            try {
-                TmdbMovies dbmovies = api.getMovies();
-                for(int i=0; i<5; i++)
-                    movies[i] = dbmovies.getMovie(5353, "en");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return movies;
+        public DetailedListAdapter(List<MovieDb> movies){
+            super();
+            this.movies = movies;
         }
 
         @Override
-        protected void onPostExecute(MovieDb[] movies) {
-            suggestions = new String[5];
+        public int getCount() {
+            return movies.size();
+        }
 
-            for(int i=0; i<5; i++)
-                suggestions[i] = movies[i].getTitle();
+        @Override
+        public Object getItem(int position) {
+            return movies.get(position);
+        }
 
-            exploreFragment.setListAdapter(new Explore.SimpleListAdapter(suggestions));
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if(convertView == null)
+                convertView = getLayoutInflater().inflate(R.layout.detailed_view, parent, false);
+
+            TextView title = (TextView) convertView.findViewById(R.id.title);
+            TextView overview = (TextView) convertView.findViewById(R.id.overview);
+            ImageView image = (ImageView) convertView.findViewById(R.id.image);
+
+            title.setText(movies.get(position).getTitle());
+            overview.setText(movies.get(position).getReleaseDate().subSequence(0,4));
+
+            //TODO : no image from API???
+            List<Artwork> art = movies.get(position).getImages();
+            if (art != null) {
+                Picasso.with(getApplicationContext())
+                        .load(art.get(0).getFilePath())
+                        .into(image);
+            }
+            return convertView;
         }
     }
+
+    public class FetchSuggestions extends AsyncTask<String, Object, List<MovieDb>> {
+
+        @Override
+        protected List<MovieDb> doInBackground(String... params) {
+
+
+            TmdbApi api = new TmdbApi(API_KEY);
+
+            List<MovieDb> suggestions = api.getMovies().getPopularMovies(LANG, 1).getResults();
+
+            return suggestions;
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieDb> suggestions) {
+
+            exploreFragment.setListAdapter(new Explore.DetailedListAdapter(suggestions));
+        }
+    }
+
+    // TODO : add search options, get multiple pages... test
+    public class FetchSearchResults extends AsyncTask<String, Object, List<MovieDb>> {
+
+        @Override
+        protected List<MovieDb> doInBackground(String... params) {
+
+            //how to get query... from params?
+            String query;
+
+            if(params[0] != null) {
+                query = params[0];
+
+                if (params.length > 1) {
+                    //retrieve advanced options
+                }
+
+                TmdbApi api = new TmdbApi(API_KEY);
+
+                TmdbSearch search = api.getSearch();
+                List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
+
+                return results;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieDb> results) {
+
+            //set adapter?
+        }
+    }
+
 }
 
 
