@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -21,6 +22,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -43,6 +48,11 @@ public class Explore extends AppCompatActivity
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final Boolean ADULT = false; //include adult movies in search results
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
 
     @Override
@@ -81,6 +91,10 @@ public class Explore extends AppCompatActivity
 
         // TODO: Read text input from user, upon click search and display results
         // TODO: On click on list item, create MovieView activity from item
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -128,7 +142,7 @@ public class Explore extends AppCompatActivity
             setTitle("Explore");
 
         } else if (id == R.id.nav_mybucket) {
-            if(myBucketFragment == null) {
+            if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
                 myBucketFragment.setListAdapter(new SimpleListAdapter(myBucket));
             }
@@ -136,7 +150,7 @@ public class Explore extends AppCompatActivity
             setTitle("My Bucket");
 
         } else if (id == R.id.nav_myhistory) {
-            if(myHistoryFragment == null) {
+            if (myHistoryFragment == null) {
                 myHistoryFragment = new ListFragment();
                 myHistoryFragment.setListAdapter(new SimpleListAdapter(myHistory));
             }
@@ -148,7 +162,7 @@ public class Explore extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_about) {
-            if(aboutFragment == null) {
+            if (aboutFragment == null) {
                 aboutFragment = new Fragment();
             }
             fragmentTransaction.replace(R.id.fragment_container, aboutFragment).commit();
@@ -164,9 +178,45 @@ public class Explore extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
         // TODO: Save everything to local data base
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("Explore Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
 
     // TODO: Expend adapter to include buttons, on click listeners, etc
@@ -175,10 +225,10 @@ public class Explore extends AppCompatActivity
 
         String list[];
 
-        public SimpleListAdapter(String list[]){
+        public SimpleListAdapter(String list[]) {
             super();
             this.list = new String[list.length];
-            for(int i=0; i< list.length; i++){
+            for (int i = 0; i < list.length; i++) {
                 this.list[i] = list[i];
             }
         }
@@ -201,7 +251,7 @@ public class Explore extends AppCompatActivity
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            if(convertView == null) {
+            if (convertView == null) {
                 convertView = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
             }
 
@@ -218,7 +268,7 @@ public class Explore extends AppCompatActivity
 
         List<MovieDb> movies;
 
-        public DetailedListAdapter(List<MovieDb> movies){
+        public DetailedListAdapter(List<MovieDb> movies) {
             super();
             this.movies = movies;
         }
@@ -235,21 +285,21 @@ public class Explore extends AppCompatActivity
 
         @Override
         public long getItemId(int position) {
-            return 0;
+            //return 0;
+            return movies.get(position).getId();
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
 
-            if(convertView == null)
+            if (convertView == null)
                 convertView = getLayoutInflater().inflate(R.layout.detailed_view, parent, false);
-
             TextView title = (TextView) convertView.findViewById(R.id.title);
             TextView overview = (TextView) convertView.findViewById(R.id.overview);
             ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
             title.setText(movies.get(position).getTitle());
-            overview.setText(movies.get(position).getReleaseDate().subSequence(0,4));
+            overview.setText(movies.get(position).getReleaseDate().subSequence(0, 4));
 
             //TODO : no image from API???
             List<Artwork> art = movies.get(position).getImages();
@@ -258,6 +308,17 @@ public class Explore extends AppCompatActivity
                         .load(art.get(0).getFilePath())
                         .into(image);
             }
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getApplicationContext(), MovieView.class);
+
+                    intent.putExtra("movie", getItemId(position));
+
+                    startActivity(intent);
+                }
+            });
             return convertView;
         }
     }
@@ -278,7 +339,7 @@ public class Explore extends AppCompatActivity
         @Override
         protected void onPostExecute(List<MovieDb> suggestions) {
 
-            exploreFragment.setListAdapter(new Explore.DetailedListAdapter(suggestions));
+            exploreFragment.setListAdapter(new DetailedListAdapter(suggestions));
         }
     }
 
@@ -291,7 +352,7 @@ public class Explore extends AppCompatActivity
             //how to get query... from params?
             String query;
 
-            if(params[0] != null) {
+            if (params[0] != null) {
                 query = params[0];
 
                 if (params.length > 1) {
