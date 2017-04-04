@@ -48,6 +48,9 @@ public class Explore extends AppCompatActivity
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final Boolean ADULT = false; //include adult movies in search results
+    final String BASE_URL = "http://image.tmdb.org/t/p/";
+    final String SIZE_SMALL = "w154";
+    final String SIZE_LARGE = "w500";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -301,13 +304,10 @@ public class Explore extends AppCompatActivity
             title.setText(movies.get(position).getTitle());
             overview.setText(movies.get(position).getReleaseDate().subSequence(0, 4));
 
-            //TODO : no image from API???
-            List<Artwork> art = movies.get(position).getImages();
-            if (art != null) {
-                Picasso.with(getApplicationContext())
-                        .load(art.get(0).getFilePath())
-                        .into(image);
-            }
+            Picasso.with(getApplicationContext())
+                    .load(BASE_URL + SIZE_SMALL + movies.get(position).getBackdropPath())
+                    .into(image);
+
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
