@@ -21,7 +21,6 @@ public class MovieView extends AppCompatActivity {
         setContentView(R.layout.activity_movie_view);
 
         id = (int) getIntent().getExtras().getLong("movie");
-
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
 
@@ -37,6 +36,7 @@ public class MovieView extends AppCompatActivity {
             this.idMovie = id;
         }
 
+        // Get movie
         @Override
         protected MovieDb doInBackground(String... params) {
             TmdbApi api = new TmdbApi(API_KEY);
