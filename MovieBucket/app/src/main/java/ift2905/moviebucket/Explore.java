@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -310,18 +311,19 @@ public class Explore extends AppCompatActivity
             }
 
             convertView.setOnClickListener(new View.OnClickListener() {
+
+                // Create a new activity (detailed view of the selected movie)
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getApplicationContext(), MovieView.class);
-
                     intent.putExtra("movie", getItemId(position));
-
                     startActivity(intent);
                 }
             });
             return convertView;
         }
     }
+
 
     public class FetchSuggestions extends AsyncTask<String, Object, List<MovieDb>> {
 
@@ -335,7 +337,6 @@ public class Explore extends AppCompatActivity
 
             return suggestions;
         }
-
         @Override
         protected void onPostExecute(List<MovieDb> suggestions) {
 
