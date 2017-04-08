@@ -3,6 +3,8 @@ package ift2905.moviebucket;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +15,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,19 +35,15 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.TmdbDiscover;
-import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbSearch;
-import info.movito.themoviedbapi.model.Artwork;
 import info.movito.themoviedbapi.model.MovieDb;
-import info.movito.themoviedbapi.model.core.MovieResultsPage;
 
 public class Explore extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListFragment exploreFragment, myBucketFragment, myHistoryFragment;
+    private ListFragment searchFragment, exploreFragment, myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
-    private String[] suggestions, myBucket, myHistory;
+    private String[] myBucket, myHistory;
 
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
@@ -93,14 +92,12 @@ public class Explore extends AppCompatActivity
         myHistory = new String[1];
         myHistory[0] = "my history";
 
-        // TODO: Read text input from user, upon click search and display results
-        // TODO: On click on list item, create MovieView activity from item
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+    //TODO: handle back from search fragments back to discover fragment
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -115,7 +112,21 @@ public class Explore extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.explore, menu);
-        return true;
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+
+        SearchManager searchManager = (SearchManager) Explore.this.getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            searchView = (SearchView) searchItem.getActionView();
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(Explore.this.getComponentName()));
+            searchView.setIconifiedByDefault(false);
+        }
+        return super.onCreateOptionsMenu(menu);
+
     }
 
     @Override
@@ -131,6 +142,22 @@ public class Explore extends AppCompatActivity
         }
         // TODO: replace with advanced search button
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Method to catch new search query, fetch and display results from API
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+
+            searchFragment = new ListFragment();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
+
+            FetchResults searchFetcher = new FetchResults(query);
+            searchFetcher.execute();
+        }
     }
 
     @Override
@@ -173,9 +200,6 @@ public class Explore extends AppCompatActivity
             setTitle("About");
         }
 
-        /*Bundle args = new Bundle();
-        args.putInt("INDEX",0);
-        aboutFragment.setArguments(args);*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -191,6 +215,7 @@ public class Explore extends AppCompatActivity
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
+    // I'm not sure what this is... are we using it? -Amelie
     public Action getIndexApiAction() {
         Thing object = new Thing.Builder()
                 .setName("Explore Page") // TODO: Define a title for the content shown.
@@ -266,8 +291,7 @@ public class Explore extends AppCompatActivity
         }
     }
 
-    // Adapter for suggestions and search
-    // TODO : display images, on click listener...
+    // Adapter for discover and search
     public class DetailedListAdapter extends BaseAdapter {
 
         List<MovieDb> movies;
@@ -303,7 +327,7 @@ public class Explore extends AppCompatActivity
             ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
             title.setText(movies.get(position).getTitle());
-            overview.setText(movies.get(position).getReleaseDate().subSequence(0, 4));
+            overview.setText(movies.get(position).getReleaseDate());
 
             Picasso.with(getApplicationContext())
                     .load(BASE_URL + SIZE_SMALL + movies.get(position).getBackdropPath())
@@ -325,6 +349,9 @@ public class Explore extends AppCompatActivity
     }
 
 
+    /**
+     * Fetch suggestions for discover fragment and set to list adapter
+     */
     public class FetchSuggestions extends AsyncTask<String, Object, List<MovieDb>> {
 
         @Override
@@ -332,9 +359,7 @@ public class Explore extends AppCompatActivity
 
 
             TmdbApi api = new TmdbApi(API_KEY);
-
             List<MovieDb> suggestions = api.getMovies().getPopularMovies(LANG, 1).getResults();
-
             return suggestions;
         }
         @Override
@@ -345,35 +370,35 @@ public class Explore extends AppCompatActivity
     }
 
     // TODO : add search options, get multiple pages... test
-    public class FetchSearchResults extends AsyncTask<String, Object, List<MovieDb>> {
+    /**
+     *  Fetch search results from api and set to list adapter
+     */
+    public class FetchResults extends AsyncTask<String, Object, List<MovieDb>> {
 
+        String query;
+
+        FetchResults(String query) {
+            super();
+            this.query = query;
+        }
         @Override
         protected List<MovieDb> doInBackground(String... params) {
 
-            //how to get query... from params?
-            String query;
+            //TODO: handle advanced search parameters
 
-            if (params[0] != null) {
-                query = params[0];
+            TmdbApi api = new TmdbApi(API_KEY);
+            TmdbSearch search = api.getSearch();
+            List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
 
-                if (params.length > 1) {
-                    //retrieve advanced options
-                }
+            return results;
 
-                TmdbApi api = new TmdbApi(API_KEY);
-
-                TmdbSearch search = api.getSearch();
-                List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
-
-                return results;
-            }
-            return null;
         }
 
         @Override
         protected void onPostExecute(List<MovieDb> results) {
 
-            //set adapter?
+            searchFragment.setListAdapter(new DetailedListAdapter(results));
+
         }
     }
 
