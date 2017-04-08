@@ -27,9 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -51,11 +49,7 @@ public class Explore extends AppCompatActivity
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_SMALL = "w154";
     final String SIZE_LARGE = "w500";
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
 
 
     @Override
@@ -92,9 +86,6 @@ public class Explore extends AppCompatActivity
         myHistory = new String[1];
         myHistory[0] = "my history";
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     //TODO: handle back from search fragments back to discover fragment
@@ -231,21 +222,12 @@ public class Explore extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        AppIndex.AppIndexApi.end(client, getIndexApiAction());
-        client.disconnect();
     }
 
     // TODO: Expend adapter to include buttons, on click listeners, etc
@@ -313,7 +295,6 @@ public class Explore extends AppCompatActivity
 
         @Override
         public long getItemId(int position) {
-            //return 0;
             return movies.get(position).getId();
         }
 
