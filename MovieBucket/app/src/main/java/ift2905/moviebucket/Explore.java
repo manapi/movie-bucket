@@ -251,10 +251,9 @@ public class Explore extends AppCompatActivity
 
     }
 
-    //TODO: implement the onClick method of this onClickListener and have the proper imports for it
-    //This stuff is in comments because Studio is being a prick and doesn't want to recognize the
-    //onClickListener class
-    /*private View.onClickListener BasedGodRockLobster = new View.OnClickListener() {
+    //TODO: implement the onClick method of this onClickListener
+    //Code-breaking typo corrected
+    private View.OnClickListener BasedGodRockLobster = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
@@ -282,7 +281,7 @@ public class Explore extends AppCompatActivity
                     break;
             }
         }
-    };*/
+    };
 
     // TODO: Expand adapter to include buttons, on click listeners, etc
     //half-way there! need to add in the pop in menu when title is clicked
@@ -333,6 +332,7 @@ public class Explore extends AppCompatActivity
                 ImageButton starStatus;
 
                 //checking if the movie is "starred" and adjusting the button used
+                //Maybe I should use the .equals method since I'm comparing strings?
                 if(list[position].substring(0,1) == "0"){
 
                     starStatus = (ImageButton) convertView.findViewById(R.id.notstarred);
