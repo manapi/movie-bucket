@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,8 +21,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -49,8 +49,6 @@ public class Explore extends AppCompatActivity
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_SMALL = "w154";
     final String SIZE_LARGE = "w500";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +78,31 @@ public class Explore extends AppCompatActivity
 
         // TODO: Read everything from local data base
         //To be replaced with actual data
-        myBucket = new String[1];
-        myBucket[0] = "my bucket";
+        //I'm thinking of filling the myBucket array with strings of
+        //this format:Favorite(1 or 0 whether it's starred or not)+title
+
+        myBucket = new String[20];
+        myBucket[0] = "1Langouste";
+        myBucket[1] = "1Rock Lobster";
+        myBucket[2] = "1BasedGodRockLobster";
+        myBucket[3] = "1All Hail The BasedGodLobster";
+        myBucket[4] = "0Creative Bankrupcy";
+        myBucket[5] = "0Shenanigans";
+        myBucket[6] = "0More Shenanigans";
+        myBucket[7] = "0Some More Shenanigans";
+        myBucket[8] = "1Even More Shenanigans";
+        myBucket[9] = "1Shenanigans Redux";
+        myBucket[10] = "0Shenanigans: The Reckoning";
+        myBucket[11] = "1Shenanigans Rising";
+        myBucket[12] = "0Shenanigans Revengeance";
+        myBucket[13] = "0Shenanigans Forever";
+        myBucket[14] = "0Shenanigans vs. Shenanigans";
+        myBucket[15] = "1Shenanigans Reloaded";
+        myBucket[16] = "0Shenanigans 5";
+        myBucket[17] = "0The Making Of Shenanigans";
+        myBucket[18] = "0Shenanigans: Director's Cut";
+        myBucket[19] = "1Shenanigans: Deluxe Edition";
+
 
         myHistory = new String[1];
         myHistory[0] = "my history";
@@ -230,8 +251,49 @@ public class Explore extends AppCompatActivity
 
     }
 
-    // TODO: Expend adapter to include buttons, on click listeners, etc
+    //TODO: implement the onClick method of this onClickListener
+    //Code-breaking typo corrected
+    private View.OnClickListener BasedGodRockLobster = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            int viewId = v.getId();
+
+            switch(viewId){
+
+                case R.id.starred :
+                    //the code here would obtain the position of the item and update its star status
+                    //in the Db
+                    break;
+
+                case R.id.notstarred :
+                    //same as previous one
+                    break;
+
+                case R.id.mytitle :
+                    //The code here generates the popup menu with the "delete","viewed" and
+                    //"calendar" options. This'll be quite the headache
+                    break;
+
+                case R.id.more :
+                    //the code here creates a new intent for the Movie View activity and adds to it
+                    //the selected movie's Movie Db id as an extra
+                    break;
+            }
+        }
+    };
+
+    // TODO: Expand adapter to include buttons, on click listeners, etc
+    //half-way there! need to add in the pop in menu when title is clicked
     // TODO: should take MovieDb instead of Strings
+    /*Easy change. However, still using a string array here for testing purposes. And then there's
+    the problem of putting favorite and viewed data in the same array. Or one could use the chicken
+    solution and change to constructor to take in multiple arrays.*/
+    //TODO: bugfix
+    /*the app seems to forget previous elements after scrolling to the last 5-10 elements of a list
+    probably has something to do with the layout used in the xml; maybe I should try using a
+    ListView as the parent instead of a LinearLayout? Anyways, I'm leaving this here as a
+    reminder to myself to fix that nonsense*/
     public class SimpleListAdapter extends BaseAdapter {
 
         String list[];
@@ -263,11 +325,38 @@ public class Explore extends AppCompatActivity
         public View getView(int position, View convertView, ViewGroup parent) {
 
             if (convertView == null) {
-                convertView = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
+                //TODO: add in stuff for myHistory (both here and in xml layout)
+                //Inflating all the buttons
+                convertView = getLayoutInflater().inflate(R.layout.mylist_view, parent, false);
+
+                ImageButton starStatus;
+
+                //checking if the movie is "starred" and adjusting the button used
+                //Maybe I should use the .equals method since I'm comparing strings?
+                if(list[position].substring(0,1) == "0"){
+
+                    starStatus = (ImageButton) convertView.findViewById(R.id.notstarred);
+                }else   starStatus = (ImageButton) convertView.findViewById(R.id.starred);
+
+                //Making the button visible. Can't use setImageDrawable because it requires API 21+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
+                params.weight = 1.0f;
+                starStatus.setLayoutParams(params);
+
+                TextView myTitleText = (TextView) convertView.findViewById(R.id.mytitle);
+
+                //Trimming the movie's title if it exceeds 20 characters. Result is a bit wonky if
+                //title has less than 3-5 caps in it TODO: polish this nonsense
+                if(list[position].length()>= 20){
+
+                    String newText = list[position].substring(1,17)+"...";
+                    myTitleText.setText(newText);
+                }else   myTitleText.setText(list[position].substring(1));
+
+                //Adding the "more details" button which will link to the Movie View activity
+                ImageButton more = (ImageButton) convertView.findViewById(R.id.more);
             }
 
-            TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
-            tv.setText(list[position]);
 
             return convertView;
         }
