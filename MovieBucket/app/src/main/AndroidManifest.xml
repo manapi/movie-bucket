@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Explore"
+            android:name=".MainActivity"
             android:label="Movie Bucket"
             android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleTop">
@@ -30,14 +30,6 @@
             android:name=".Settings"
             android:label="@string/title_activity_settings" />
         <activity android:name=".MovieView" />
-        <!--
- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
-        -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
     </application>
 
 </manifest>

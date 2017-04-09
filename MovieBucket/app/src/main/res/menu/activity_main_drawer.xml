@@ -3,25 +3,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_explore"
+            android:id="@+id/nav_discover"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Explore" />
+            android:title="@string/title_fragment_discover" />
         <item
             android:id="@+id/nav_mybucket"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="My Bucket" />
+            android:title="@string/title_fragment_my_bucket" />
         <item
             android:id="@+id/nav_myhistory"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="My History" />
+            android:title="@string/title_fragment_my_history" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+            android:title="@string/title_activity_settings" />
         <item
-            android:title="About"
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_menu_share" />
+            android:icon="@drawable/ic_menu_share"
+            android:title="@string/title_fragment_about"/>
     </group>
 
 </menu>
