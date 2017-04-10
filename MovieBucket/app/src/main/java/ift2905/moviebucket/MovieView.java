@@ -22,7 +22,6 @@ public class MovieView extends AppCompatActivity {
     int id;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
-    ScrollView movieView;
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_SMALL = "w154";
 
@@ -34,8 +33,6 @@ public class MovieView extends AppCompatActivity {
         id = (int) getIntent().getExtras().getLong("movie");
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
-
-        movieView = (ScrollView) findViewById(R.id.movieScroll);
 
         // TODO: Display movie informations
         // TODO: Add to list and schedule buttons
@@ -61,7 +58,6 @@ public class MovieView extends AppCompatActivity {
         protected void onPostExecute(MovieDb movie) {
 
             setTitle(movie.getTitle());
-            //movieView.setAdapter(new BaseAdapter());
 
             TextView title = (TextView) findViewById(R.id.movieTitle);
             title.setText(movie.getTitle());
