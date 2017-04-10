@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
-                myBucketFragment.setListAdapter(new ListAdapter(myBucket, MainActivity.this));
+                myBucketFragment.setListAdapter(new MyListAdapter(myBucket, MainActivity.this));
             }
             fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
             setTitle(R.string.title_fragment_my_bucket);
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myhistory) {
             if (myHistoryFragment == null) {
                 myHistoryFragment = new ListFragment();
-                myHistoryFragment.setListAdapter(new ListAdapter(myHistory, MainActivity.this));
+                myHistoryFragment.setListAdapter(new MyListAdapter(myHistory, MainActivity.this));
             }
             fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);

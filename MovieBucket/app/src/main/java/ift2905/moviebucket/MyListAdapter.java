@@ -26,12 +26,12 @@ import android.widget.TextView;
  * Created by Amélie on 2017-04-09.
  */
 
-public class ListAdapter extends BaseAdapter {
+public class MyListAdapter extends BaseAdapter {
 
     String list[];
     public Context context;
 
-    public ListAdapter(String list[], Context context) {
+    public MyListAdapter(String list[], Context context) {
         super();
         this.list = new String[list.length];
         for (int i = 0; i < list.length; i++) {
@@ -63,13 +63,12 @@ public class ListAdapter extends BaseAdapter {
         if (convertView == null) {
             //TODO: add in stuff for myHistory (both here and in xml layout)
             //Inflating all the buttons
-            convertView = li.inflate(R.layout.mylist_view, parent, false);
+            convertView = li.inflate(R.layout.mylist_row_item_view, parent, false);
 
             ImageButton starStatus;
 
             //checking if the movie is "starred" and adjusting the button used
-            //Maybe I should use the .equals method since I'm comparing strings?
-            if(list[position].substring(0,1) == "0"){
+            if(list[position].substring(0,1).equals("0")){
 
                 starStatus = (ImageButton) convertView.findViewById(R.id.notstarred);
             }else   starStatus = (ImageButton) convertView.findViewById(R.id.starred);
