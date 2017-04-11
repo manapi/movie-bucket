@@ -34,18 +34,110 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/textContainer"
                 android:layout_width="173dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:weightSum="1">
 
-                <TextView
-                    android:id="@+id/textView2"
+                <RelativeLayout
+                    android:id="@+id/yearContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:layout_height="47dp"
+                    android:layout_weight="0.13">
+
+                    <TextView
+                        android:id="@+id/yearTitle"
+                        style="@android:style/Widget.TextView.SpinnerItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Year" />
+
+                    <TextView
+                        android:id="@+id/movieYear"
+                        android:layout_width="146dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/yearTitle"
+                        android:text="-" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/runtimeContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="47dp">
+
+                    <TextView
+                        android:id="@+id/runtimeTitle"
+                        style="@android:style/Widget.TextView.SpinnerItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Run time" />
+
+                    <TextView
+                        android:id="@+id/movieRuntime"
+                        android:layout_width="146dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/runtimeTitle"
+                        android:text="-" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/ratingContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="47dp">
+
+                    <TextView
+                        android:id="@+id/ratingTitle"
+                        style="@android:style/Widget.TextView.SpinnerItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Average rating" />
+
+                    <TextView
+                        android:id="@+id/movieRating"
+                        android:layout_width="146dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/ratingTitle"
+                        android:text="-" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/genresContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="127dp">
+
+                    <TextView
+                        android:id="@+id/genreTitle"
+                        style="@android:style/Widget.TextView.SpinnerItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Genres" />
+
+                    <TextView
+                        android:id="@+id/movieGenres"
+                        android:layout_width="146dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/genreTitle"
+                        android:inputType="textMultiLine"
+                        android:text="-" />
+                </RelativeLayout>
+
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/posterContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -80,5 +172,30 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/Overview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/header"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/overviewTitle"
+            style="@android:style/Widget.TextView.SpinnerItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Overview" />
+
+        <TextView
+            android:id="@+id/movieOverview"
+            android:layout_width="146dp"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:layout_below="@+id/overviewTitle"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
