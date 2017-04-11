@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -23,7 +22,7 @@ public class MovieView extends AppCompatActivity {
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
-    final String SIZE_SMALL = "w154";
+    final String SIZE_SMALL = "w342";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
