@@ -56,7 +56,7 @@ public class MovieView extends AppCompatActivity {
         protected MovieDb doInBackground(String... params) {
             TmdbApi api = new TmdbApi(API_KEY);
             TmdbMovies tmdbm = new TmdbMovies(api);
-            MovieDb movie = tmdbm.getMovie(idMovie, LANG);
+            MovieDb movie = tmdbm.getMovie(idMovie, LANG, TmdbMovies.MovieMethod.credits);
             return movie;
         }
 
@@ -152,35 +152,49 @@ public class MovieView extends AppCompatActivity {
 
             // Director and writer
             TextView directorView = (TextView) findViewById(R.id.movieDirector);
+            TextView directorTitleView = (TextView) findViewById(R.id.directorTitle);
             TextView writerView = (TextView) findViewById(R.id.movieWriter);
+            TextView writerTitleView = (TextView) findViewById(R.id.writerTitle);
 
             try{
-                // TODO: Understand why getCrew() returns null Object
                 List<PersonCrew> listCrew = movie.getCrew();
                 ListIterator<PersonCrew> crewListIterator = listCrew.listIterator();
                 String director = "";
                 String writer = "";
+                String novel = "";
+
                 while(crewListIterator.hasNext()){
                     PersonCrew pc = crewListIterator.next();
+                    String job = pc.getJob();
 
                     //Director
-                    if (pc.getJob().equals("Director")){
+                    if (job.equals("Director")){
                         if (director.isEmpty()){
                             director = pc.getName();
                         } else {
                             director = director + ", " + pc.getName();
+                            directorTitleView.setText("Directors");
                         }
                     }
 
                     // Writer
-                    if (pc.getJob().equals("Writer")){
+                    if (job.equals("Writer")|| job.equals("Screenplay") || job.equals("Story")){
+                        String name = pc.getName();
                         if (writer.isEmpty()){
-                            writer = pc.getName();
+                            writer = name;
                         } else {
-                            writer = writer + ", " + pc.getName();
+                            if (!writer.contains(name)){
+                                writer = writer + ", " + pc.getName();
+                                writerTitleView.setText("Writers");
+                            }
                         }
                     }
+                    if (job.equals("Novel")){
+                        novel = " (based on novel by "+pc.getName()+")";
+                    }
                 }
+
+                writer = writer + novel;
                 if (director.isEmpty()){
                     directorView.setText(DEF);
                 } else {
