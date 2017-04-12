@@ -170,7 +170,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentEnd="true"
-                                android:layout_below="@+id/moviePoster"
                                 android:layout_weight="1"
                                 android:text="+ My Bucket"
                                 android:textAlignment="center" />
@@ -325,65 +324,89 @@
                     android:id="@+id/movieMainCast"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:stretchColumns="1">
+                    android:stretchColumns="*">
 
                     <TableRow
                         android:id="@+id/movieCast1"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:weightSum="1">
 
                         <TextView
                             android:id="@+id/movieActor1"
-                            android:layout_column="1"
+                            android:layout_column="0"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:paddingRight="3dp"
                             android:paddingTop="3dp"
+                            android:inputType="textMultiLine"
                             android:text="" />
 
                         <TextView
                             android:id="@+id/movieChar1"
+                            android:layout_column="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:gravity="right"
                             android:paddingRight="15dp"
                             android:paddingTop="3dp"
+                            android:inputType="textMultiLine"
                             android:text="" />
                     </TableRow>
 
                     <TableRow
                         android:id="@+id/movieCast2"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:weightSum="1">
 
                         <TextView
                             android:id="@+id/movieActor2"
-                            android:layout_column="1"
+                            android:layout_column="0"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:paddingRight="3dp"
                             android:paddingTop="3dp"
+                            android:inputType="textMultiLine"
                             android:text="" />
 
                         <TextView
                             android:id="@+id/movieChar2"
+                            android:layout_column="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:gravity="right"
                             android:paddingRight="15dp"
                             android:paddingTop="3dp"
+                            android:inputType="textMultiLine"
                             android:text="" />
                     </TableRow>
 
                     <TableRow
                         android:id="@+id/movieCast3"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:weightSum="1">
 
                         <TextView
                             android:id="@+id/movieActor3"
-                            android:layout_column="1"
+                            android:layout_column="0"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:paddingRight="3dp"
                             android:paddingTop="3dp"
+                            android:inputType="textMultiLine"
                             android:text="" />
 
                         <TextView
                             android:id="@+id/movieChar3"
+                            android:layout_column="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:gravity="right"
                             android:paddingRight="15dp"
                             android:paddingTop="3dp"
+                            android:inputType="textMultiLine"
                             android:text="" />
                     </TableRow>
 

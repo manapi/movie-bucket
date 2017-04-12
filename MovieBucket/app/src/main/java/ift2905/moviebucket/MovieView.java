@@ -224,7 +224,6 @@ public class MovieView extends AppCompatActivity {
             TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
 
             try {
-                // TODO: Fix problem with column width
                 // TODO: Display rest of the cast
                 List<PersonCast> listCast = movie.getCast();
                 ListIterator<PersonCast> castListIterator = listCast.listIterator();
