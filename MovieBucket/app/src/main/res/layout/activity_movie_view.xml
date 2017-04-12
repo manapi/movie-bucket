@@ -294,7 +294,7 @@
                     style="@android:style/Widget.TextView.SpinnerItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Production Country" />
+                    android:text="Country" />
 
                 <TextView
                     android:id="@+id/movieCountry"

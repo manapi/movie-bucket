@@ -257,7 +257,7 @@ public class MovieView extends AppCompatActivity {
                         .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
                         .into(image);
             } catch (Exception e){
-
+                // TODO : Find a default image
             }
 
 
