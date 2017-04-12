@@ -41,7 +41,7 @@ public class MovieView extends AppCompatActivity {
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
 
-        // TODO: Display cast, suggestions
+        // TODO: Display suggestions
         // TODO: Add to history and schedule buttons
     }
 
@@ -224,6 +224,8 @@ public class MovieView extends AppCompatActivity {
             TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
 
             try {
+                // TODO: Fix problem with column width
+                // TODO: Display rest of the cast
                 List<PersonCast> listCast = movie.getCast();
                 ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
@@ -233,17 +235,15 @@ public class MovieView extends AppCompatActivity {
 
                 while(castListIterator.hasNext() && !(act1 == true && act2 == true && act3 == true)){
                     PersonCast pc = castListIterator.next();
-                    if (pc.getOrder() == 0){
+                    if (act1 == false){
                         mainCast1.setText(pc.getName());
                         mainChar1.setText(pc.getCharacter());
                         act1 = true;
-                    }
-                    if (pc.getOrder() == 1){
+                    }else if (act2 == false){
                         mainCast2.setText(pc.getName());
                         mainChar2.setText(pc.getCharacter());
                         act2 = true;
-                    }
-                    if (pc.getOrder() == 2){
+                    }else if (act3 == false){
                         mainCast3.setText(pc.getName());
                         mainChar3.setText(pc.getCharacter());
                         act3 = true;
