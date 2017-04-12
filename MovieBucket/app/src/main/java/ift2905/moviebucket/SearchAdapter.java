@@ -58,17 +58,23 @@ public class SearchAdapter extends BaseAdapter {
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         if (convertView == null)
-            convertView = li.inflate(R.layout.detailed_view, parent, false);
+            convertView = li.inflate(R.layout.search_view, parent, false);
 
+        //TODO: how to handle long title?
         TextView title = (TextView) convertView.findViewById(R.id.title);
-        TextView overview = (TextView) convertView.findViewById(R.id.overview);
+        TextView release = (TextView) convertView.findViewById(R.id.release);
         ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
+        String year = movies.get(position).getReleaseDate();
+        if(year != null && year.length() >= 4) {
+            year = year.substring(0, 4);
+        }
+
         title.setText(movies.get(position).getTitle());
-        overview.setText(movies.get(position).getReleaseDate());
+        release.setText(year);
 
         Picasso.with(context)
-                .load(BASE_URL + SIZE_SMALL + movies.get(position).getBackdropPath())
+                .load(BASE_URL + SIZE_SMALL + movies.get(position).getPosterPath())
                 .into(image);
 
 

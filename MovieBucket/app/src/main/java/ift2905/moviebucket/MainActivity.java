@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity
     private ListFragment searchFragment, discoverFragment, myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
     private String[] myBucket, myHistory;
+    private SearchView searchView;
 
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
 
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //TODO: handle back from search fragments back to discover fragment
+    //TODO: handle back from search fragments back to *any* fragment?
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 
         SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
-        SearchView searchView = null;
+        searchView = null;
         if (searchItem != null) {
             searchView = (SearchView) searchItem.getActionView();
         }
@@ -155,7 +156,6 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-        //TODO: Show/hide app bar search field when switching views
         if (id == R.id.nav_discover) {
             fragmentTransaction.replace(R.id.fragment_container, discoverFragment).commit();
             setTitle(R.string.title_fragment_discover);
@@ -176,6 +176,7 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);
 
+            //TODO: remove settings from drawer and put in overflow??
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(MainActivity.this, Settings.class);
             startActivity(intent);
@@ -186,6 +187,13 @@ public class MainActivity extends AppCompatActivity
             }
             fragmentTransaction.replace(R.id.fragment_container, aboutFragment).commit();
             setTitle(R.string.title_fragment_about);
+        }
+
+        //Expand / collapse search when switching fragments
+        if(searchView != null && id == R.id.nav_discover) {
+            searchView.setIconifiedByDefault(false);
+        } else {
+            searchView.setIconifiedByDefault(true);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

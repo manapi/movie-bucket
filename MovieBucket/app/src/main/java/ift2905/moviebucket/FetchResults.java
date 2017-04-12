@@ -7,8 +7,13 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbDiscover;
+import info.movito.themoviedbapi.TmdbPeople;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Multi;
+import info.movito.themoviedbapi.model.keywords.Keyword;
+import info.movito.themoviedbapi.model.people.Person;
 
 
 // TODO : add search options, get multiple pages...
@@ -41,6 +46,7 @@ public class FetchResults extends AsyncTask<String, Object, List<MovieDb>> {
         TmdbApi api = new TmdbApi(key);
         TmdbSearch search = api.getSearch();
         List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
+        //List<Multi> test = search.searchMulti(query, LANG, 1).getResults();
 
         return results;
     }
