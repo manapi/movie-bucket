@@ -19,6 +19,7 @@ import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ProductionCompany;
 import info.movito.themoviedbapi.model.ProductionCountry;
+import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
 
 
@@ -214,6 +215,44 @@ public class MovieView extends AppCompatActivity {
 
             }
 
+            //Cast
+            TextView mainCast1 = (TextView) findViewById(R.id.movieActor1);
+            TextView mainCast2 = (TextView) findViewById(R.id.movieActor2);
+            TextView mainCast3 = (TextView) findViewById(R.id.movieActor3);
+            TextView mainChar1 = (TextView) findViewById(R.id.movieChar1);
+            TextView mainChar2 = (TextView) findViewById(R.id.movieChar2);
+            TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
+
+            try {
+                List<PersonCast> listCast = movie.getCast();
+                ListIterator<PersonCast> castListIterator = listCast.listIterator();
+
+                boolean act1 = false;
+                boolean act2 = false;
+                boolean act3 = false;
+
+                while(castListIterator.hasNext() && !(act1 == true && act2 == true && act3 == true)){
+                    PersonCast pc = castListIterator.next();
+                    if (pc.getOrder() == 0){
+                        mainCast1.setText(pc.getName());
+                        mainChar1.setText(pc.getCharacter());
+                        act1 = true;
+                    }
+                    if (pc.getOrder() == 1){
+                        mainCast2.setText(pc.getName());
+                        mainChar2.setText(pc.getCharacter());
+                        act2 = true;
+                    }
+                    if (pc.getOrder() == 2){
+                        mainCast3.setText(pc.getName());
+                        mainChar3.setText(pc.getCharacter());
+                        act3 = true;
+                    }
+                }
+
+            } catch (Exception e) {
+                mainCast1.setText(DEF);
+            }
 
             // Production
             TextView prodView = (TextView) findViewById(R.id.movieProduction);
