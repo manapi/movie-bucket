@@ -17,7 +17,9 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
-
+import info.movito.themoviedbapi.model.ProductionCompany;
+import info.movito.themoviedbapi.model.ProductionCountry;
+import info.movito.themoviedbapi.model.people.PersonCrew;
 
 
 public class MovieView extends AppCompatActivity {
@@ -27,6 +29,7 @@ public class MovieView extends AppCompatActivity {
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_MEDIUM = "w342";
+    final String DEF = "Unknown";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,8 @@ public class MovieView extends AppCompatActivity {
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
 
-        // TODO: Display movie informations
-        // TODO: Add to list and schedule buttons
+        // TODO: Display cast, suggestions
+        // TODO: Add to history and schedule buttons
     }
 
     public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
@@ -66,7 +69,7 @@ public class MovieView extends AppCompatActivity {
                 setTitle(movie.getTitle());
                 titleView.setText(movie.getTitle());
             } catch (Exception e){
-                titleView.setText("Unknown");
+                titleView.setText(DEF);
             }
 
 
@@ -75,7 +78,7 @@ public class MovieView extends AppCompatActivity {
             try {
                 yearView.setText(movie.getReleaseDate().substring(0,4));
             } catch (Exception e) {
-                yearView.setText("Unknown");
+                yearView.setText(DEF);
             }
 
 
@@ -83,29 +86,34 @@ public class MovieView extends AppCompatActivity {
             TextView genresView = (TextView) findViewById(R.id.movieGenres);
             try {
                 List<Genre> listGenres = movie.getGenres();
-                ListIterator genreIterator = listGenres.listIterator();
+                ListIterator<Genre> genreListIterator = listGenres.listIterator();
                 String genres = "";
-                while(genreIterator.hasNext()){
-                    Genre g = (Genre)genreIterator.next();
+                while(genreListIterator.hasNext()){
+                    Genre g = genreListIterator.next();
                     genres = genres+g.getName()+"\n";
                 }
                 if (genres.isEmpty()){
-                    genresView.setText("Unknown");
+                    genresView.setText(DEF);
                 } else {
                     genresView.setText(genres);
                 }
             } catch (Exception e){
-                genresView.setText("Unknown");
+                genresView.setText(DEF);
             }
 
 
             //Rating
             TextView ratingView = (TextView) findViewById(R.id.movieRating);
             try {
-                float rating = movie.getVoteAverage();
-                ratingView.setText(Float.toString(rating)+"/10");
+                if (movie.getVoteCount() == 0){
+                    ratingView.setText("Not rated yet");
+                } else {
+                    float rating = movie.getVoteAverage();
+                    ratingView.setText(rating + "/10");
+                }
             } catch (Exception e){
-                ratingView.setText("Unknown");
+                e.printStackTrace();
+                ratingView.setText(DEF);
             }
 
 
@@ -113,26 +121,134 @@ public class MovieView extends AppCompatActivity {
             TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
             try {
                 long runTime = movie.getRuntime();
-                long hours = runTime/60;
-                long minutes = runTime-(hours*60);
-                String minutesT = Long.toString(minutes);
-                if (minutes<10){
-                    minutesT = "0"+minutesT;
+                if (runTime == 0){
+                    runtimeView.setText(DEF);
+                } else {
+                    long hours = runTime/60;
+                    long minutes = runTime-(hours*60);
+                    String minutesT = Long.toString(minutes);
+                    if (minutes<10){
+                        minutesT = "0"+minutesT;
+                    }
+                    runtimeView.setText(Long.toString(hours)+"h"+minutesT);
                 }
-                runtimeView.setText(Long.toString(hours)+"h"+minutesT);
             } catch (Exception e){
-                runtimeView.setText("Unknown");
+                runtimeView.setText(DEF);
             }
 
 
             // Overview
             TextView overviewView = (TextView) findViewById(R.id.movieOverview);
             try{
-                overviewView.setText(movie.getOverview());
+                String overview = movie.getOverview();
+                if (overview.isEmpty()){
+                    overviewView.setText(DEF);
+                } else {
+                    overviewView.setText(overview);
+                }
+            } catch (Exception e){
+                overviewView.setText(DEF);
+            }
+
+            // Director and writer
+            TextView directorView = (TextView) findViewById(R.id.movieDirector);
+            TextView writerView = (TextView) findViewById(R.id.movieWriter);
+
+            try{
+                // TODO: Understand why getCrew() returns null Object
+                List<PersonCrew> listCrew = movie.getCrew();
+                ListIterator<PersonCrew> crewListIterator = listCrew.listIterator();
+                String director = "";
+                String writer = "";
+                while(crewListIterator.hasNext()){
+                    PersonCrew pc = crewListIterator.next();
+
+                    //Director
+                    if (pc.getJob().equals("Director")){
+                        if (director.isEmpty()){
+                            director = pc.getName();
+                        } else {
+                            director = director + ", " + pc.getName();
+                        }
+                    }
+
+                    // Writer
+                    if (pc.getJob().equals("Writer")){
+                        if (writer.isEmpty()){
+                            writer = pc.getName();
+                        } else {
+                            writer = writer + ", " + pc.getName();
+                        }
+                    }
+                }
+                if (director.isEmpty()){
+                    directorView.setText(DEF);
+                } else {
+                    directorView.setText(director);
+                }
+
+                if (writer.isEmpty()){
+                    writerView.setText(DEF);
+                } else {
+                    writerView.setText(writer);
+                }
 
             } catch (Exception e){
-                overviewView.setText("Unknown");
+                e.printStackTrace();
+                directorView.setText(DEF);
+                writerView.setText(DEF);
+
             }
+
+
+            // Production
+            TextView prodView = (TextView) findViewById(R.id.movieProduction);
+            try {
+                List<ProductionCompany> listCompany = movie.getProductionCompanies();
+                ListIterator<ProductionCompany> prodCompanyListIterator = listCompany.listIterator();
+                String prod = "";
+                while(prodCompanyListIterator.hasNext()){
+                    ProductionCompany pc = prodCompanyListIterator.next();
+                    if (prod.isEmpty()){
+                        prod = pc.getName();
+                    } else {
+                        prod = prod + ", " + pc.getName();
+                    }
+                }
+                if (prod.isEmpty()){
+                    prodView.setText(DEF);
+                } else {
+                    prodView.setText(prod);
+                }
+            } catch (Exception e){
+                prodView.setText(DEF);
+            }
+
+            // Country
+            TextView countryView = (TextView) findViewById(R.id.movieCountry);
+            TextView countryTitleView = (TextView) findViewById(R.id.countryTitle);
+            try {
+                List<ProductionCountry> listCountry = movie.getProductionCountries();
+                ListIterator<ProductionCountry> genreCountryIterator = listCountry.listIterator();
+                String country = "";
+                while(genreCountryIterator.hasNext()){
+                    ProductionCountry pc = genreCountryIterator.next();
+                    if (country.isEmpty()){
+                        country = pc.getName();
+                    } else {
+                        country = country + ", " + pc.getName();
+                        countryTitleView.setText("Countries");
+                    }
+                }
+                if (country.isEmpty()){
+                    countryView.setText(DEF);
+                } else {
+                    countryView.setText(country);
+                }
+            } catch (Exception e){
+                countryView.setText(DEF);
+            }
+
 
             // Poster
             ImageView image = (ImageView) findViewById(R.id.moviePoster);
@@ -141,7 +257,7 @@ public class MovieView extends AppCompatActivity {
                         .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
                         .into(image);
             } catch (Exception e){
-                // TODO: find default image
+
             }
 
 
