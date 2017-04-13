@@ -4,10 +4,12 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Multi;
 
 /**
  * Fetch suggestions for discover fragment and set to list adapter
@@ -37,6 +39,6 @@ public class FetchSuggestions extends AsyncTask<String, Object, List<MovieDb>> {
     protected void onPostExecute(List<MovieDb> suggestions) {
 
         // TODO : replace with cards layout
-        fragment.setListAdapter(new SearchAdapter(suggestions, context));
+        fragment.setListAdapter(new SearchAdapter(new ArrayList<Multi>(), context));
     }
 }
