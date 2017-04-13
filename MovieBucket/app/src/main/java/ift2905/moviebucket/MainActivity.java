@@ -12,11 +12,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity
         myBucket[19] = "1Shenanigans: Deluxe Edition";
 
         myHistory = new String[1];
-        myHistory[0] = "my history";
+        myHistory[0] = "0my history";
 
     }
 
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
-                myBucketFragment.setListAdapter(new MyListAdapter(myBucket, MainActivity.this));
+                myBucketFragment.setListAdapter(new MyListAdapter(myBucket, MainActivity.this, basedGodRockLobster));
             }
             fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
             setTitle(R.string.title_fragment_my_bucket);
@@ -171,7 +173,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myhistory) {
             if (myHistoryFragment == null) {
                 myHistoryFragment = new ListFragment();
-                myHistoryFragment.setListAdapter(new MyListAdapter(myHistory, MainActivity.this));
+                myHistoryFragment.setListAdapter(new MyListAdapter(myHistory, MainActivity.this, basedGodRockLobster));
             }
             fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);
@@ -219,12 +221,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     //TODO: implement the onClick method of this onClickListener
-    //Code-breaking typo corrected
-    private View.OnClickListener BasedGodRockLobster = new View.OnClickListener() {
+    public View.OnClickListener basedGodRockLobster = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
             int viewId = v.getId();
+
+
 
             switch(viewId){
 
@@ -237,12 +240,28 @@ public class MainActivity extends AppCompatActivity
                     //same as previous one
                     break;
 
-                case R.id.mytitle :
+                case R.id.more :
+                    //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
                     //The code here generates the popup menu with the "delete","viewed" and
                     //"calendar" options. This'll be quite the headache
+
+                    PopupMenu popup = new PopupMenu(MainActivity.this, v);
+
+                    popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
+
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle() + ", have a cookie!",Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+		     
+		            popup.show();
+			
                     break;
 
-                case R.id.more :
+                case R.id.mytitle:
                     //the code here creates a new intent for the Movie View activity and adds to it
                     //the selected movie's Movie Db id as an extra
                     break;

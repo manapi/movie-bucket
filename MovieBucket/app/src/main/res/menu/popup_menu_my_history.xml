@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/schedule"
+        app:srcCompat="@drawable/ic_date_range_black_24dp"
+        android:title="Schedule it!"
+        />
+
+    <item
+        android:id="@+id/delete"
+        app:srcCompat="@drawable/ic_close_black_24dp"
+        android:title="Delete it!"
+        />
+
+</menu>
