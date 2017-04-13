@@ -22,6 +22,7 @@ import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ProductionCompany;
 import info.movito.themoviedbapi.model.ProductionCountry;
+import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
 
 
@@ -52,7 +53,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
 
-        // TODO: Display cast, suggestions
+        // TODO: Display suggestions
         // TODO: Add to history and schedule buttons
     }
 
@@ -231,6 +232,43 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             }
 
+            //Cast
+            TextView mainCast1 = (TextView) findViewById(R.id.movieActor1);
+            TextView mainCast2 = (TextView) findViewById(R.id.movieActor2);
+            TextView mainCast3 = (TextView) findViewById(R.id.movieActor3);
+            TextView mainChar1 = (TextView) findViewById(R.id.movieChar1);
+            TextView mainChar2 = (TextView) findViewById(R.id.movieChar2);
+            TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
+
+            try {
+                // TODO: Display rest of the cast
+                List<PersonCast> listCast = movie.getCast();
+                ListIterator<PersonCast> castListIterator = listCast.listIterator();
+
+                boolean act1 = false;
+                boolean act2 = false;
+                boolean act3 = false;
+
+                while(castListIterator.hasNext() && !(act1 == true && act2 == true && act3 == true)){
+                    PersonCast pc = castListIterator.next();
+                    if (act1 == false){
+                        mainCast1.setText(pc.getName());
+                        mainChar1.setText(pc.getCharacter());
+                        act1 = true;
+                    }else if (act2 == false){
+                        mainCast2.setText(pc.getName());
+                        mainChar2.setText(pc.getCharacter());
+                        act2 = true;
+                    }else if (act3 == false){
+                        mainCast3.setText(pc.getName());
+                        mainChar3.setText(pc.getCharacter());
+                        act3 = true;
+                    }
+                }
+
+            } catch (Exception e) {
+                mainCast1.setText(DEF);
+            }
 
             // Production
             TextView prodView = (TextView) findViewById(R.id.movieProduction);
