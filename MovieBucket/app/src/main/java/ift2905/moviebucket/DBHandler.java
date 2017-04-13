@@ -11,7 +11,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     /*
     private static final String TABLE_HEAD = "entries";
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_FAV = "favorite";
     private static final String KEY_VIEWED = "viewed";
@@ -32,8 +32,7 @@ public class DBHandler extends SQLiteOpenHelper {
                     ")"
     };
 
-    public DBHandler(Context context, String name,
-                     SQLiteDatabase.CursorFactory factory, int version) {
+    public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         if(DBHandler.db == null) {
             DBHandler.db = getWritableDatabase();
@@ -41,8 +40,11 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public SQLiteDatabase getDb() {
+
         return DBHandler.db;
     }
+
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         for (String statement : DBHandler.SQL_CREATE_DB) {

@@ -1,10 +1,13 @@
 package ift2905.moviebucket;
 
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,9 +25,13 @@ import info.movito.themoviedbapi.model.ProductionCountry;
 import info.movito.themoviedbapi.model.people.PersonCrew;
 
 
-public class MovieView extends AppCompatActivity {
+public class MovieView extends AppCompatActivity implements View.OnClickListener {
 
     int id;
+    Button bucketButton;
+    //Button historyButton;
+    //Button calendarButton;
+    private SQLiteDatabase db;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
@@ -37,11 +44,21 @@ public class MovieView extends AppCompatActivity {
         setContentView(R.layout.activity_movie_view);
 
         id = (int) getIntent().getExtras().getLong("movie");
+        bucketButton = (Button)findViewById(R.id.buttonAddMb);
+        //historyButton = (Button)findViewById(R.id.buttonAddH);
+        //calendarButton = (Button)findVIewById(R.id.toCalendar);
+        bucketButton.setOnClickListener(this);
+        db = new DBHandler(this).getDb();
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
 
         // TODO: Display cast, suggestions
         // TODO: Add to history and schedule buttons
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 
     public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
