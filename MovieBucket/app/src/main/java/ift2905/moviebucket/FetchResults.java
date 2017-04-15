@@ -7,13 +7,8 @@ import android.os.AsyncTask;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.TmdbDiscover;
-import info.movito.themoviedbapi.TmdbPeople;
 import info.movito.themoviedbapi.TmdbSearch;
-import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Multi;
-import info.movito.themoviedbapi.model.keywords.Keyword;
-import info.movito.themoviedbapi.model.people.Person;
 
 
 // TODO : add search options, get multiple pages...
@@ -22,7 +17,7 @@ import info.movito.themoviedbapi.model.people.Person;
  * Created by Amélie on 2017-04-09.
  */
 
-public class FetchResults extends AsyncTask<String, Object, List<MovieDb>> {
+public class FetchResults extends AsyncTask<String, Object,  List<Multi>> {
 
     final String LANG = "en";
     final Boolean ADULT = false; //include adult movies in search results
@@ -40,19 +35,19 @@ public class FetchResults extends AsyncTask<String, Object, List<MovieDb>> {
     }
 
     @Override
-    protected List<MovieDb> doInBackground(String... params) {
+    protected List<Multi> doInBackground(String... params) {
 
         //TODO: handle advanced search parameters
         TmdbApi api = new TmdbApi(key);
         TmdbSearch search = api.getSearch();
-        List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
-        //List<Multi> test = search.searchMulti(query, LANG, 1).getResults();
+        //List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
+        List<Multi> results = search.searchMulti(query, LANG, 1).getResults();
 
         return results;
     }
 
     @Override
-    protected void onPostExecute(List<MovieDb> results) {
+    protected void onPostExecute(List<Multi> results) {
 
         fragment.setListAdapter(new SearchAdapter(results, context));
     }

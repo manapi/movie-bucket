@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Multi;
+import info.movito.themoviedbapi.model.people.Person;
+import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
  * Adapter for search results
@@ -27,29 +30,40 @@ public class SearchAdapter extends BaseAdapter {
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_SMALL = "w154";
 
-    List<MovieDb> movies;
+    List<Multi> results;
     public Context context;
 
-    public SearchAdapter(List<MovieDb> movies, Context context) {
+    public SearchAdapter(List<Multi> results, Context context) {
         super();
-        this.movies = new ArrayList<>();
-        this.movies.addAll(movies);
+        this.results = new ArrayList<>();
+        this.results.addAll(results);
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return movies.size();
+        return results.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return movies.get(position);
+        return results.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return movies.get(position).getId();
+        Multi item = results.get(position);
+
+        switch(item.getMediaType()) {
+            case MOVIE :
+                return ((MovieDb)item).getId();
+            case TV_SERIES:
+                return ((TvSeries)item).getId();
+            case PERSON:
+                return ((Person)item).getId();
+            default:
+                return 0;
+        }
     }
 
     @Override
@@ -65,27 +79,55 @@ public class SearchAdapter extends BaseAdapter {
         TextView release = (TextView) convertView.findViewById(R.id.release);
         ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-        String year = movies.get(position).getReleaseDate();
+        String name = null;
+        String year = null;
+        String url = null;
+        int id;
+
+        if(results.get(position).getMediaType().equals(Multi.MediaType.MOVIE)) {
+            MovieDb movie = (MovieDb) results.get(position);
+            name = movie.getTitle();
+            year = movie.getReleaseDate();
+            url = BASE_URL + SIZE_SMALL + movie.getPosterPath();
+            id = movie.getId();
+        }
+        else if (results.get(position).getMediaType().equals(Multi.MediaType.TV_SERIES)){
+            TvSeries tv = (TvSeries) results.get(position);
+            name = tv.getName();
+            year = tv.getFirstAirDate();
+            url = BASE_URL + SIZE_SMALL + tv.getPosterPath();
+            id = tv.getId();
+        }
+        else if (results.get(position).getMediaType().equals(Multi.MediaType.PERSON)){
+            Person person = (Person) results.get(position);
+            name = person.getName();
+            url = BASE_URL + SIZE_SMALL + person.getProfilePath();
+            id = person.getId();
+        }
+
         if(year != null && year.length() >= 4) {
             year = year.substring(0, 4);
         }
 
-        title.setText(movies.get(position).getTitle());
+        title.setText(name);
         release.setText(year);
 
         Picasso.with(context)
-                .load(BASE_URL + SIZE_SMALL + movies.get(position).getPosterPath())
+                .load(url)
                 .into(image);
-
 
         convertView.setOnClickListener(new View.OnClickListener() {
 
             // Create a new activity (detailed view of the selected movie)
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MovieView.class);
-                intent.putExtra("movie", getItemId(position));
-                context.startActivity(intent);
+                if(results.get(position).getMediaType().equals(Multi.MediaType.MOVIE)) {
+                    Intent intent = new Intent(context, MovieView.class);
+                    intent.putExtra("movie", getItemId(position));
+                    context.startActivity(intent);
+                }
+                //TODO: handle on click for TvSeries
+                //TODO : handle on click for Person
             }
         });
         return convertView;
