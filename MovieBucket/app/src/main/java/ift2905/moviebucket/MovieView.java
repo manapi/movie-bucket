@@ -2,20 +2,25 @@ package ift2905.moviebucket;
 
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -35,7 +40,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     String mTitle;
     Button bucketButton;
     Button historyButton;
-    Button calendarButton;
+    ImageButton calendarButton;
     DBHandler dbh;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
@@ -56,7 +61,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         historyButton = (Button)findViewById(R.id.buttonAddH);
         historyButton.setOnClickListener(this);
 
-        calendarButton = (Button)findViewById(R.id.toCalendar);
+        calendarButton = (ImageButton)findViewById(R.id.toCalendar);
         calendarButton.setOnClickListener(this);
 
         dbh = new DBHandler(this);
@@ -77,6 +82,16 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 dbh.addToDB(id, mTitle, 1);
                 break;
             case R.id.toCalendar:
+                Calendar cal = Calendar.getInstance();
+                GregorianCalendar calDate = new GregorianCalendar();
+                Intent intent = new Intent(Intent.ACTION_EDIT);
+                intent.setType("vnd.android.cursor.item/event");
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                        calDate.getTimeInMillis());
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
+                        calDate.getTimeInMillis());
+                intent.putExtra(CalendarContract.Events.TITLE, "Watch " + mTitle);
+                startActivity(intent);
                 break;
         }
 

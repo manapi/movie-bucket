@@ -4,6 +4,7 @@
     <ScrollView
 
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,7 +24,7 @@
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="361dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -39,13 +40,14 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="265dp"
+                    android:layout_height="match_parent"
                     android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/textContainer"
                         android:layout_width="173dp"
                         android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:orientation="vertical"
                         android:weightSum="1">
 
@@ -76,7 +78,7 @@
                         <RelativeLayout
                             android:id="@+id/runtimeContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="47dp">
+                            android:layout_height="50dp">
 
                             <TextView
                                 android:id="@+id/runtimeTitle"
@@ -147,14 +149,15 @@
 
                     <LinearLayout
                         android:id="@+id/posterContainer"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:weightSum="1">
 
                         <ImageView
                             android:id="@+id/moviePoster"
                             android:layout_width="match_parent"
-                            android:layout_height="220dp"
+                            android:layout_height="225dp"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
@@ -171,22 +174,20 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/toCalendar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Calendar" />
 
                             <Button
                                 android:id="@+id/buttonAddH"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="History" />
+                                android:text="+ My History" />
+
+                            <ImageButton
+                                android:id="@+id/toCalendar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                app:srcCompat="@drawable/ic_date_range_black_24dp" />
                         </LinearLayout>
 
                     </LinearLayout>
