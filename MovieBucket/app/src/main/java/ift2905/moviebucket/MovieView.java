@@ -1,6 +1,8 @@
 package ift2905.moviebucket;
 
 
+import android.content.ContentValues;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -29,10 +32,11 @@ import info.movito.themoviedbapi.model.people.PersonCrew;
 public class MovieView extends AppCompatActivity implements View.OnClickListener {
 
     int id;
+    String mTitle;
     Button bucketButton;
-    //Button historyButton;
-    //Button calendarButton;
-    private SQLiteDatabase db;
+    Button historyButton;
+    Button calendarButton;
+    DBHandler dbh;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
@@ -45,11 +49,17 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_movie_view);
 
         id = (int) getIntent().getExtras().getLong("movie");
+
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
-        //historyButton = (Button)findViewById(R.id.buttonAddH);
-        //calendarButton = (Button)findVIewById(R.id.toCalendar);
         bucketButton.setOnClickListener(this);
-        db = new DBHandler(this).getDb();
+
+        historyButton = (Button)findViewById(R.id.buttonAddH);
+        historyButton.setOnClickListener(this);
+
+        calendarButton = (Button)findViewById(R.id.toCalendar);
+        calendarButton.setOnClickListener(this);
+
+        dbh = new DBHandler(this);
         MovieFetcher mf = new MovieFetcher(id);
         mf.execute();
 
@@ -59,7 +69,18 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.buttonAddMb:
+                dbh.addToDB(id, mTitle, 0);
+                break;
+            case R.id.buttonAddH:
+                dbh.addToDB(id, mTitle, 1);
+                break;
+            case R.id.toCalendar:
+                break;
+        }
 
+        //Toast.makeText(MovieView.this, "ID: " + id + "-- Title: " + mTitle, Toast.LENGTH_SHORT).show();
     }
 
     public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
@@ -79,13 +100,15 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         }
 
         @Override
+
         protected void onPostExecute(MovieDb movie) {
 
             // Title
             TextView titleView = (TextView) findViewById(R.id.movieTitle);
             try {
-                setTitle(movie.getTitle());
-                titleView.setText(movie.getTitle());
+                mTitle = movie.getTitle();
+                setTitle(mTitle);
+                titleView.setText(mTitle);
             } catch (Exception e){
                 titleView.setText(DEF);
             }

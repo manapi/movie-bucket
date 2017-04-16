@@ -6,6 +6,7 @@ import android.app.ListFragment;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,14 +26,14 @@ public class MainActivity extends AppCompatActivity
 
     private ListFragment searchFragment, discoverFragment, myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
-    private String[] myBucket, myHistory;
     private SearchView searchView;
-
+    private DBHandler dbh;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dbh = new DBHandler(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,37 +56,6 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.fragment_container, discoverFragment).commit();
         setTitle(R.string.title_fragment_discover);
-
-        // TODO: Read everything from local data base
-        //To be replaced with actual data
-        //I'm thinking of filling the myBucket array with strings of
-        //this format:Favorite(1 or 0 whether it's starred or not)+title
-
-        myBucket = new String[20];
-        myBucket[0] = "1Langouste";
-        myBucket[1] = "1Rock Lobster";
-        myBucket[2] = "1BasedGodRockLobster";
-        myBucket[3] = "1All Hail The BasedGodLobster";
-        myBucket[4] = "0Creative Bankrupcy";
-        myBucket[5] = "0Shenanigans";
-        myBucket[6] = "0More Shenanigans";
-        myBucket[7] = "0Some More Shenanigans";
-        myBucket[8] = "1Even More Shenanigans";
-        myBucket[9] = "1Shenanigans Redux";
-        myBucket[10] = "0Shenanigans: The Reckoning";
-        myBucket[11] = "1Shenanigans Rising";
-        myBucket[12] = "0Shenanigans Revengeance";
-        myBucket[13] = "0Shenanigans Forever";
-        myBucket[14] = "0Shenanigans vs. Shenanigans";
-        myBucket[15] = "1Shenanigans Reloaded";
-        myBucket[16] = "0Shenanigans 5";
-        myBucket[17] = "0The Making Of Shenanigans";
-        myBucket[18] = "0Shenanigans: Director's Cut";
-        myBucket[19] = "1Shenanigans: Deluxe Edition";
-
-        myHistory = new String[1];
-        myHistory[0] = "0my history";
-
     }
 
     //TODO: handle back from search fragments back to *any* fragment?
@@ -165,7 +135,11 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
-                myBucketFragment.setListAdapter(new MyListAdapter(myBucket, MainActivity.this, basedGodRockLobster));
+
+                Cursor cursor = dbh.movieLister("Bucket");
+                myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
+                //TODO: find the proper moment to close the cursors.
+                //cursor.close();
             }
             fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
             setTitle(R.string.title_fragment_my_bucket);
@@ -173,7 +147,10 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myhistory) {
             if (myHistoryFragment == null) {
                 myHistoryFragment = new ListFragment();
-                myHistoryFragment.setListAdapter(new MyListAdapter(myHistory, MainActivity.this, basedGodRockLobster));
+                Cursor cursor = dbh.movieLister("History");
+                myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
+                //TODO: find the proper moment to close the cursors.
+                //cursor.close();
             }
             fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);
@@ -206,7 +183,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // TODO: Save everything to local data base
+        dbh.getDb().close();
     }
 
     @Override
@@ -269,5 +246,3 @@ public class MainActivity extends AppCompatActivity
         }
     };
 }
-
-

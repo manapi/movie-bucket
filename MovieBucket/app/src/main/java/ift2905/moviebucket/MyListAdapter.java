@@ -1,13 +1,16 @@
 package ift2905.moviebucket;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 
 // TODO: Expand adapter to include buttons, on click listeners, etc
 //half-way there! need to add in the pop in menu when title is clicked
@@ -26,27 +29,19 @@ import android.widget.TextView;
  * Created by Amélie on 2017-04-09.
  */
 
-public class MyListAdapter extends BaseAdapter {
+public class MyListAdapter extends CursorAdapter {
 
-    String list[];
-    public Context context;
-    String listType;
     View.OnClickListener onClickManager;
-
-    public MyListAdapter(String list[], Context context, View.OnClickListener onClickManager) {
-        super();
-        this.list = new String[list.length];
-        for (int i = 0; i < list.length; i++) {
-            this.list[i] = list[i];
-        }
-        this.context = context;
-
-        this.onClickManager = onClickManager;
+    Cursor c;
+    //TODO: see if the "to" parameter is  really necessary.
+    public MyListAdapter(String to, Context context, Cursor c) {
+        super(context, c, 0);
+        this.c = c;
     }
-
+/*
     @Override
     public int getCount() {
-        return list.length;
+        return c.getCount();
     }
 
     @Override
@@ -58,8 +53,8 @@ public class MyListAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
-
-    @Override
+*/
+   /* @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -69,7 +64,7 @@ public class MyListAdapter extends BaseAdapter {
 
 
             //Inflating all the buttons
-            convertView = li.inflate(R.layout.mylist_row_item_view, parent, false);
+            convertView = li.inflate(mylist_row_item_view, parent, false);
 
             ImageButton starStatus;
 
@@ -90,7 +85,7 @@ public class MyListAdapter extends BaseAdapter {
             //title has less than 3-5 caps in it TODO: polish this nonsense
             if (list[position].length() >= 20) {
 
-                String newText = list[position].substring(1, 17) + "...";
+                String newText = list[position].substring(1, 16) + "...";
                 myTitleText.setText(newText);
             } else myTitleText.setText(list[position].substring(1));
 
@@ -103,5 +98,49 @@ public class MyListAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }*/
+
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        //Initializes the view. Mandatory method from CursorAdapter.
+        return LayoutInflater.from(context).inflate(mylist_row_item_view, parent, false);
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        //Connects the cursor values to our View.
+
+        //Title section
+        TextView myTitleText = (TextView) view.findViewById(R.id.mytitle);
+        String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+        myTitleText.setText(processTitle(title));
+
+        //Star section
+        ImageButton starStatus;
+
+        int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
+        if(fav == 0) {
+            starStatus = (ImageButton) view.findViewById(R.id.notstarred);
+        } else {
+            starStatus = (ImageButton) view.findViewById(R.id.starred);
+        }
+
+        LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
+        paramsStar.weight = 1.0f;
+        starStatus.setLayoutParams(paramsStar);
+
+        //"More" Section
+        ImageButton more = (ImageButton) view.findViewById(R.id.more);
+        //TODO: Replug the listener, if needed.
+        more.setOnClickListener(onClickManager);
+    }
+
+    public static String processTitle(String title) {
+        if (title.length() > 20) {
+            String newText = title.substring(0, 17) + "...";
+            return newText;
+        } else {
+            return title;
+        }
     }
 }

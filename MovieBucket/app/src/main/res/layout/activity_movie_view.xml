@@ -161,19 +161,33 @@
                             android:layout_alignWithParentIfMissing="false"
                             android:isScrollContainer="false" />
 
-                        <RelativeLayout
+                        <Button
+                            android:id="@+id/buttonAddMb"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="false"
+                            android:text="+ My Bucket"
+                            android:textAlignment="center" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
 
                             <Button
-                                android:id="@+id/buttonAddMb"
-                                android:layout_width="match_parent"
+                                android:id="@+id/toCalendar"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
                                 android:layout_weight="1"
-                                android:text="+ My Bucket"
-                                android:textAlignment="center" />
-                        </RelativeLayout>
+                                android:text="Calendar" />
+
+                            <Button
+                                android:id="@+id/buttonAddH"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="History" />
+                        </LinearLayout>
 
                     </LinearLayout>
 
