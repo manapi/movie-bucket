@@ -121,9 +121,12 @@ public class SearchAdapter extends BaseAdapter {
             // Create a new activity (detailed view of the selected movie)
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(context, MovieView.class);
                 if(results.get(position).getMediaType().equals(Multi.MediaType.MOVIE)) {
-                    Intent intent = new Intent(context, MovieView.class);
                     intent.putExtra("movie", getItemId(position));
+                    context.startActivity(intent);
+                } else if (results.get(position).getMediaType().equals((Multi.MediaType.TV_SERIES))){
+                    intent.putExtra("tv", getItemId(position));
                     context.startActivity(intent);
                 }
                 //TODO: handle on click for TvSeries

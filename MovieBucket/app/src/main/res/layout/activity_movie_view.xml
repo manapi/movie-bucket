@@ -51,34 +51,39 @@
                         android:orientation="vertical"
                         android:weightSum="1">
 
-                        <RelativeLayout
+                        <LinearLayout
                             android:id="@+id/yearContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="47dp"
-                            android:layout_weight="0.13">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.13"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/yearTitle"
                                 style="@android:style/Widget.TextView.SpinnerItem"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:text="Year" />
 
                             <TextView
                                 android:id="@+id/movieYear"
-                                android:layout_width="146dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentBottom="true"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentStart="true"
-                                android:layout_below="@+id/yearTitle"
+                                android:layout_weight="1"
                                 android:text="-" />
-                        </RelativeLayout>
 
-                        <RelativeLayout
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/runtimeContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.13"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/runtimeTitle"
@@ -89,19 +94,22 @@
 
                             <TextView
                                 android:id="@+id/movieRuntime"
-                                android:layout_width="146dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentBottom="true"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentStart="true"
                                 android:layout_below="@+id/runtimeTitle"
                                 android:text="-" />
-                        </RelativeLayout>
 
-                        <RelativeLayout
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/ratingContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="47dp">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.13"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/ratingTitle"
@@ -112,19 +120,22 @@
 
                             <TextView
                                 android:id="@+id/movieRating"
-                                android:layout_width="146dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentBottom="true"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentStart="true"
                                 android:layout_below="@+id/ratingTitle"
                                 android:text="-" />
-                        </RelativeLayout>
 
-                        <RelativeLayout
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:id="@+id/genresContainer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="127dp">
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.13"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/genreTitle"
@@ -135,7 +146,7 @@
 
                             <TextView
                                 android:id="@+id/movieGenres"
-                                android:layout_width="146dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentBottom="true"
                                 android:layout_alignParentEnd="true"
@@ -143,7 +154,7 @@
                                 android:layout_below="@+id/genreTitle"
                                 android:inputType="textMultiLine"
                                 android:text="-" />
-                        </RelativeLayout>
+                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -173,7 +184,7 @@
                             android:textAlignment="center" />
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
@@ -185,7 +196,7 @@
 
                             <ImageButton
                                 android:id="@+id/toCalendar"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/ic_date_range_black_24dp" />
                         </LinearLayout>

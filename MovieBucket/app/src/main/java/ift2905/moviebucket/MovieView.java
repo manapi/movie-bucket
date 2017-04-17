@@ -2,6 +2,7 @@ package ift2905.moviebucket;
 
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +20,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -26,17 +29,22 @@ import java.util.ListIterator;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
+import info.movito.themoviedbapi.TmdbTV;
 import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ProductionCompany;
 import info.movito.themoviedbapi.model.ProductionCountry;
 import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
+import info.movito.themoviedbapi.model.tv.TvSeries;
 
 
 public class MovieView extends AppCompatActivity implements View.OnClickListener {
 
     int id;
+    Context context;
+    MovieDb movie;
+    TvSeries tvSeries;
     String mTitle;
     Button bucketButton;
     Button historyButton;
@@ -53,7 +61,15 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_view);
 
-        id = (int) getIntent().getExtras().getLong("movie");
+        try {
+            id = (int) getIntent().getExtras().getLong("movie");
+            MovieFetcher mf = new MovieFetcher(id);
+            mf.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //id = (int) getIntent().getExtras().getLong("tv");
+        }
+
 
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
         bucketButton.setOnClickListener(this);
@@ -65,8 +81,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         calendarButton.setOnClickListener(this);
 
         dbh = new DBHandler(this);
-        MovieFetcher mf = new MovieFetcher(id);
-        mf.execute();
+
 
         // TODO: Display suggestions
         // TODO: Add to history and schedule buttons
@@ -89,7 +104,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
                         calDate.getTimeInMillis());
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                        calDate.getTimeInMillis());
+                        calDate.getTimeInMillis() +movie.getRuntime()*60*1000);
                 intent.putExtra(CalendarContract.Events.TITLE, "Watch " + mTitle);
                 startActivity(intent);
                 break;
@@ -99,19 +114,26 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     }
 
     public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
-        int idMovie;
+        int id;
 
         public MovieFetcher (int id){
-            this.idMovie = id;
+            this.id = id;
         }
 
         // Get movie
         @Override
         protected MovieDb doInBackground(String... params) {
             TmdbApi api = new TmdbApi(API_KEY);
-            TmdbMovies tmdbm = new TmdbMovies(api);
-            MovieDb movie = tmdbm.getMovie(idMovie, LANG, TmdbMovies.MovieMethod.credits);
-            return movie;
+            try {
+                TmdbMovies tmdbm = new TmdbMovies(api);
+                movie = tmdbm.getMovie(id, LANG, TmdbMovies.MovieMethod.credits);
+                return movie;
+            } catch (Exception e){
+                //TmdbTV tmdbtv = new TmdbTV(api);
+                //tvSeries = tmdbtv.getSeries(id, LANG, TmdbTV.TvMethod.credits);
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
