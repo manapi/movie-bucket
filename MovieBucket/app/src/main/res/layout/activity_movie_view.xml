@@ -24,7 +24,7 @@
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="361dp"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
@@ -40,7 +40,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -63,7 +63,6 @@
                                 style="@android:style/Widget.TextView.SpinnerItem"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
                                 android:text="Year" />
 
                             <TextView
@@ -73,7 +72,6 @@
                                 android:layout_alignParentBottom="true"
                                 android:layout_alignParentEnd="true"
                                 android:layout_alignParentStart="true"
-                                android:layout_weight="1"
                                 android:text="-" />
 
                         </LinearLayout>
@@ -161,7 +159,7 @@
                     <LinearLayout
                         android:id="@+id/posterContainer"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:weightSum="1">
 
@@ -360,23 +358,23 @@
 
                         <TextView
                             android:id="@+id/movieActor1"
-                            android:layout_column="0"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:inputType="textMultiLine"
                             android:paddingRight="3dp"
                             android:paddingTop="3dp"
-                            android:inputType="textMultiLine"
                             android:text="" />
 
                         <TextView
                             android:id="@+id/movieChar1"
-                            android:layout_column="1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_column="1"
                             android:gravity="right"
+                            android:inputType="textMultiLine"
                             android:paddingRight="15dp"
                             android:paddingTop="3dp"
-                            android:inputType="textMultiLine"
                             android:text="" />
                     </TableRow>
 
@@ -388,23 +386,23 @@
 
                         <TextView
                             android:id="@+id/movieActor2"
-                            android:layout_column="0"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:inputType="textMultiLine"
                             android:paddingRight="3dp"
                             android:paddingTop="3dp"
-                            android:inputType="textMultiLine"
                             android:text="" />
 
                         <TextView
                             android:id="@+id/movieChar2"
-                            android:layout_column="1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_column="1"
                             android:gravity="right"
+                            android:inputType="textMultiLine"
                             android:paddingRight="15dp"
                             android:paddingTop="3dp"
-                            android:inputType="textMultiLine"
                             android:text="" />
                     </TableRow>
 
@@ -416,23 +414,23 @@
 
                         <TextView
                             android:id="@+id/movieActor3"
-                            android:layout_column="0"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:inputType="textMultiLine"
                             android:paddingRight="3dp"
                             android:paddingTop="3dp"
-                            android:inputType="textMultiLine"
                             android:text="" />
 
                         <TextView
                             android:id="@+id/movieChar3"
-                            android:layout_column="1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_column="1"
                             android:gravity="right"
+                            android:inputType="textMultiLine"
                             android:paddingRight="15dp"
                             android:paddingTop="3dp"
-                            android:inputType="textMultiLine"
                             android:text="" />
                     </TableRow>
 

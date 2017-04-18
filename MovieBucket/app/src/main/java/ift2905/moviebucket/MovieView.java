@@ -73,9 +73,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
         bucketButton.setOnClickListener(this);
+        // TODO: Disable button if movie already in MyBucket (+change text to "In My Bucket" or something similar)
+        // TODO: Disable button if movie already in MyHistory???
 
         historyButton = (Button)findViewById(R.id.buttonAddH);
         historyButton.setOnClickListener(this);
+        // TODO: Disable button if movie already in MyHistory (+change text to "Viewed" or something similar)
 
         calendarButton = (ImageButton)findViewById(R.id.toCalendar);
         calendarButton.setOnClickListener(this);
@@ -84,7 +87,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
         // TODO: Display suggestions
-        // TODO: Add to history and schedule buttons
+
     }
 
     @Override
@@ -305,29 +308,58 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 List<PersonCast> listCast = movie.getCast();
                 ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
-                boolean act1 = false;
-                boolean act2 = false;
-                boolean act3 = false;
+                boolean row1 = false;
+                boolean row2 = false;
+                boolean row3 = false;
 
-                while(castListIterator.hasNext() && !(act1 == true && act2 == true && act3 == true)){
+                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true)){
                     PersonCast pc = castListIterator.next();
-                    if (act1 == false){
+                    if (row1 == false){
                         mainCast1.setText(pc.getName());
-                        mainChar1.setText(pc.getCharacter());
-                        act1 = true;
-                    }else if (act2 == false){
+                        String character = pc.getCharacter();
+                        if (character.isEmpty()){
+                            mainChar1.setText(DEF);
+                        } else {
+                            mainChar1.setText(pc.getCharacter());
+                        }
+                        row1 = true;
+                    }else if (row2 == false){
                         mainCast2.setText(pc.getName());
-                        mainChar2.setText(pc.getCharacter());
-                        act2 = true;
-                    }else if (act3 == false){
+                        String character = pc.getCharacter();
+                        if (character.isEmpty()){
+                            mainChar2.setText(DEF);
+                        } else {
+                            mainChar2.setText(pc.getCharacter());
+                        }
+                        row2 = true;
+                    }else if (row3 == false){
                         mainCast3.setText(pc.getName());
-                        mainChar3.setText(pc.getCharacter());
-                        act3 = true;
+                        String character = pc.getCharacter();
+                        if (character.isEmpty()){
+                            mainChar3.setText(DEF);
+                        } else {
+                            mainChar3.setText(pc.getCharacter());
+                        }
+                        row3 = true;
                     }
+                }
+
+                if (row2 == false) {
+                    mainCast2.setVisibility(View.GONE);
+                    mainChar2.setVisibility(View.GONE);
+                }
+                if (row3 == false) {
+                    mainCast3.setVisibility(View.GONE);
+                    mainChar3.setVisibility(View.GONE);
                 }
 
             } catch (Exception e) {
                 mainCast1.setText(DEF);
+                mainCast2.setVisibility(View.GONE);
+                mainCast3.setVisibility(View.GONE);
+                mainChar1.setVisibility(View.GONE);
+                mainChar2.setVisibility(View.GONE);
+                mainChar3.setVisibility(View.GONE);
             }
 
             // Production
