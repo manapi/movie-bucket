@@ -51,7 +51,7 @@ public class MyListAdapter extends CursorAdapter {
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, Context ctx, Cursor cursor) {
         //Connects the cursor values to our View.
 
         //Title section
@@ -61,6 +61,7 @@ public class MyListAdapter extends CursorAdapter {
 
         //Star section
         ImageButton starStatus;
+
 
         int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
         if(fav == 0) {
@@ -75,7 +76,49 @@ public class MyListAdapter extends CursorAdapter {
 
         //"More" Section
         ImageButton more = (ImageButton) view.findViewById(R.id.more);
-        more.setOnClickListener(myListener);
+
+        more.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                int viewId = v.getId();
+                switch (viewId) {
+                    case R.id.starred:
+
+                        //TODO: from the ID, update the fav column of this row, then modify the image to notStarred.
+                        break;
+
+                    case R.id.notstarred:
+                        break;
+
+                    case R.id.more:
+                        //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
+                        //int test = (int)v.getTag();
+                        PopupMenu popup = new PopupMenu(context, v);
+
+                        popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
+
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                            public boolean onMenuItemClick(MenuItem item) {
+                                //item.getTitle()
+                                Toast.makeText(context, "You Clicked : " + ", have a cookie!", Toast.LENGTH_SHORT).show();
+                                return true;
+                            }
+                        });
+
+                        popup.show();
+
+                        break;
+
+                    case R.id.mytitle:
+                        //the code here creates a new intent for the Movie View activity and adds to it
+                        //the selected movie's Movie Db id as an extra
+                        break;
+                }
+            }
+        });
+
     }
 
     public static String processTitle(String title) {
@@ -86,51 +129,4 @@ public class MyListAdapter extends CursorAdapter {
             return title;
         }
     }
-
-    public View.OnClickListener myListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            int viewId = v.getId();
-
-
-            switch (viewId) {
-
-                case R.id.starred:
-                    //the code here would obtain the position of the item and update its star status
-                    //in the Db
-                    break;
-
-                case R.id.notstarred:
-                    //same as previous one
-                    break;
-
-                case R.id.more:
-                    //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
-                    //The code here generates the popup menu with the "delete","viewed" and
-                    //"calendar" options. This'll be quite the headache
-                    int itemId = 0;
-                    PopupMenu popup = new PopupMenu(context, v);
-
-                    popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
-
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            Toast.makeText(context, "You Clicked : " + item.getTitle() + ", have a cookie!", Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-                    });
-
-                    popup.show();
-
-                    break;
-
-                case R.id.mytitle:
-                    //the code here creates a new intent for the Movie View activity and adds to it
-                    //the selected movie's Movie Db id as an extra
-                    break;
-            }
-        }
-    };
 }
