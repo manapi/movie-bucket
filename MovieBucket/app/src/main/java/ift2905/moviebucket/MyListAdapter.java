@@ -3,12 +3,15 @@ package ift2905.moviebucket;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 
@@ -31,74 +34,15 @@ import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 
 public class MyListAdapter extends CursorAdapter {
 
-    View.OnClickListener onClickManager;
     Cursor c;
+    Context context;
+
     //TODO: see if the "to" parameter is  really necessary.
     public MyListAdapter(String to, Context context, Cursor c) {
         super(context, c, 0);
         this.c = c;
+        this.context = context;
     }
-/*
-    @Override
-    public int getCount() {
-        return c.getCount();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-*/
-   /* @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        if (convertView == null) {
-            //TODO: add in stuff for myHistory (both here and in xml layout)
-
-
-            //Inflating all the buttons
-            convertView = li.inflate(mylist_row_item_view, parent, false);
-
-            ImageButton starStatus;
-
-            //checking if the movie is "starred" and adjusting the button used
-            if (list[position].substring(0, 1).equals("0")) {
-
-                starStatus = (ImageButton) convertView.findViewById(R.id.notstarred);
-            } else starStatus = (ImageButton) convertView.findViewById(R.id.starred);
-
-            //Making the button visible. Can't use setImageDrawable because it requires API 21+
-            LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
-            paramsStar.weight = 1.0f;
-            starStatus.setLayoutParams(paramsStar);
-
-            TextView myTitleText = (TextView) convertView.findViewById(R.id.mytitle);
-
-            //Trimming the movie's title if it exceeds 20 characters. Result is a bit wonky if
-            //title has less than 3-5 caps in it TODO: polish this nonsense
-            if (list[position].length() >= 20) {
-
-                String newText = list[position].substring(1, 16) + "...";
-                myTitleText.setText(newText);
-            } else myTitleText.setText(list[position].substring(1));
-
-            myTitleText.setOnClickListener(onClickManager);
-
-            ImageButton more = (ImageButton) convertView.findViewById(R.id.more);
-
-            more.setOnClickListener(onClickManager);
-
-        }
-
-        return convertView;
-    }*/
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
@@ -131,8 +75,7 @@ public class MyListAdapter extends CursorAdapter {
 
         //"More" Section
         ImageButton more = (ImageButton) view.findViewById(R.id.more);
-        //TODO: Replug the listener, if needed.
-        more.setOnClickListener(onClickManager);
+        more.setOnClickListener(myListener);
     }
 
     public static String processTitle(String title) {
@@ -143,4 +86,51 @@ public class MyListAdapter extends CursorAdapter {
             return title;
         }
     }
+
+    public View.OnClickListener myListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            int viewId = v.getId();
+
+
+            switch (viewId) {
+
+                case R.id.starred:
+                    //the code here would obtain the position of the item and update its star status
+                    //in the Db
+                    break;
+
+                case R.id.notstarred:
+                    //same as previous one
+                    break;
+
+                case R.id.more:
+                    //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
+                    //The code here generates the popup menu with the "delete","viewed" and
+                    //"calendar" options. This'll be quite the headache
+                    int itemId = 0;
+                    PopupMenu popup = new PopupMenu(context, v);
+
+                    popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
+
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            Toast.makeText(context, "You Clicked : " + item.getTitle() + ", have a cookie!", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+
+                    break;
+
+                case R.id.mytitle:
+                    //the code here creates a new intent for the Movie View activity and adds to it
+                    //the selected movie's Movie Db id as an extra
+                    break;
+            }
+        }
+    };
 }

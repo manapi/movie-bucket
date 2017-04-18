@@ -135,11 +135,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
-
                 Cursor cursor = dbh.movieLister("Bucket");
                 myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
-                //TODO: find the proper moment to close the cursors.
-                //cursor.close();
             }
             fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
             setTitle(R.string.title_fragment_my_bucket);
@@ -149,8 +146,6 @@ public class MainActivity extends AppCompatActivity
                 myHistoryFragment = new ListFragment();
                 Cursor cursor = dbh.movieLister("History");
                 myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
-                //TODO: find the proper moment to close the cursors.
-                //cursor.close();
             }
             fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);
@@ -194,55 +189,5 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStop() {
         super.onStop();
-
     }
-
-    //TODO: implement the onClick method of this onClickListener
-    public View.OnClickListener basedGodRockLobster = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-            int viewId = v.getId();
-
-
-
-            switch(viewId){
-
-                case R.id.starred :
-                    //the code here would obtain the position of the item and update its star status
-                    //in the Db
-                    break;
-
-                case R.id.notstarred :
-                    //same as previous one
-                    break;
-
-                case R.id.more :
-                    //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
-                    //The code here generates the popup menu with the "delete","viewed" and
-                    //"calendar" options. This'll be quite the headache
-
-                    PopupMenu popup = new PopupMenu(MainActivity.this, v);
-
-                    popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
-
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            Toast.makeText(MainActivity.this,"You Clicked : " + item.getTitle() + ", have a cookie!",Toast.LENGTH_SHORT).show();
-                            return true;
-                        }
-                    });
-		     
-		            popup.show();
-			
-                    break;
-
-                case R.id.mytitle:
-                    //the code here creates a new intent for the Movie View activity and adds to it
-                    //the selected movie's Movie Db id as an extra
-                    break;
-            }
-        }
-    };
 }
