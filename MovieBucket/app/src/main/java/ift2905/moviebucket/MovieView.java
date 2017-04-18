@@ -62,6 +62,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         setContentView(R.layout.activity_movie_view);
 
         try {
+            dbh = new DBHandler(this);
             id = (int) getIntent().getExtras().getLong("movie");
             MovieFetcher mf = new MovieFetcher(id);
             mf.execute();
@@ -70,21 +71,25 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             //id = (int) getIntent().getExtras().getLong("tv");
         }
 
-
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
         bucketButton.setOnClickListener(this);
-        // TODO: Disable button if movie already in MyBucket (+change text to "In My Bucket" or something similar)
-        // TODO: Disable button if movie already in MyHistory???
 
         historyButton = (Button)findViewById(R.id.buttonAddH);
         historyButton.setOnClickListener(this);
-        // TODO: Disable button if movie already in MyHistory (+change text to "Viewed" or something similar)
 
         calendarButton = (ImageButton)findViewById(R.id.toCalendar);
         calendarButton.setOnClickListener(this);
 
-        dbh = new DBHandler(this);
-
+        int whichList = dbh.inWhichList(id);
+        if(whichList == 1){
+            bucketButton.setEnabled(false);
+            bucketButton.setText("In My Bucket");
+        } else if(whichList == 2) {
+            bucketButton.setEnabled(false);
+            bucketButton.setText("In My History");
+            historyButton.setEnabled(false);
+            historyButton.setText("Added");
+        }
 
         // TODO: Display suggestions
 
@@ -95,8 +100,10 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.buttonAddMb:
                 dbh.addToDB(id, mTitle, 0);
+
                 break;
             case R.id.buttonAddH:
+                //TODO: if it is already is in mybucket: update it. if not, add.
                 dbh.addToDB(id, mTitle, 1);
                 break;
             case R.id.toCalendar:

@@ -42,6 +42,7 @@ public class MyListAdapter extends CursorAdapter {
         super(context, c, 0);
         this.c = c;
         this.context = context;
+        this.notifyDataSetChanged();
     }
 
     @Override

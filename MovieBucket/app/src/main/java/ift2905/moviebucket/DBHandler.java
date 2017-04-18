@@ -74,4 +74,23 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor;
     };
 
+    public int inWhichList(int id){
+        String[] columns = {KEY_ID, KEY_VIEWED};
+        String criteria = KEY_ID + " = ?";
+        String[] criteriaArgs = {Integer.toString(id)};
+        Cursor cursor = db.query(TABLE_HEAD, columns, criteria, criteriaArgs , null, null, null);
+
+        if(cursor.getCount() != 0){
+            cursor.moveToNext();
+            int viewed = cursor.getInt(cursor.getColumnIndexOrThrow("viewed"));
+            cursor.close();
+            if( viewed == 0) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+        cursor.close();
+        return 0;
+    }
 }

@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity
             setTitle(R.string.title_fragment_discover);
 
         } else if (id == R.id.nav_mybucket) {
+            //TODO: Update the list on every press.
             if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
                 Cursor cursor = dbh.movieLister("Bucket");
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity
             setTitle(R.string.title_fragment_my_bucket);
 
         } else if (id == R.id.nav_myhistory) {
+            //TODO: Update the list on every press.
             if (myHistoryFragment == null) {
                 myHistoryFragment = new ListFragment();
                 Cursor cursor = dbh.movieLister("History");
