@@ -24,7 +24,8 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ListFragment searchFragment, discoverFragment, myBucketFragment, myHistoryFragment;
+    private RecyclerViewFragment discoverFragment;
+    private ListFragment searchFragment, myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
     private SearchView searchView;
     private DBHandler dbh;
@@ -47,10 +48,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Displaying suggestions on startup : currently, popular movies (other options possible, what do we want?)
-        discoverFragment = new ListFragment();
-        FetchSuggestions fetcher = new FetchSuggestions(discoverFragment, MainActivity.this, API_KEY);
-        fetcher.execute();
+        // Displaying suggestions on startup : currently, popular movies
+        discoverFragment = new RecyclerViewFragment();
 
         //Initialize discover fragment by default
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
