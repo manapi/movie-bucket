@@ -23,8 +23,6 @@ import info.movito.themoviedbapi.model.tv.TvSeries;
  * Adapter for search results
  * Created by Amélie on 2017-04-09.
  */
-
-//
 public class SearchAdapter extends BaseAdapter {
 
     final String BASE_URL = "http://image.tmdb.org/t/p/";
@@ -82,27 +80,23 @@ public class SearchAdapter extends BaseAdapter {
         String name = null;
         String year = null;
         String url = null;
-        int id;
 
         if(results.get(position).getMediaType().equals(Multi.MediaType.MOVIE)) {
             MovieDb movie = (MovieDb) results.get(position);
             name = movie.getTitle();
             year = movie.getReleaseDate();
             url = BASE_URL + SIZE_SMALL + movie.getPosterPath();
-            id = movie.getId();
         }
         else if (results.get(position).getMediaType().equals(Multi.MediaType.TV_SERIES)){
             TvSeries tv = (TvSeries) results.get(position);
             name = tv.getName();
             year = tv.getFirstAirDate();
             url = BASE_URL + SIZE_SMALL + tv.getPosterPath();
-            id = tv.getId();
         }
         else if (results.get(position).getMediaType().equals(Multi.MediaType.PERSON)){
             Person person = (Person) results.get(position);
             name = person.getName();
             url = BASE_URL + SIZE_SMALL + person.getProfilePath();
-            id = person.getId();
         }
 
         if(year != null && year.length() >= 4) {

@@ -18,7 +18,6 @@ import info.movito.themoviedbapi.model.MovieDb;
 /**
  * Created by Amélie on 2017-04-20.
  */
-
 public class PosterCardAdapter extends RecyclerView.Adapter<PosterCardAdapter.CustomViewHolder> {
     private List<MovieDb> list;
     private Context mContext;
@@ -37,17 +36,26 @@ public class PosterCardAdapter extends RecyclerView.Adapter<PosterCardAdapter.Cu
 
     @Override
     public void onBindViewHolder(CustomViewHolder customViewHolder, int i) {
-        MovieDb movie = list.get(i);
+        final MovieDb movie = list.get(i);
 
         //Render image using Picasso library
         Picasso.with(mContext).load("http://image.tmdb.org/t/p/w300" + movie.getPosterPath())
-                    .error(R.drawable.placeholder)
-                    .placeholder(R.drawable.placeholder)
+                    //.error(R.drawable.placeholder)
+                    //.placeholder(R.drawable.placeholder)
                     .into(customViewHolder.imageView);
 
 
         //Setting text view title
         customViewHolder.textView.setText(Html.fromHtml(movie.getTitle()));
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(movie);
+            }
+        };
+        customViewHolder.imageView.setOnClickListener(listener);
+        customViewHolder.textView.setOnClickListener(listener);
     }
 
     @Override
@@ -64,5 +72,15 @@ public class PosterCardAdapter extends RecyclerView.Adapter<PosterCardAdapter.Cu
             this.imageView = (ImageView) view.findViewById(R.id.thumbnail);
             this.textView = (TextView) view.findViewById(R.id.title);
         }
+    }
+
+    private OnItemClickListener onItemClickListener;
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(MovieDb movieDb);
     }
 }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="75dp"
     android:weightSum="1"
     android:paddingTop="5dp"
     android:paddingBottom="5dp">
@@ -10,9 +10,10 @@
     <ImageView
         android:id="@+id/image"
         android:cropToPadding="false"
-        android:layout_width="45dp"
-        android:layout_height="67dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="10dp"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -22,9 +23,12 @@
 
         <TextView
             android:text="Title"
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/title"
+            android:maxLines="1"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit ="marquee_forever"
             android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
         <TextView

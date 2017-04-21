@@ -17,6 +17,7 @@ package ift2905.moviebucket;
 */
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -26,7 +27,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
 
 import java.util.List;
 
@@ -42,7 +42,6 @@ public class RecyclerViewFragment extends Fragment {
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
-    private static final int DATASET_COUNT = 60;
 
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
@@ -55,20 +54,17 @@ public class RecyclerViewFragment extends Fragment {
 
     protected LayoutManagerType mCurrentLayoutManagerType;
 
-    protected RadioButton mLinearLayoutRadioButton;
-    protected RadioButton mGridLayoutRadioButton;
-
     protected RecyclerView mRecyclerView;
     protected PosterCardAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
+        // Initialize dataset
+        FetchSuggestions fetcher = new FetchSuggestions();
+        fetcher.execute();
     }
 
     @Override
@@ -79,12 +75,8 @@ public class RecyclerViewFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-        // elements are laid out.
-        mLayoutManager = new LinearLayoutManager(getActivity());
-
-        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+        mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
+        mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
 
         if (savedInstanceState != null) {
             // Restore saved layout manager type.
@@ -92,25 +84,6 @@ public class RecyclerViewFragment extends Fragment {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-        FetchSuggestions fetcher = new FetchSuggestions();
-        fetcher.execute();
-
-       /* mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
-        mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER);
-            }
-        });
-
-        //mGridLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.grid_layout_rb);
-        mGridLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setRecyclerViewLayoutManager(LayoutManagerType.GRID_LAYOUT_MANAGER);
-            }
-        });*/
 
         return rootView;
     }
@@ -169,10 +142,19 @@ public class RecyclerViewFragment extends Fragment {
         @Override
         protected void onPostExecute(List<MovieDb> suggestions) {
 
-            // TODO : replace with cards layout
+            // Set adapter for RecyclerView.
             mAdapter = new PosterCardAdapter(getContext(), suggestions);
-            // Set CustomAdapter as the adapter for RecyclerView.
             mRecyclerView.setAdapter(mAdapter);
+
+            mAdapter.setOnItemClickListener(new PosterCardAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(MovieDb movie) {
+                    Context context = getActivity();
+                    Intent intent = new Intent(context, MovieView.class);
+                    intent.putExtra("movie", ((long)movie.getId()));
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }
