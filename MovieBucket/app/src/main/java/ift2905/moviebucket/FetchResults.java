@@ -49,6 +49,6 @@ public class FetchResults extends AsyncTask<String, Object,  List<Multi>> {
     @Override
     protected void onPostExecute(List<Multi> results) {
 
-        fragment.setListAdapter(new SearchAdapter(results, context));
+        //fragment.setListAdapter(new SearchPagerAdapter(results, context));
     }
 }

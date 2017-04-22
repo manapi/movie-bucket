@@ -23,7 +23,7 @@ import info.movito.themoviedbapi.model.tv.TvSeries;
  * Adapter for search results
  * Created by Amélie on 2017-04-09.
  */
-public class SearchAdapter extends BaseAdapter {
+public class ResultsListAdapter extends BaseAdapter {
 
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_SMALL = "w154";
@@ -31,7 +31,7 @@ public class SearchAdapter extends BaseAdapter {
     List<Multi> results;
     public Context context;
 
-    public SearchAdapter(List<Multi> results, Context context) {
+    public ResultsListAdapter(List<Multi> results, Context context) {
         super();
         this.results = new ArrayList<>();
         this.results.addAll(results);
@@ -128,5 +128,9 @@ public class SearchAdapter extends BaseAdapter {
             }
         });
         return convertView;
+    }
+
+    public List<Multi> getData() {
+        return results;
     }
 }

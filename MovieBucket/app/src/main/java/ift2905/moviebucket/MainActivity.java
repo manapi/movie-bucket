@@ -1,32 +1,31 @@
 package ift2905.moviebucket;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerViewFragment discoverFragment;
-    private ListFragment searchFragment, myBucketFragment, myHistoryFragment;
+    private SearchPagerFragment searchPagerFragment;
+    private ListFragment myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
     private SearchView searchView;
     private DBHandler dbh;
@@ -53,8 +52,7 @@ public class MainActivity extends AppCompatActivity
         discoverFragment = new RecyclerViewFragment();
 
         //Initialize discover fragment by default
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.fragment_container, discoverFragment).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
         setTitle(R.string.title_fragment_discover);
     }
 
@@ -85,6 +83,15 @@ public class MainActivity extends AppCompatActivity
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
             searchView.setIconifiedByDefault(false);
+            searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus == true){
+                        searchPagerFragment = new SearchPagerFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchPagerFragment).addToBackStack(null).commit();
+                    }
+                }
+            });
         }
         return super.onCreateOptionsMenu(menu);
 
@@ -115,11 +122,7 @@ public class MainActivity extends AppCompatActivity
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            searchFragment = new ListFragment();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).addToBackStack(null).commit();
-
-            FetchResults searchFetcher = new FetchResults(query, searchFragment, MainActivity.this, API_KEY);
-            searchFetcher.execute();
+            searchPagerFragment.search(query);
         }
     }
 
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
         if (id == R.id.nav_discover) {
-            fragmentTransaction.replace(R.id.fragment_container, discoverFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
             setTitle(R.string.title_fragment_discover);
 
         } else if (id == R.id.nav_mybucket) {
@@ -141,7 +144,8 @@ public class MainActivity extends AppCompatActivity
                 Cursor cursor = dbh.movieLister("Bucket");
                 myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
             }
-            fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
+            //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_my_bucket);
 
         } else if (id == R.id.nav_myhistory) {
@@ -151,14 +155,14 @@ public class MainActivity extends AppCompatActivity
                 Cursor cursor = dbh.movieLister("History");
                 myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
             }
-            fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myHistoryFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_my_history);
 
         } else if (id == R.id.nav_about) {
             if (aboutFragment == null) {
                 aboutFragment = new Fragment();
             }
-            fragmentTransaction.replace(R.id.fragment_container, aboutFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, aboutFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_about);
         }
 

@@ -15,12 +15,13 @@ package ift2905.moviebucket;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-import android.app.Fragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
