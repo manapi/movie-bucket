@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,14 +60,14 @@ public class MyListAdapter extends CursorAdapter {
         myTitleText.setText(processTitle(title));
 
         //Star section
-        ImageButton starStatus;
+        BadassImageButton starStatus;
 
 
         int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
         if(fav == 0) {
-            starStatus = (ImageButton) view.findViewById(R.id.notstarred);
+            starStatus = (BadassImageButton) view.findViewById(R.id.notstarred);
         } else {
-            starStatus = (ImageButton) view.findViewById(R.id.starred);
+            starStatus = (BadassImageButton) view.findViewById(R.id.starred);
         }
 
         LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
@@ -76,7 +75,9 @@ public class MyListAdapter extends CursorAdapter {
         starStatus.setLayoutParams(paramsStar);
 
         //"More" Section
-        ImageButton more = (ImageButton) view.findViewById(R.id.more);
+        BadassImageButton more = (BadassImageButton) view.findViewById(R.id.more);
+
+        //more.setMovieId();
 
         more.setOnClickListener(new View.OnClickListener() {
 
@@ -95,7 +96,9 @@ public class MyListAdapter extends CursorAdapter {
                     case R.id.more:
                         //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
                         //int test = (int)v.getTag();
-                        PopupMenu popup = new PopupMenu(context, v);
+                        BadassImageButton moreButton = (BadassImageButton) v;
+
+                        GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId());
 
                         popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
 
