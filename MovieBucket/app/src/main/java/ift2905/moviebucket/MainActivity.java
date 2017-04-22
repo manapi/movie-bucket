@@ -18,6 +18,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity
@@ -90,6 +91,9 @@ public class MainActivity extends AppCompatActivity
                         searchPagerFragment = new SearchPagerFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchPagerFragment).addToBackStack(null).commit();
                     }
+                    else {
+                        getSupportFragmentManager().beginTransaction().remove(searchPagerFragment).commit();
+                    }
                 }
             });
         }
@@ -131,7 +135,12 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        //Expand / collapse search when switching fragments
+        if(searchView != null && id == R.id.nav_discover) {
+            searchView.setIconifiedByDefault(false);
+        } else {
+            searchView.setIconifiedByDefault(true);
+        }
 
         if (id == R.id.nav_discover) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
@@ -145,7 +154,6 @@ public class MainActivity extends AppCompatActivity
                 myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
-            //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_my_bucket);
 
         } else if (id == R.id.nav_myhistory) {
@@ -164,13 +172,6 @@ public class MainActivity extends AppCompatActivity
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, aboutFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_about);
-        }
-
-        //Expand / collapse search when switching fragments
-        if(searchView != null && id == R.id.nav_discover) {
-            searchView.setIconifiedByDefault(false);
-        } else {
-            searchView.setIconifiedByDefault(true);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
