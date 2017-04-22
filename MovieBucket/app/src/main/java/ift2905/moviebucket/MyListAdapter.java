@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.PopupMenu;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,8 +77,8 @@ public class MyListAdapter extends CursorAdapter {
 
         //"More" Section
         BadassImageButton more = (BadassImageButton) view.findViewById(R.id.more);
-
-        //more.setMovieId();
+        long entryId = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+        more.setMovieId(entryId);
 
         more.setOnClickListener(new View.OnClickListener() {
 
@@ -95,18 +96,32 @@ public class MyListAdapter extends CursorAdapter {
 
                     case R.id.more:
                         //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
-                        //int test = (int)v.getTag();
+
                         BadassImageButton moreButton = (BadassImageButton) v;
 
                         GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId());
-
+                        final long popupId = popup.getMovieId();
                         popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
 
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                             public boolean onMenuItemClick(MenuItem item) {
-                                //item.getTitle()
-                                Toast.makeText(context, "You Clicked : " + ", have a cookie!", Toast.LENGTH_SHORT).show();
+                                switch(item.getItemId()) {
+                                    case R.id.markAsViewed:
+                                        //TODO: update the Viewed column of this row to 1, then update the list.
+                                        break;
+                                    case R.id.schedule:
+                                        //TODO: plug Adele's snippet for Calendar here
+                                        break;
+                                    case R.id.delete:
+                                        //TODO: Delete the row whose id is popupId
+                                        break;
+                                    case R.id.details:
+                                        //TODO: plug Amelie's snippet that gets us in MovieView.
+                                        break;
+                                }
+
+                                Toast.makeText(context, "You Clicked : " + popupId +", have a cookie!", Toast.LENGTH_SHORT).show();
                                 return true;
                             }
                         });
