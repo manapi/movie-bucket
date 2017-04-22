@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(MainActivity.this, Settings.class);
+            startActivity(intent);
             return true;
         }
         // TODO: replace with advanced search button
@@ -150,11 +153,6 @@ public class MainActivity extends AppCompatActivity
             }
             fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);
-
-            //TODO: remove settings from drawer and put in overflow??
-        } else if (id == R.id.nav_settings) {
-            Intent intent = new Intent(MainActivity.this, Settings.class);
-            startActivity(intent);
 
         } else if (id == R.id.nav_about) {
             if (aboutFragment == null) {
