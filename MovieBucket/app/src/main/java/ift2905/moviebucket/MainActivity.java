@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
 
             searchFragment = new ListFragment();
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).addToBackStack(null).commit();
 
             FetchResults searchFetcher = new FetchResults(query, searchFragment, MainActivity.this, API_KEY);
             searchFetcher.execute();
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity
                 Cursor cursor = dbh.movieLister("Bucket");
                 myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
             }
-            fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
+            fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_my_bucket);
 
         } else if (id == R.id.nav_myhistory) {
@@ -151,14 +151,14 @@ public class MainActivity extends AppCompatActivity
                 Cursor cursor = dbh.movieLister("History");
                 myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
             }
-            fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).commit();
+            fragmentTransaction.replace(R.id.fragment_container, myHistoryFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_my_history);
 
         } else if (id == R.id.nav_about) {
             if (aboutFragment == null) {
                 aboutFragment = new Fragment();
             }
-            fragmentTransaction.replace(R.id.fragment_container, aboutFragment).commit();
+            fragmentTransaction.replace(R.id.fragment_container, aboutFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_about);
         }
 

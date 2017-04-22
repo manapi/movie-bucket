@@ -57,6 +57,7 @@ public class RecyclerViewFragment extends Fragment {
     protected RecyclerView mRecyclerView;
     protected PosterCardAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
+    protected List<MovieDb> list;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,19 +143,31 @@ public class RecyclerViewFragment extends Fragment {
         @Override
         protected void onPostExecute(List<MovieDb> suggestions) {
 
-            // Set adapter for RecyclerView.
-            mAdapter = new PosterCardAdapter(getContext(), suggestions);
-            mRecyclerView.setAdapter(mAdapter);
+            list = suggestions;
+            settingAdapter();
+        }
+    }
 
-            mAdapter.setOnItemClickListener(new PosterCardAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(MovieDb movie) {
-                    Context context = getActivity();
-                    Intent intent = new Intent(context, MovieView.class);
-                    intent.putExtra("movie", ((long)movie.getId()));
-                    context.startActivity(intent);
-                }
-            });
+    private void settingAdapter() {
+        mAdapter = new PosterCardAdapter(getActivity(), list);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new PosterCardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MovieDb movie) {
+                Context context = getActivity();
+                Intent intent = new Intent(context, MovieView.class);
+                intent.putExtra("movie", ((long)movie.getId()));
+                context.startActivity(intent);
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mAdapter != null) {
+            mRecyclerView.setAdapter(mAdapter);
         }
     }
 }
