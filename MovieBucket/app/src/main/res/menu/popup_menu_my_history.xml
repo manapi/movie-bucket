@@ -4,14 +4,15 @@
 
     <item
         android:id="@+id/schedule"
-        app:srcCompat="@drawable/ic_date_range_black_24dp"
-        android:title="Schedule it!"
-        />
+        android:title="Add to calendar"
+        app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
     <item
+        android:id="@+id/details"
+        android:title="Movie details" />
+    <item
         android:id="@+id/delete"
-        app:srcCompat="@drawable/ic_close_black_24dp"
-        android:title="Delete it!"
-        />
+        android:title="Remove from list"
+        app:srcCompat="@drawable/ic_close_black_24dp" />
 
 </menu>
