@@ -34,6 +34,7 @@ import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.ProductionCompany;
 import info.movito.themoviedbapi.model.ProductionCountry;
+import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCast;
 import info.movito.themoviedbapi.model.people.PersonCrew;
 import info.movito.themoviedbapi.model.tv.TvSeries;
@@ -470,11 +471,20 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 titleView.setText(DEF);
             }
 
-/*
+
             // Year
             TextView yearView = (TextView) findViewById(R.id.movieYear);
+            TextView yearTitle = (TextView) findViewById(R.id.yearTitle);
+            yearTitle.setText("Year(s)");
             try {
-                yearView.setText(movie.getReleaseDate().substring(0,4));
+                String beg = tvSeries.getFirstAirDate().substring(0,4);
+                if (tvSeries.getStatus().contains("Ended")) {
+                    String end = tvSeries.getLastAirDate().substring(0,4);
+                    yearView.setText(beg + " - " + end);
+                } else {
+                    yearView.setText("Since " + beg);
+                }
+
             } catch (Exception e) {
                 yearView.setText(DEF);
             }
@@ -483,7 +493,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             // Genres
             TextView genresView = (TextView) findViewById(R.id.movieGenres);
             try {
-                List<Genre> listGenres = movie.getGenres();
+                List<Genre> listGenres = tvSeries.getGenres();
                 ListIterator<Genre> genreListIterator = listGenres.listIterator();
                 String genres = "";
                 while(genreListIterator.hasNext()){
@@ -503,10 +513,10 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             //Rating
             TextView ratingView = (TextView) findViewById(R.id.movieRating);
             try {
-                if (movie.getVoteCount() == 0){
+                if (tvSeries.getVoteCount() == 0){
                     ratingView.setText("Not rated yet");
                 } else {
-                    float rating = movie.getVoteAverage();
+                    float rating = tvSeries.getVoteAverage();
                     ratingView.setText(rating + "/10");
                 }
             } catch (Exception e){
@@ -514,11 +524,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 ratingView.setText(DEF);
             }
 
-
+/*
             // Run time
             TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
             try {
-                long runTime = movie.getRuntime();
+                int runTime = tvSeries.getEpisodeRuntime();
                 if (runTime == 0){
                     runtimeView.setText(DEF);
                 } else {
@@ -532,13 +542,13 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 }
             } catch (Exception e){
                 runtimeView.setText(DEF);
-            }
+            }*/
 
 
             // Overview
             TextView overviewView = (TextView) findViewById(R.id.movieOverview);
             try{
-                String overview = movie.getOverview();
+                String overview = tvSeries.getOverview();
                 if (overview.isEmpty()){
                     overviewView.setText(DEF);
                 } else {
@@ -548,67 +558,40 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 overviewView.setText(DEF);
             }
 
-            // Director and writer
-            TextView directorView = (TextView) findViewById(R.id.movieDirector);
-            TextView directorTitleView = (TextView) findViewById(R.id.directorTitle);
-            TextView writerView = (TextView) findViewById(R.id.movieWriter);
-            TextView writerTitleView = (TextView) findViewById(R.id.writerTitle);
+
+
+            // Creator
+            TextView creatorView = (TextView) findViewById(R.id.movieDirector);
+            TextView creatorTitleView = (TextView) findViewById(R.id.directorTitle);
+            creatorTitleView.setText("Creator");
+            findViewById(R.id.movieWriter).setVisibility(View.GONE);
+            findViewById(R.id.writerTitle).setVisibility(View.GONE);
 
             try{
-                List<PersonCrew> listCrew = movie.getCrew();
-                ListIterator<PersonCrew> crewListIterator = listCrew.listIterator();
-                String director = "";
-                String writer = "";
-                String novel = "";
+                List<Person> listCreator = tvSeries.getCreatedBy();
+                ListIterator<Person> creatorListIterator = listCreator.listIterator();
+                String creator = "";
+                int count = 0;
 
-                while(crewListIterator.hasNext()){
-                    PersonCrew pc = crewListIterator.next();
-                    String job = pc.getJob();
+                while(creatorListIterator.hasNext()){
+                    Person person = creatorListIterator.next();
+                    count++;
 
-                    //Director
-                    if (job.equals("Director")){
-                        if (director.isEmpty()){
-                            director = pc.getName();
-                        } else {
-                            director = director + ", " + pc.getName();
-                            directorTitleView.setText("Directors");
-                        }
-                    }
-
-                    // Writer
-                    if (job.equals("Writer")|| job.equals("Screenplay") || job.equals("Story")){
-                        String name = pc.getName();
-                        if (writer.isEmpty()){
-                            writer = name;
-                        } else {
-                            if (!writer.contains(name)){
-                                writer = writer + ", " + pc.getName();
-                                writerTitleView.setText("Writers");
-                            }
-                        }
-                    }
-                    if (job.equals("Novel")){
-                        novel = " (based on novel by "+pc.getName()+")";
+                    if (creator.isEmpty()){
+                     creator = person.getName();
+                    } else {
+                        creator = creator + ", " + person.getName();
                     }
                 }
 
-                writer = writer + novel;
-                if (director.isEmpty()){
-                    directorView.setText(DEF);
-                } else {
-                    directorView.setText(director);
-                }
-
-                if (writer.isEmpty()){
-                    writerView.setText(DEF);
-                } else {
-                    writerView.setText(writer);
+                creatorView.setText(creator);
+                if (count>1){
+                    creatorTitleView.setText("Creators");
                 }
 
             } catch (Exception e){
                 e.printStackTrace();
-                directorView.setText(DEF);
-                writerView.setText(DEF);
+                creatorView.setText(DEF);
 
             }
 
@@ -622,7 +605,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             try {
                 // TODO: Display rest of the cast
-                List<PersonCast> listCast = movie.getCast();
+                List<PersonCast> listCast = tvSeries.getCredits().getCast();
                 ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
                 boolean row1 = false;
@@ -679,10 +662,10 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 mainChar3.setVisibility(View.GONE);
             }
 
-            // Production
+         /*   // Production
             TextView prodView = (TextView) findViewById(R.id.movieProduction);
             try {
-                List<ProductionCompany> listCompany = movie.getProductionCompanies();
+                List<ProductionCompany> listCompany = tvSeries.getp;
                 ListIterator<ProductionCompany> prodCompanyListIterator = listCompany.listIterator();
                 String prod = "";
                 while(prodCompanyListIterator.hasNext()){
@@ -701,7 +684,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             } catch (Exception e){
                 prodView.setText(DEF);
             }
-
+/*
             // Country
             TextView countryView = (TextView) findViewById(R.id.movieCountry);
             TextView countryTitleView = (TextView) findViewById(R.id.countryTitle);
@@ -726,17 +709,17 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             } catch (Exception e){
                 countryView.setText(DEF);
             }
-
+*/
 
             // Poster
             ImageView image = (ImageView) findViewById(R.id.moviePoster);
             try {
                 Picasso.with(getApplicationContext())
-                        .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
+                        .load(BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath())
                         .into(image);
             } catch (Exception e){
                 // TODO : Find a default image
-            }*/
+            }
 
 
         };
