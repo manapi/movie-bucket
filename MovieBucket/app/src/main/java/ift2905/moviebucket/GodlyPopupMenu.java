@@ -20,4 +20,13 @@ public class GodlyPopupMenu extends PopupMenu {
         this.movieId = movieId;
 
     }
+    
+    public void setMovieId(long id){
+        this.movieId = id;
+    }
+    
+    public long getMovieId(){
+        return this.movieId;
+    }
+    
 }
