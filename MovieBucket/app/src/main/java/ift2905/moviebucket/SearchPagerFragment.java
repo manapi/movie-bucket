@@ -11,14 +11,15 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
-import info.movito.themoviedbapi.model.Multi;
+import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.people.Person;
+import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
  * Pager in fragment for search
@@ -27,25 +28,25 @@ import info.movito.themoviedbapi.model.Multi;
 
 public class SearchPagerFragment extends Fragment {
 
-    private final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+    private int NUM_ITEMS = 4;
 
-    protected SearchPagerAdapter adapterViewPager;
+    //TODO : get from bundle
+    private final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+    private final String LANG = "en";
+    private final Boolean ADULT = false; //include adult movies in search results
+
     protected String query;
-    //protected ListFragment moviesRes, tvRes, peopleRes, genresRes;
     protected ListFragment list;
-    protected ViewPager pager;
-    protected List<Multi> res;
-    protected MyAdapter adapter;
-    protected ResultsListAdapter a;
+
+    protected ListFragment[] listArray;
+
+    protected MovieResultsAdapter movieAdapter;
+    protected SeriesResultsAdapter seriesAdapter;
+    protected PeopleResultsAdapter peopleAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*Bundle args = getArguments();
-        query = (String) args.get("query");
-
-        SearchPagerFragment.FetchResults fetcher = new SearchPagerFragment.FetchResults();
-        fetcher.execute();*/
     }
 
     @Override
@@ -55,11 +56,24 @@ public class SearchPagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pager_frag, container, false);
 
         TabLayout tabs = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        pager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewPager);
 
-        //adapterViewPager = new SearchPagerAdapter(getChildFragmentManager());
-        adapter = new MyAdapter((getChildFragmentManager()));
-        pager.setAdapter(adapter);
+        listArray = new ListFragment[NUM_ITEMS];
+        listArray[0] = new ListFragment();
+        listArray[1] = new ListFragment();
+        listArray[2] = new ListFragment();
+        listArray[3] = new ListFragment();
+
+        movieAdapter = new MovieResultsAdapter(new ArrayList<MovieDb>(), getContext());
+        listArray[0].setListAdapter(movieAdapter);
+
+        seriesAdapter = new SeriesResultsAdapter(new ArrayList<TvSeries>(), getContext());
+        listArray[1].setListAdapter(seriesAdapter);
+
+        peopleAdapter = new PeopleResultsAdapter(new ArrayList<Person>(), getContext());
+        listArray[2].setListAdapter(peopleAdapter);
+
+        pager.setAdapter(new MyAdapter((getChildFragmentManager())));
 
         //pager.setAdapter(adapterViewPager);
         /*vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -98,26 +112,28 @@ public class SearchPagerFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
 
-            list = new ListFragment();
-
-            /*if(res != null) {
-                list.setListAdapter(new ResultsListAdapter(res, getContext()));
-            }
-            else {
-                list.setListAdapter(new ResultsListAdapter(new ArrayList<Multi>(), getContext()));
+            /*switch(position) {
+                case 0 :
+                    movieAdapter = new MovieResultsAdapter(new ArrayList<MovieDb>(), getContext());
+                    listArray[position].setListAdapter(movieAdapter);
+                    break;
+                case 1 :
+                    seriesAdapter = new SeriesResultsAdapter(new ArrayList<TvSeries>(), getContext());
+                    listArray[position].setListAdapter(seriesAdapter);
+                    break;
+                case 2 :
+                    List<Person> data = peopleResults != null ? peopleResults : new ArrayList<Person>();
+                    peopleAdapter = new PeopleResultsAdapter(data, getContext());
+                    listArray[position].setListAdapter(peopleAdapter);
+                    break;
+                default :
             }*/
-            ResultsListAdapter adapt = new ResultsListAdapter(new ArrayList<Multi>(), getContext());
-            if(position == 0) {
-                res = adapt.getData();
-                a = adapt;
-            }
-            list.setListAdapter(adapt);
-            return list;
+            return listArray[position];
         }
 
         @Override
         public int getCount() {
-            return 4;
+            return NUM_ITEMS;
         }
 
         private String[] titles = new String[]{
@@ -134,43 +150,88 @@ public class SearchPagerFragment extends Fragment {
         }
     };
 
-    // TODO : add search options, get multiple pages...
+    public void search(String query) {
+        this.query = query;
+        new FetchMovies().execute();
+        new FetchSeries().execute();
+        new FetchPeople().execute();
+    }
+
     /**
-     * Fetch search results from api and set to list adapter
-     * Created by Amélie on 2017-04-09.
+     * Fetch movie results from API
      */
-
-    public class FetchResults extends AsyncTask<String, Object,  List<Multi>> {
-
-        final String LANG = "en";
-        final Boolean ADULT = false; //include adult movies in search results
-        android.app.ListFragment fragment;
+    // TODO : get multiple pages...!!
+    public class FetchMovies extends AsyncTask<String, Object,  List<MovieDb>> {
 
         @Override
-        protected List<Multi> doInBackground(String... params) {
+        protected List<MovieDb> doInBackground(String... params) {
 
-            //TODO: handle advanced search parameters
             TmdbApi api = new TmdbApi(API_KEY);
             TmdbSearch search = api.getSearch();
-            //List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
-            List<Multi> results = search.searchMulti(query, LANG, 1).getResults();
+            List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
 
             return results;
         }
 
         @Override
-        protected void onPostExecute(List<Multi> results) {
-            res.clear();
-            res.addAll(results);
-            a.notifyDataSetChanged();
-            //list.setListAdapter(new SearchAdapter(results, getContext()));
+        protected void onPostExecute(List<MovieDb> results) {
+            if(movieAdapter != null) {
+                movieAdapter.getData().clear();
+                movieAdapter.getData().addAll(results);
+                movieAdapter.notifyDataSetChanged();
+            }
         }
     }
 
-    public void search(String query) {
-        this.query = query;
-        FetchResults fetcher = new FetchResults();
-        fetcher.execute();
+    /**
+     * Fetch TV series results from API
+     */
+    // TODO : get multiple pages...!!
+    public class FetchSeries extends AsyncTask<String, Object,  List<TvSeries>> {
+
+        @Override
+        protected List<TvSeries> doInBackground(String... params) {
+
+            TmdbApi api = new TmdbApi(API_KEY);
+            TmdbSearch search = api.getSearch();
+            List<TvSeries> results = search.searchTv(query, LANG, 1).getResults();
+
+            return results;
+        }
+
+        @Override
+        protected void onPostExecute(List<TvSeries> results) {
+            if(seriesAdapter != null) {
+                seriesAdapter.getData().clear();
+                seriesAdapter.getData().addAll(results);
+                seriesAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
+    /**
+     * Fetch people results from API
+     */
+    // TODO : get multiple pages...!!
+    public class FetchPeople extends AsyncTask<String, Object,  List<Person>> {
+
+        @Override
+        protected List<Person> doInBackground(String... params) {
+
+            TmdbApi api = new TmdbApi(API_KEY);
+            TmdbSearch search = api.getSearch();
+            List<Person> results = search.searchPerson(query, ADULT, 1).getResults();
+
+            return results;
+        }
+
+        @Override
+        protected void onPostExecute(List<Person> results) {
+            if(peopleAdapter != null) {
+                peopleAdapter.getData().clear();
+                peopleAdapter.getData().addAll(results);
+                peopleAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 }

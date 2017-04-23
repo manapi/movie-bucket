@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchPagerFragment).addToBackStack(null).commit();
                     }
                     else {
-                        getSupportFragmentManager().beginTransaction().remove(searchPagerFragment).commit();
+                        getSupportFragmentManager().popBackStack();
                     }
                 }
             });
