@@ -1,7 +1,5 @@
 package ift2905.moviebucket;
 
-import android.app.FragmentTransaction;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +7,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,7 +15,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity
@@ -26,7 +22,7 @@ public class MainActivity extends AppCompatActivity
 
     private RecyclerViewFragment discoverFragment;
     private SearchPagerFragment searchPagerFragment;
-    private ListFragment myBucketFragment, myHistoryFragment;
+    private SpecialListFragment myBucketFragment, myHistoryFragment;
     private Fragment aboutFragment;
     private SearchView searchView;
     private DBHandler dbh;
@@ -149,7 +145,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mybucket) {
             //TODO: Update the list on every press.
             if (myBucketFragment == null) {
-                myBucketFragment = new ListFragment();
+                myBucketFragment = new SpecialListFragment();
                 Cursor cursor = dbh.movieLister("Bucket");
                 myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
             }
@@ -159,7 +155,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_myhistory) {
             //TODO: Update the list on every press.
             if (myHistoryFragment == null) {
-                myHistoryFragment = new ListFragment();
+                myHistoryFragment = new SpecialListFragment();
                 Cursor cursor = dbh.movieLister("History");
                 myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
             }
@@ -177,6 +173,14 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void updateDBHandler(){
+        this.dbh = new DBHandler(this);
+    }
+
+    public DBHandler getDBHandler(){
+        return this.dbh;
     }
 
     @Override

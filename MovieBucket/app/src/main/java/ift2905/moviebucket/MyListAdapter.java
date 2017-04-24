@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.PopupMenu;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,12 +34,14 @@ import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 public class MyListAdapter extends CursorAdapter {
 
     Cursor c;
+    String header;
     Context context;
 
     //TODO: see if the "to" parameter is  really necessary.
     public MyListAdapter(String to, Context context, Cursor c) {
         super(context, c, 0);
         this.c = c;
+        this.header = to;
         this.context = context;
         this.notifyDataSetChanged();
     }
@@ -148,4 +149,11 @@ public class MyListAdapter extends CursorAdapter {
             return title;
         }
     }
+
+    public void updateCursor(MainActivity activity){
+        activity.updateDBHandler();
+        Cursor cursor = activity.getDBHandler().movieLister(this.header);
+        this.changeCursor(cursor);
+    }
+
 }
