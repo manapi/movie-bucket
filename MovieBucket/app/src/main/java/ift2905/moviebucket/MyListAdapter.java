@@ -139,8 +139,8 @@ public class MyListAdapter extends CursorAdapter {
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
                                                 calDate.getTimeInMillis() + movie.getRuntime()*60*1000);
                                         calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
-                                        context.startActivity(calIntent);
-                                        break;*/
+                                        context.startActivity(calIntent);*/
+                                        break;
                                     case R.id.delete:
                                         dbh.removeFromDB(popupId);
                                         updateCursor();

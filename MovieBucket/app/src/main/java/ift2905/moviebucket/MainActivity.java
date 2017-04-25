@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         }
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
-            searchView.setIconifiedByDefault(false);
+            searchView.setIconifiedByDefault(true);
             searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -132,11 +132,11 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //Expand / collapse search when switching fragments
-        if(searchView != null && id == R.id.nav_discover) {
-            searchView.setIconifiedByDefault(false);
+        /*if(searchView != null && id == R.id.nav_discover) {
+            searchView.setIconifiedByDefault(true);
         } else {
             searchView.setIconifiedByDefault(true);
-        }
+        }*/
 
         if (id == R.id.nav_discover) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
