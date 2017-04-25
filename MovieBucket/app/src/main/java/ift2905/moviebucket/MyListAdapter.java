@@ -3,6 +3,7 @@ package ift2905.moviebucket;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.provider.CalendarContract;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.PopupMenu;
 import android.view.LayoutInflater;
@@ -12,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 
@@ -61,7 +65,7 @@ public class MyListAdapter extends CursorAdapter {
 
         //Title section
         TextView myTitleText = (TextView) view.findViewById(R.id.mytitle);
-        String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+        final String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
         myTitleText.setText(processTitle(title));
 
         //Star section
@@ -123,7 +127,16 @@ public class MyListAdapter extends CursorAdapter {
                                         notifyDataSetChanged();
                                         break;
                                     case R.id.schedule:
-                                        //TODO: plug Adèle's snippet for Calendar here
+                                        /*Calendar cal = Calendar.getInstance();
+                                        GregorianCalendar calDate = new GregorianCalendar();
+                                        Intent calIntent = new Intent(Intent.ACTION_EDIT);
+                                        calIntent.setType("vnd.android.cursor.item/event");
+                                        calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                                                calDate.getTimeInMillis());
+                                        calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
+                                                calDate.getTimeInMillis() + movie.getRuntime()*60*1000);
+                                        calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
+                                        context.startActivity(calIntent);*/
                                         break;
                                     case R.id.delete:
                                         //TODO: Delete the row whose id is popupId
