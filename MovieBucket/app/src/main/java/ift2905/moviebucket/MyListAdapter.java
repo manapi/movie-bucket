@@ -63,29 +63,35 @@ public class MyListAdapter extends CursorAdapter {
     public void bindView(View view, Context ctx, Cursor cursor) {
         //Connects the cursor values to our View.
 
+        //Grabs the ID of a row.
+        long entryId = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+
         //Title section
         TextView myTitleText = (TextView) view.findViewById(R.id.mytitle);
         final String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
         myTitleText.setText(processTitle(title));
 
         //Star section
-        BadassImageButton starStatus;
+        final BadassImageButton starStatus;
 
 
         int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
         if(fav == 0) {
             starStatus = (BadassImageButton) view.findViewById(R.id.notstarred);
+            starStatus.setTag("R.id.notstarred");
         } else {
             starStatus = (BadassImageButton) view.findViewById(R.id.starred);
+            starStatus.setTag("R.id.starred");
         }
 
         LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
         paramsStar.weight = 1.0f;
         starStatus.setLayoutParams(paramsStar);
 
+
         //"More" Section
         BadassImageButton more = (BadassImageButton) view.findViewById(R.id.more);
-        long entryId = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+
         more.setMovieId(entryId);
 
         more.setOnClickListener(new View.OnClickListener() {
@@ -103,8 +109,6 @@ public class MyListAdapter extends CursorAdapter {
                         break;
 
                     case R.id.more:
-                        //TODO: find some way to add icons to popup menu, failing that, implement the menu some other way
-
                         BadassImageButton moreButton = (BadassImageButton) v;
 
                         GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId());
@@ -121,7 +125,6 @@ public class MyListAdapter extends CursorAdapter {
                             public boolean onMenuItemClick(MenuItem item) {
                                 switch(item.getItemId()) {
                                     case R.id.markAsViewed:
-                                        //TODO: update the Viewed column of this row to 1, then update the list.
                                         dbh.markAsViewed(popupId);
                                         updateCursor();
                                         notifyDataSetChanged();
@@ -136,23 +139,19 @@ public class MyListAdapter extends CursorAdapter {
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
                                                 calDate.getTimeInMillis() + movie.getRuntime()*60*1000);
                                         calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
-                                        context.startActivity(calIntent);*/
-                                        break;
+                                        context.startActivity(calIntent);
+                                        break;*/
                                     case R.id.delete:
-                                        //TODO: Delete the row whose id is popupId
                                         dbh.removeFromDB(popupId);
                                         updateCursor();
                                         notifyDataSetChanged();
                                         break;
                                     case R.id.details:
-                                        //TODO: plug Amelie's snippet that gets us in MovieView.
                                         Intent intent = new Intent(context, MovieView.class);
                                         intent.putExtra("movie", popupId);
                                         context.startActivity(intent);
                                         break;
                                 }
-
-                                Toast.makeText(context, "You Clicked : " + popupId +", have a cookie!", Toast.LENGTH_SHORT).show();
                                 return true;
                             }
                         });

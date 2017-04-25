@@ -10,13 +10,14 @@ import android.database.sqlite.SQLiteDatabase;
 public class DBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "movie_bucket.db";
+    private static final String DATABASE_NAME = "moviebucket.db";
 
     private static final String TABLE_HEAD = "entries";
     private static final String KEY_ID = "_id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_FAV = "favorite";
     private static final String KEY_VIEWED = "viewed";
+    private static final String KEY_RUNTIME = "runtime";
 
     private static SQLiteDatabase db = null;
 
@@ -25,7 +26,8 @@ public class DBHandler extends SQLiteOpenHelper {
                     KEY_ID + " INTEGER NOT NULL PRIMARY KEY, " +
                     KEY_TITLE + " TEXT NOT NULL, " +
                     KEY_FAV + " INTEGER NOT NULL, " +
-                    KEY_VIEWED + " INTEGER NOT NULL)";
+                    KEY_VIEWED + " INTEGER NOT NULL," +
+                    KEY_RUNTIME + " INTEGER NOT NULL)";
 
 
     public DBHandler(Context context) {
@@ -51,12 +53,13 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addToDB(int id, String title, int viewed){
+    public void addToDB(int id, String title, int viewed, int runtime){
         ContentValues cv = new ContentValues();
         cv.put(KEY_ID, id);
         cv.put(KEY_TITLE,title);
         cv.put(KEY_FAV, 0);
         cv.put(KEY_VIEWED, viewed);
+        cv.put(KEY_RUNTIME, runtime);
         try {
             db.insertOrThrow(TABLE_HEAD, null, cv);
         } catch(SQLException e) {}

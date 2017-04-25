@@ -44,7 +44,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     String title;
     Button bucketButton;
     Button historyButton;
-    ImageButton calendarButton;
+    Button calendarButton;
     DBHandler dbh;
     int state;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
@@ -82,7 +82,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         historyButton = (Button)findViewById(R.id.buttonAddH);
         historyButton.setOnClickListener(this);
 
-        calendarButton = (ImageButton)findViewById(R.id.toCalendar);
+        calendarButton = (Button)findViewById(R.id.toCalendar);
         calendarButton.setOnClickListener(this);
 
         state = dbh.inWhichList(id);
@@ -101,7 +101,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.buttonAddMb:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 0);
+                    dbh.addToDB(id, title, 0, movie.getRuntime());
                     state = 1;
                     bucketButton.setText("-My Bucket");
 
@@ -115,7 +115,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             case R.id.buttonAddH:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 1);
+                    dbh.addToDB(id, title, 1, movie.getRuntime());
                     state = 2;
                     bucketButton.setEnabled(false);
                     bucketButton.setText("In my history");
