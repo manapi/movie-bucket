@@ -60,14 +60,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
         try {
             dbh = new DBHandler(this);
-            id = (int) getIntent().getExtras().getLong("movie");
+            id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
             if (id > 0){
                 setContentView(R.layout.activity_movie_view_m);
                 MovieFetcher mf = new MovieFetcher(id);
                 mf.execute();
             } else {
                 setContentView(R.layout.activity_movie_view_tv);
-                id = (int) getIntent().getExtras().getLong("tv");
+                id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.tv.name());
                 TvFetcher tf = new TvFetcher(id);
                 tf.execute();
             }
