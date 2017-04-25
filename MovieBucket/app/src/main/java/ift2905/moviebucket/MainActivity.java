@@ -177,14 +177,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void updateDBHandler(){
-        this.dbh = new DBHandler(this);
-    }
-
-    public DBHandler getDBHandler(){
-        return this.dbh;
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

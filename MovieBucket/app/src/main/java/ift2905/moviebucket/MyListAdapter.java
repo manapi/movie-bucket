@@ -1,6 +1,7 @@
 package ift2905.moviebucket;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.PopupMenu;
@@ -34,11 +35,12 @@ import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 public class MyListAdapter extends CursorAdapter {
 
     Cursor c;
-    String header;
+    final String header;
     Context context;
     DBHandler dbh;
 
     //TODO: see if the "to" parameter is  really necessary.
+    //>the "to" parameter is necessary since it specifies which list requires a Db query and stuff
     public MyListAdapter(String to, Context context, Cursor c) {
         super(context, c, 0);
         this.c = c;
@@ -103,7 +105,12 @@ public class MyListAdapter extends CursorAdapter {
 
                         GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId());
                         final long popupId = popup.getMovieId();
-                        popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
+                        if (header.equals("Bucket")){
+                            popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
+                        }else if (header.equals("History")){
+                            popup.getMenuInflater().inflate(R.menu.popup_menu_my_history, popup.getMenu());
+                        }
+
 
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
@@ -112,6 +119,7 @@ public class MyListAdapter extends CursorAdapter {
                                     case R.id.markAsViewed:
                                         //TODO: update the Viewed column of this row to 1, then update the list.
                                         dbh.markAsViewed(popupId);
+                                        updateCursor();
                                         notifyDataSetChanged();
                                         break;
                                     case R.id.schedule:
@@ -120,10 +128,14 @@ public class MyListAdapter extends CursorAdapter {
                                     case R.id.delete:
                                         //TODO: Delete the row whose id is popupId
                                         dbh.removeFromDB(popupId);
+                                        updateCursor();
                                         notifyDataSetChanged();
                                         break;
                                     case R.id.details:
-                                        //TODO: plug Amélie's snippet that gets us in MovieView.
+                                        //TODO: plug Amelie's snippet that gets us in MovieView.
+                                        Intent intent = new Intent(context, MovieView.class);
+                                        intent.putExtra("movie", popupId);
+                                        context.startActivity(intent);
                                         break;
                                 }
 
@@ -155,10 +167,11 @@ public class MyListAdapter extends CursorAdapter {
         }
     }
 
-    public void updateCursor(MainActivity activity){
-        activity.updateDBHandler();
-        Cursor cursor = activity.getDBHandler().movieLister(this.header);
-        this.changeCursor(cursor);
+    //builds a new Db object with updated info and updates the associated cursor.
+    // Required for refreshing view.
+    public void updateCursor(){
+        Cursor cursor = dbh.movieLister(header);
+        changeCursor(cursor);
     }
 
 }
