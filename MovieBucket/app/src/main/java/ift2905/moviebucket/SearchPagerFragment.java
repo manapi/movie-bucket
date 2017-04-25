@@ -1,5 +1,6 @@
 package ift2905.moviebucket;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,14 +12,16 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
+import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.people.Person;
+import info.movito.themoviedbapi.model.people.PersonCredit;
+import info.movito.themoviedbapi.model.people.PersonCredits;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
@@ -28,8 +31,6 @@ import info.movito.themoviedbapi.model.tv.TvSeries;
 
 public class SearchPagerFragment extends Fragment {
 
-    private int NUM_ITEMS = 4;
-
     //TODO : get from bundle
     private final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     private final String LANG = "en";
@@ -37,12 +38,17 @@ public class SearchPagerFragment extends Fragment {
 
     protected String query;
     protected ListFragment list;
-
+    protected MyAdapter mAdapter;
+    ViewPager mPager;
+    FragmentManager mFragmentManager;
     protected ListFragment[] listArray;
 
     protected MovieResultsAdapter movieAdapter;
     protected SeriesResultsAdapter seriesAdapter;
     protected PeopleResultsAdapter peopleAdapter;
+    protected GenreAdapter genreAdapter;
+
+    protected PeopleListListener peopleListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,9 +62,9 @@ public class SearchPagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pager_frag, container, false);
 
         TabLayout tabs = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        ViewPager pager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        mPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 
-        listArray = new ListFragment[NUM_ITEMS];
+        listArray = new ListFragment[4];
         listArray[0] = new ListFragment();
         listArray[1] = new ListFragment();
         listArray[2] = new ListFragment();
@@ -70,12 +76,18 @@ public class SearchPagerFragment extends Fragment {
         seriesAdapter = new SeriesResultsAdapter(new ArrayList<TvSeries>(), getContext());
         listArray[1].setListAdapter(seriesAdapter);
 
-        peopleAdapter = new PeopleResultsAdapter(new ArrayList<Person>(), getContext());
+        peopleListener = new PeopleListListener();
+        peopleAdapter = new PeopleResultsAdapter(new ArrayList<Person>(), getContext(), peopleListener);
         listArray[2].setListAdapter(peopleAdapter);
 
-        pager.setAdapter(new MyAdapter((getChildFragmentManager())));
+        new FetchGenres().execute();
 
-        //pager.setAdapter(adapterViewPager);
+        mAdapter = new MyAdapter((getChildFragmentManager()));
+
+        mFragmentManager = getChildFragmentManager();
+
+        mPager.setAdapter(mAdapter);
+
         /*vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             // This method will be invoked when a new page becomes selected.
@@ -99,49 +111,77 @@ public class SearchPagerFragment extends Fragment {
             }
         });*/
 
-        tabs.setupWithViewPager(pager);
+        tabs.setupWithViewPager(mPager);
 
         return rootView;
     }
 
+    public void onBackPressed() {
+        /*if(mPager.getCurrentItem() == 0) {
+            if (mAdapter.getItem(0) instanceof DetallesFacturaFragment) {
+                ((DetallesFacturaFragment) mAdapter.getItem(0)).backPressed();
+            }
+            else if (mAdapter.getItem(0) instanceof FacturasFragment) {
+                finish();
+            }
+        }*/
+    }
+
+    private final class PeopleListListener implements
+                AbstractResultsAdapter.InnerListFragmentListener {
+            public void onSwitchToNextFragment(int personId) {
+                /*mFragmentManager.beginTransaction().remove(listArray[3])
+                        .commit();*/
+                if (listArray[2].getListAdapter() instanceof PeopleResultsAdapter){
+                    new FetchCreditsFromPerson().execute(personId + "");
+
+                }else{
+                    listArray[2].setListAdapter(peopleAdapter);
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+    private final class GenreListListener implements
+            AbstractResultsAdapter.InnerListFragmentListener {
+        public void onSwitchToNextFragment(int genreId) {
+                /*mFragmentManager.beginTransaction().remove(listArray[3])
+                        .commit();*/
+            if (listArray[3].getListAdapter() instanceof GenreAdapter){
+                new FetchMoviesFromGenre().execute(genreId + "");
+
+            }else{
+                listArray[3].setListAdapter(genreAdapter);
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     private class MyAdapter extends FragmentPagerAdapter {
 
-        public MyAdapter(FragmentManager fm){
-            super(fm);
-        }
-        @Override
-        public Fragment getItem(int position) {
-
-            /*switch(position) {
-                case 0 :
-                    movieAdapter = new MovieResultsAdapter(new ArrayList<MovieDb>(), getContext());
-                    listArray[position].setListAdapter(movieAdapter);
-                    break;
-                case 1 :
-                    seriesAdapter = new SeriesResultsAdapter(new ArrayList<TvSeries>(), getContext());
-                    listArray[position].setListAdapter(seriesAdapter);
-                    break;
-                case 2 :
-                    List<Person> data = peopleResults != null ? peopleResults : new ArrayList<Person>();
-                    peopleAdapter = new PeopleResultsAdapter(data, getContext());
-                    listArray[position].setListAdapter(peopleAdapter);
-                    break;
-                default :
-            }*/
-            return listArray[position];
-        }
-
-        @Override
-        public int getCount() {
-            return NUM_ITEMS;
-        }
-
-        private String[] titles = new String[]{
+        private final String[] titles = new String[]{
                 "Movies",
                 "TV",
                 "People",
                 "Genre"
         };
+
+        private FragmentManager mFragmentManager;
+
+        public MyAdapter(FragmentManager fm){
+            super(fm);
+            mFragmentManager = fm;
+        }
+        @Override
+        public Fragment getItem(int position) {
+
+            return listArray[position];
+        }
+
+        @Override
+        public int getCount() {
+            return titles.length;
+        }
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -227,11 +267,116 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Person> results) {
-            if(peopleAdapter != null) {
+            if(listArray[2] != null && peopleAdapter != null) {
                 peopleAdapter.getData().clear();
                 peopleAdapter.getData().addAll(results);
                 peopleAdapter.notifyDataSetChanged();
+                listArray[2].setListAdapter(peopleAdapter);
             }
         }
     }
+
+    public class FetchCreditsFromPerson extends AsyncTask<String, Object,  List<PersonCredit>> {
+
+        @Override
+        protected List<PersonCredit> doInBackground(String... params) {
+
+            if(params[0] != null) {
+                int id =  new Integer(params[0]);
+                TmdbApi api = new TmdbApi(API_KEY);
+                PersonCredits cred = api.getPeople().getPersonCredits(id);
+
+                ArrayList<PersonCredit> credits = new ArrayList<>();
+
+                for(PersonCredit c : cred.getCrew()) {
+                    if (!credits.contains(c)){
+                        credits.add(c);
+                    }
+                }
+                credits.addAll(cred.getCast());
+                return credits;
+            }
+            return new ArrayList<>();
+        }
+
+        @Override
+        protected void onPostExecute(List<PersonCredit> credits) {
+            if(listArray[2] != null) {
+                listArray[2].setListAdapter(new CreditsResultsAdapter(credits, getContext()));
+            }
+        }
+    }
+
+    public class FetchMoviesFromGenre extends AsyncTask<String, Object,  List<MovieDb>> {
+
+        @Override
+        protected List<MovieDb> doInBackground(String... params) {
+
+            if(params[0] != null) {
+                int id =  new Integer(params[0]);
+                TmdbApi api = new TmdbApi(API_KEY);
+
+                return api.getGenre().getGenreMovies(id, LANG, 1, false).getResults();
+            }
+            return new ArrayList<>();
+        }
+
+        @Override
+        protected void onPostExecute(List<MovieDb> results) {
+            if(listArray[3] != null) {
+                listArray[3].setListAdapter(new MovieResultsAdapter(results, getContext()));
+            }
+        }
+    }
+
+    public class FetchGenres extends AsyncTask<String, Object,  List<Genre>> {
+
+        @Override
+        protected List<Genre> doInBackground(String... params) {
+
+            TmdbApi api = new TmdbApi(API_KEY);
+            return api.getGenre().getGenreList(LANG);
+        }
+
+        @Override
+        protected void onPostExecute(List<Genre> genres) {
+
+            if(listArray[3] != null) {
+                GenreListListener listener = new GenreListListener();
+                genreAdapter = new GenreAdapter(genres, getContext(), listener);
+                listArray[3].setListAdapter(genreAdapter);
+
+            }
+        }
+    }
+
+    private class GenreAdapter extends AbstractResultsAdapter {
+
+        private GenreAdapter(List<Genre> genres, Context context, GenreListListener listener) {
+            super();
+            this.results = new ArrayList<>();
+            this.results.addAll(genres);
+            this.context = context;
+            this.type = Type.genre;
+            this.listener = listener;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return ((Genre) results.get(position)).getId();
+        }
+
+        public String getItemName(int position) {
+            return ((Genre) results.get(position)).getName();
+        }
+
+        public String getItemDate(int position) {
+            return null;
+        }
+
+        public String getItemUrl(int position) {
+            return null;
+        }
+    }
 }
+
