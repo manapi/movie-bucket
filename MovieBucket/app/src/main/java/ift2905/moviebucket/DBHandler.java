@@ -62,6 +62,16 @@ public class DBHandler extends SQLiteOpenHelper {
         } catch(SQLException e) {}
     }
 
+    public void removeFromDB(long id){
+        db.delete(TABLE_HEAD, KEY_ID + "= " + id, null);
+    }
+
+    public void markAsViewed(long id){
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_VIEWED, 1);
+        db.update(TABLE_HEAD, cv,KEY_ID + "= " + id, null);
+    }
+
     public Cursor movieLister(String pageName){
         String[] columns = {KEY_ID, KEY_TITLE, KEY_FAV};
         String criteria = KEY_VIEWED + " = ?";

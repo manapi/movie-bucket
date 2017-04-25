@@ -100,7 +100,6 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.buttonAddMb:
                 dbh.addToDB(id, mTitle, 0);
-
                 break;
             case R.id.buttonAddH:
                 //TODO: if it is already is in mybucket: update it. if not, add.

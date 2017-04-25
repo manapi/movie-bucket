@@ -36,13 +36,14 @@ public class MyListAdapter extends CursorAdapter {
 
     Cursor c;
     Context context;
+    DBHandler dbh;
 
     //TODO: see if the "to" parameter is  really necessary.
     public MyListAdapter(String to, Context context, Cursor c) {
         super(context, c, 0);
         this.c = c;
         this.context = context;
-        this.notifyDataSetChanged();
+        dbh = new DBHandler(context);
     }
 
     @Override
@@ -109,15 +110,19 @@ public class MyListAdapter extends CursorAdapter {
                                 switch(item.getItemId()) {
                                     case R.id.markAsViewed:
                                         //TODO: update the Viewed column of this row to 1, then update the list.
+                                        dbh.markAsViewed(popupId);
+                                        notifyDataSetChanged();
                                         break;
                                     case R.id.schedule:
-                                        //TODO: plug Adele's snippet for Calendar here
+                                        //TODO: plug Adèle's snippet for Calendar here
                                         break;
                                     case R.id.delete:
                                         //TODO: Delete the row whose id is popupId
+                                        dbh.removeFromDB(popupId);
+                                        notifyDataSetChanged();
                                         break;
                                     case R.id.details:
-                                        //TODO: plug Amelie's snippet that gets us in MovieView.
+                                        //TODO: plug Amélie's snippet that gets us in MovieView.
                                         break;
                                 }
 

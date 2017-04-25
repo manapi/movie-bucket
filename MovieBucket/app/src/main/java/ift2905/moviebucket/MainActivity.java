@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
@@ -136,8 +137,10 @@ public class MainActivity extends AppCompatActivity
             if (myBucketFragment == null) {
                 myBucketFragment = new ListFragment();
                 Cursor cursor = dbh.movieLister("Bucket");
-                myBucketFragment.setListAdapter(new MyListAdapter("Bucket", MainActivity.this, cursor));
+                MyListAdapter adapter = new MyListAdapter("Bucket", MainActivity.this, cursor);
+                myBucketFragment.setListAdapter(adapter);
             }
+            myBucketFragment.getListAdapter()
             fragmentTransaction.replace(R.id.fragment_container, myBucketFragment).commit();
             setTitle(R.string.title_fragment_my_bucket);
 
