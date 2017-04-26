@@ -4,6 +4,22 @@
     <string name="title_fragment_my_bucket">My Bucket</string>
     <string name="title_fragment_my_history">My History</string>
     <string name="title_fragment_about">About</string>
+
+    <string name="about_devs">
+        "The main developers are:\n"
+        <ol>
+            <li>"Christophe Apollon-Roy\n"</li>
+            <li>"Adèle Aubin\n"</li>
+            <li>"Amélie Lacombe-Robillard\n"</li>
+            <li>"Stéphane Verville-Vohl"</li>
+        </ol>
+
+    </string>
+    <string name="about_tmdb">"This product uses the TMDb API but is not endorsed or certified by TMDb."</string>
+    <string name="about_diro">"<n>  This android application has been created for educational purposes, during the IFT2905 class, at the University of Montreal."</n></string>
+    <string name="about_thanks">"Special thanks to Holger Brandl, developer of the TMDb API wrapper."</string>
+    <string name="about_arr">"All rights reserved, 2017"</string>
+
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
