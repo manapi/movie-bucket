@@ -195,11 +195,13 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(MovieDb movie) {
 
             // Title
+            TextView titleView = (TextView) findViewById(R.id.movieTitle);
             try {
                 title = movie.getTitle();
                 setTitle(title);
+                titleView.setText(title);
             } catch (Exception e){
-                setTitle(DEF);
+                titleView.setText(DEF);
             }
 
 
