@@ -65,6 +65,7 @@ public class MyListAdapter extends CursorAdapter {
 
         //Grabs the ID of a row.
         long entryId = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+        long mRuntime = cursor.getLong(cursor.getColumnIndexOrThrow("runtime"));
 
         //Title section
         TextView myTitleText = (TextView) view.findViewById(R.id.mytitle);
@@ -93,6 +94,8 @@ public class MyListAdapter extends CursorAdapter {
         BadassImageButton more = (BadassImageButton) view.findViewById(R.id.more);
 
         more.setMovieId(entryId);
+        more.setmRuntime(mRuntime);
+
 
         more.setOnClickListener(new View.OnClickListener() {
 
@@ -111,8 +114,9 @@ public class MyListAdapter extends CursorAdapter {
                     case R.id.more:
                         BadassImageButton moreButton = (BadassImageButton) v;
 
-                        GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId());
+                        GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId(), moreButton.getmRuntime());
                         final long popupId = popup.getMovieId();
+                        final long popupRuntime = popup.getMRuntime();
                         if (header.equals("Bucket")){
                             popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
                         }else if (header.equals("History")){
@@ -130,16 +134,16 @@ public class MyListAdapter extends CursorAdapter {
                                         notifyDataSetChanged();
                                         break;
                                     case R.id.schedule:
-                                        /*Calendar cal = Calendar.getInstance();
+                                        Calendar cal = Calendar.getInstance();
                                         GregorianCalendar calDate = new GregorianCalendar();
                                         Intent calIntent = new Intent(Intent.ACTION_EDIT);
                                         calIntent.setType("vnd.android.cursor.item/event");
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
                                                 calDate.getTimeInMillis());
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                                                calDate.getTimeInMillis() + movie.getRuntime()*60*1000);
+                                                calDate.getTimeInMillis() + popupRuntime*60*1000);
                                         calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
-                                        context.startActivity(calIntent);*/
+                                        context.startActivity(calIntent);
                                         break;
                                     case R.id.delete:
                                         dbh.removeFromDB(popupId);

@@ -76,7 +76,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public Cursor movieLister(String pageName){
-        String[] columns = {KEY_ID, KEY_TITLE, KEY_FAV};
+        String[] columns = {KEY_ID, KEY_TITLE, KEY_FAV, KEY_RUNTIME};
         String criteria = KEY_VIEWED + " = ?";
         String viewed = "0";
         if(pageName.equals("History")) {
