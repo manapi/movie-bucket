@@ -45,8 +45,7 @@ public class MyListAdapter extends CursorAdapter {
     Context context;
     DBHandler dbh;
 
-    //TODO: see if the "to" parameter is  really necessary.
-    //>the "to" parameter is necessary since it specifies which list requires a Db query and stuff
+    //the "to" parameter is necessary since it specifies which list requires a Db query and stuff
     public MyListAdapter(String to, Context context, Cursor c) {
         super(context, c, 0);
         this.c = c;
@@ -75,32 +74,31 @@ public class MyListAdapter extends CursorAdapter {
         myTitleText.setText(processTitle(title));
 
         //Star section
-        final BadassImageButton starStatus;
+        if(header.equals("Bucket")){
+            final BadassImageButton starStatus;
 
+            int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
+            starStatus = (BadassImageButton) view.findViewById(R.id.star);
 
-        int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
-        starStatus = (BadassImageButton) view.findViewById(R.id.star);
-
-        if(fav == 0) {
-            starStatus.setImageResource(ic_star_border_black_24dp);
-        } else {
-            starStatus.setImageResource(ic_star_black_24dp);
-        }
-
-        starStatus.setMovieId(entryId);
-        LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
-        paramsStar.weight = 1.0f;
-        starStatus.setLayoutParams(paramsStar);
-        starStatus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dbh.swapFavoriteValue(starStatus.getMovieId());
-                //Toast.makeText(context, Long.toString(starStatus.getMovieId()), Toast.LENGTH_LONG).show();
-                updateCursor();
-                notifyDataSetChanged();
+            if(fav == 0) {
+                starStatus.setImageResource(ic_star_border_black_24dp);
+            } else {
+                starStatus.setImageResource(ic_star_black_24dp);
             }
-        });
 
+            starStatus.setMovieId(entryId);
+            LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
+            paramsStar.weight = 1.0f;
+            starStatus.setLayoutParams(paramsStar);
+            starStatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dbh.swapFavoriteValue(starStatus.getMovieId());
+                    updateCursor();
+                    notifyDataSetChanged();
+                }
+            });
+        }
 
         //"More" Section
         BadassImageButton more = (BadassImageButton) view.findViewById(R.id.more);
@@ -163,9 +161,7 @@ public class MyListAdapter extends CursorAdapter {
                                 return true;
                             }
                         });
-
                         popup.show();
-
                         break;
 
                     case R.id.mytitle:
