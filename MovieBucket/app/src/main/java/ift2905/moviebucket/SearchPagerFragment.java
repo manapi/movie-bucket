@@ -36,8 +36,6 @@ public class SearchPagerFragment extends Fragment {
     private final String LANG = "en";
     private final Boolean ADULT = false; //include adult movies in search results
 
-    protected String query;
-    protected ListFragment list;
     protected MyAdapter mAdapter;
     ViewPager mPager;
     FragmentManager mFragmentManager;
@@ -191,10 +189,9 @@ public class SearchPagerFragment extends Fragment {
     };
 
     public void search(String query) {
-        this.query = query;
-        new FetchMovies().execute();
-        new FetchSeries().execute();
-        new FetchPeople().execute();
+        new FetchMovies().execute(query);
+        new FetchSeries().execute(query);
+        new FetchPeople().execute(query);
     }
 
     /**
@@ -205,12 +202,13 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected List<MovieDb> doInBackground(String... params) {
-
-            TmdbApi api = new TmdbApi(API_KEY);
-            TmdbSearch search = api.getSearch();
-            List<MovieDb> results = search.searchMovie(query, null, LANG, ADULT, 1).getResults();
-
-            return results;
+            if(params[0] != null) {
+                String query = params[0];
+                TmdbApi api = new TmdbApi(API_KEY);
+                TmdbSearch search = api.getSearch();
+                return search.searchMovie(query, null, LANG, ADULT, 1).getResults();
+            }
+            return new ArrayList<>();
         }
 
         @Override
@@ -232,11 +230,13 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected List<TvSeries> doInBackground(String... params) {
 
-            TmdbApi api = new TmdbApi(API_KEY);
-            TmdbSearch search = api.getSearch();
-            List<TvSeries> results = search.searchTv(query, LANG, 1).getResults();
-
-            return results;
+            if(params[0] != null) {
+                String query = params[0];
+                TmdbApi api = new TmdbApi(API_KEY);
+                TmdbSearch search = api.getSearch();
+                return search.searchTv(query, LANG, 1).getResults();
+            }
+            return new ArrayList<>();
         }
 
         @Override
@@ -258,11 +258,13 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected List<Person> doInBackground(String... params) {
 
-            TmdbApi api = new TmdbApi(API_KEY);
-            TmdbSearch search = api.getSearch();
-            List<Person> results = search.searchPerson(query, ADULT, 1).getResults();
-
-            return results;
+            if(params[0] != null) {
+                String query = params[0];
+                TmdbApi api = new TmdbApi(API_KEY);
+                TmdbSearch search = api.getSearch();
+                return search.searchPerson(query, ADULT, 1).getResults();
+            }
+            return new ArrayList<>();
         }
 
         @Override
