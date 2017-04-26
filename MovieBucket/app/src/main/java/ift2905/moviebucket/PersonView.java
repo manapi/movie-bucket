@@ -1,7 +1,7 @@
 package ift2905.moviebucket;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +25,12 @@ import info.movito.themoviedbapi.model.people.PersonCredits;
 
 public class PersonView extends AppCompatActivity {
 
+    public enum Job {
+        Director, Producer, Writer, Actor
+    }
+
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+    protected ExpandableListView creditsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +42,14 @@ public class PersonView extends AppCompatActivity {
 
         setTitle(name);
 
+        creditsList = (ExpandableListView) findViewById(R.id.credisList);
+
         if (id > 0) {
             FetchCredits mf = new FetchCredits();
             mf.execute(id + "");
         }
-
-        ExpandableListView creditsList = (ExpandableListView) findViewById(R.id.creditsList);
     }
-
-
-
-    public class FetchCredits extends AsyncTask<String, Object,  PersonCredits> {
+    private class FetchCredits extends AsyncTask<String, Object, PersonCredits> {
 
         @Override
         protected PersonCredits doInBackground(String... params) {
@@ -62,80 +65,122 @@ public class PersonView extends AppCompatActivity {
         @Override
         protected void onPostExecute(PersonCredits credits) {
             if (credits != null) {
+                List<String> jobs = new ArrayList<>();
+                HashMap<String, List<PersonCredit>> creds = new HashMap<>();
+
                 List<PersonCredit> crew = new ArrayList<>();
 
                 for (PersonCredit c : credits.getCrew()) {
-                    if (c.getJob().equals("Director")) {
-                        crew.add(c);
+                    if (!jobs.contains(c.getJob())) {
+                        jobs.add(c.getJob());
+                        creds.put(c.getJob(), new ArrayList<PersonCredit>());
                     }
+                    creds.get(c.getJob()).add(c);
                 }
 
-                List<PersonCredit> cast = credits.getCast();
+                jobs.add("Actor");
+                creds.put("Actor", credits.getCast());
 
-                //TODO
+                CreditsExpandableAdapter adapter = new CreditsExpandableAdapter(getApplication(), jobs, creds);
+                creditsList.setAdapter(adapter);
 
+                for(int i=0; i < adapter.getGroupCount(); i++)
+                    creditsList.expandGroup(i);
             }
         }
     }
 
-    /*public class CreditsExpandableAdapter extends BaseExpandableListAdapter {
+    private class CreditsExpandableAdapter extends BaseExpandableListAdapter {
 
-        private Context _context;
-        private List<String> _listDataHeader; // header titles
+        final String BASE_URL = "http://image.tmdb.org/t/p/";
+        final String SIZE_SMALL = "w154";
+
+        private Context context;
+        private List<String> listDataHeader; // header titles
         // child data in format of header title, child title
-        private HashMap<String, List<String>> _listDataChild;
+        private HashMap<String, List<PersonCredit>> listDataChild;
 
         public CreditsExpandableAdapter(Context context, List<String> listDataHeader,
-                                     HashMap<String, List<String>> listChildData) {
-            this._context = context;
-            this._listDataHeader = listDataHeader;
-            this._listDataChild = listChildData;
+                                        HashMap<String, List<PersonCredit>> listChildData) {
+            this.context = context;
+            this.listDataHeader = listDataHeader;
+            this.listDataChild = listChildData;
+
         }
 
         @Override
-        public Object getChild(int groupPosition, int childPosititon) {
-            return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+        public PersonCredit getChild(int groupPosition, int childPosititon) {
+            return this.listDataChild.get(this.listDataHeader.get(groupPosition))
                     .get(childPosititon);
         }
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            return childPosition;
+            return this.listDataChild.get(this.listDataHeader.get(groupPosition)).get(childPosition).getMovieId();
         }
 
         @Override
-        public View getChildView(int groupPosition, final int childPosition,
+        public View getChildView(final int groupPosition, final int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
 
-            final String childText = (String) getChild(groupPosition, childPosition);
+            final PersonCredit child = (PersonCredit) getChild(groupPosition, childPosition);
 
-            if (convertView == null) {
-                LayoutInflater infalInflater = (LayoutInflater) this._context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = infalInflater.inflate(R.layout.search_view, null);
+            LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            if (convertView == null)
+                convertView = li.inflate(R.layout.search_view, parent, false);
+
+            TextView title = (TextView) convertView.findViewById(R.id.title);
+            TextView release = (TextView) convertView.findViewById(R.id.release);
+            TextView type = (TextView) convertView.findViewById(R.id.type);
+            ImageView image = (ImageView) convertView.findViewById(R.id.image);
+
+            type.setVisibility(View.GONE);
+
+            String year = child.getReleaseDate();
+            if(year != null && year.length() >= 4) {
+                year = year.substring(0, 4);
             }
 
-            TextView txtListChild = (TextView) convertView
-                    .findViewById(R.id.title);
+            title.setText(child.getMovieTitle());
+            release.setText(year);
 
-            txtListChild.setText(childText);
+            String url = child.getPosterPath();
+            if(url != null) {
+                url = BASE_URL + SIZE_SMALL + url;
+            }
+
+            Picasso.with(context)
+                    .load(url)
+                    .into(image);
+
+            convertView.setOnClickListener(new View.OnClickListener() {
+
+                // Create a new activity (detailed view of the selected movie)
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, MovieView.class);
+                    intent.putExtra(AbstractResultsAdapter.Type.movie.name(), getChildId(groupPosition, childPosition));
+                    context.startActivity(intent);
+                }
+            });
             return convertView;
         }
 
         @Override
         public int getChildrenCount(int groupPosition) {
-            return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+            return this.listDataChild.get(this.listDataHeader.get(groupPosition))
                     .size();
         }
 
         @Override
         public Object getGroup(int groupPosition) {
-            return this._listDataHeader.get(groupPosition);
+            return this.listDataHeader.get(groupPosition);
         }
 
         @Override
         public int getGroupCount() {
-            return this._listDataHeader.size();
+            return this.listDataHeader.size();
         }
 
         @Override
@@ -148,7 +193,7 @@ public class PersonView extends AppCompatActivity {
                                  View convertView, ViewGroup parent) {
             String headerTitle = (String) getGroup(groupPosition);
             if (convertView == null) {
-                LayoutInflater infalInflater = (LayoutInflater) this._context
+                LayoutInflater infalInflater = (LayoutInflater) this.context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.list_group, null);
             }
@@ -169,5 +214,5 @@ public class PersonView extends AppCompatActivity {
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return true;
         }
-    }*/
+    }
 }

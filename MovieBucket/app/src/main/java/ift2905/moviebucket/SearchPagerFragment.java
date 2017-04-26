@@ -1,6 +1,5 @@
 package ift2905.moviebucket;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -17,12 +16,9 @@ import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
-import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.people.Person;
-import info.movito.themoviedbapi.model.people.PersonCredit;
-import info.movito.themoviedbapi.model.people.PersonCredits;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
