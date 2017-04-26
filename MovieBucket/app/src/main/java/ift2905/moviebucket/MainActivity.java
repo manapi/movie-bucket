@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerViewFragment discoverFragment;
     private SearchPagerFragment searchPagerFragment;
     private SpecialListFragment myBucketFragment, myHistoryFragment;
-    private Fragment aboutFragment;
+    private AbootFragment aboutFragment;
     private SearchView searchView;
     private DBHandler dbh;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_about) {
             if (aboutFragment == null) {
-                aboutFragment = new Fragment();
+                aboutFragment = new AbootFragment();
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, aboutFragment).addToBackStack(null).commit();
             setTitle(R.string.title_fragment_about);
