@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.people.Person;
 
 /**
@@ -13,14 +14,14 @@ import info.movito.themoviedbapi.model.people.Person;
 
 public class PeopleResultsAdapter extends AbstractResultsAdapter{
 
-    public PeopleResultsAdapter(List<Person> results, Context context, InnerListFragmentListener listener) {
+    public PeopleResultsAdapter(List<Person> results, Context context) {
         super();
         this.results = new ArrayList<>();
         this.results.addAll(results);
         this.context = context;
-        this.type = Type.person;
-        this.listener = listener;
     }
+
+    public Multi.MediaType getItemType(int position) { return Multi.MediaType.PERSON; }
 
     @Override
     public long getItemId(int position) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.people.PersonCredit;
 
 /**
@@ -18,8 +19,9 @@ public class CreditsResultsAdapter extends AbstractResultsAdapter{
         this.results = new ArrayList<>();
         this.results.addAll(results);
         this.context = context;
-        this.type = Type.movie;
     }
+
+    public Multi.MediaType getItemType(int position) { return Multi.MediaType.MOVIE; }
 
     @Override
     public long getItemId(int position) {
