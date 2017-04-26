@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,8 +43,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     String title;
     Button bucketButton;
     Button historyButton;
-    ImageButton calendarButton;
+    Button calendarButton;
     DBHandler dbh;
+    int state;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
@@ -59,14 +59,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
         try {
             dbh = new DBHandler(this);
-            id = (int) getIntent().getExtras().getLong("movie");
+            id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
             if (id > 0){
                 setContentView(R.layout.activity_movie_view_m);
                 MovieFetcher mf = new MovieFetcher(id);
                 mf.execute();
             } else {
                 setContentView(R.layout.activity_movie_view_tv);
-                id = (int) getIntent().getExtras().getLong("tv");
+                id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.tv.name());
                 TvFetcher tf = new TvFetcher(id);
                 tf.execute();
             }
@@ -81,18 +81,16 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         historyButton = (Button)findViewById(R.id.buttonAddH);
         historyButton.setOnClickListener(this);
 
-        calendarButton = (ImageButton)findViewById(R.id.toCalendar);
+        calendarButton = (Button)findViewById(R.id.toCalendar);
         calendarButton.setOnClickListener(this);
 
-        int whichList = dbh.inWhichList(id);
-        if(whichList == 1){
-            bucketButton.setEnabled(false);
-            bucketButton.setText("In My Bucket");
-        } else if(whichList == 2) {
+        state = dbh.inWhichList(id);
+        if(state == 1){
+            bucketButton.setText("-My Bucket");
+        } else if(state == 2) {
             bucketButton.setEnabled(false);
             bucketButton.setText("In My History");
-            historyButton.setEnabled(false);
-            historyButton.setText("Added");
+            historyButton.setText("-My History");
         }
 
     }
@@ -101,14 +99,44 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.buttonAddMb:
+                if(state == 0) {
+                    dbh.addToDB(id, title, 0, movie.getRuntime());
+                    state = 1;
+                    bucketButton.setText("-My Bucket");
 
-                dbh.addToDB(id, title, 0);
+                } else if(state == 1){
+                    dbh.removeFromDB(id);
+                    bucketButton.setText("+My Bucket");
+                    state = 0;
 
+                }
                 break;
+
             case R.id.buttonAddH:
-                //TODO: if it is already is in mybucket: update it. if not, add.
-                dbh.addToDB(id, title, 1);
+                if(state == 0) {
+                    dbh.addToDB(id, title, 1, movie.getRuntime());
+                    state = 2;
+                    bucketButton.setEnabled(false);
+                    bucketButton.setText("In my history");
+                    historyButton.setText("-My history");
+
+                } else if(state == 1) {
+                    state = 2;
+                    dbh.markAsViewed(id);
+                    bucketButton.setEnabled(false);
+                    bucketButton.setText("In my history");
+                    historyButton.setText("-My History");
+
+                } else {
+                    state = 0;
+                    dbh.removeFromDB(id);
+                    bucketButton.setEnabled(true);
+                    bucketButton.setText("+My Bucket");
+                    historyButton.setText("+My History");
+
+                }
                 break;
+
             case R.id.toCalendar:
                 Calendar cal = Calendar.getInstance();
                 GregorianCalendar calDate = new GregorianCalendar();
@@ -122,8 +150,6 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 startActivity(intent);
                 break;
         }
-
-        //Toast.makeText(MovieView.this, "ID: " + id + "-- Title: " + mTitle, Toast.LENGTH_SHORT).show();
     }
 
     public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
