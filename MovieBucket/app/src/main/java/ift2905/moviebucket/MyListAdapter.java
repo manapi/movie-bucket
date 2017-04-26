@@ -17,6 +17,8 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static ift2905.moviebucket.R.drawable.ic_star_black_24dp;
+import static ift2905.moviebucket.R.drawable.ic_star_border_black_24dp;
 import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 
 // TODO: Expand adapter to include buttons, on click listeners, etc
@@ -65,6 +67,7 @@ public class MyListAdapter extends CursorAdapter {
 
         //Grabs the ID of a row.
         long entryId = cursor.getLong(cursor.getColumnIndexOrThrow("_id"));
+        long mRuntime = cursor.getLong(cursor.getColumnIndexOrThrow("runtime"));
 
         //Title section
         TextView myTitleText = (TextView) view.findViewById(R.id.mytitle);
@@ -76,23 +79,35 @@ public class MyListAdapter extends CursorAdapter {
 
 
         int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
+        starStatus = (BadassImageButton) view.findViewById(R.id.star);
+
         if(fav == 0) {
-            starStatus = (BadassImageButton) view.findViewById(R.id.notstarred);
-            starStatus.setTag("R.id.notstarred");
+            starStatus.setImageResource(ic_star_border_black_24dp);
         } else {
-            starStatus = (BadassImageButton) view.findViewById(R.id.starred);
-            starStatus.setTag("R.id.starred");
+            starStatus.setImageResource(ic_star_black_24dp);
         }
 
+        starStatus.setMovieId(entryId);
         LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
         paramsStar.weight = 1.0f;
         starStatus.setLayoutParams(paramsStar);
+        starStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbh.swapFavoriteValue(starStatus.getMovieId());
+                //Toast.makeText(context, Long.toString(starStatus.getMovieId()), Toast.LENGTH_LONG).show();
+                updateCursor();
+                notifyDataSetChanged();
+            }
+        });
 
 
         //"More" Section
         BadassImageButton more = (BadassImageButton) view.findViewById(R.id.more);
 
         more.setMovieId(entryId);
+        more.setmRuntime(mRuntime);
+
 
         more.setOnClickListener(new View.OnClickListener() {
 
@@ -100,19 +115,12 @@ public class MyListAdapter extends CursorAdapter {
             public void onClick(View v) {
                 int viewId = v.getId();
                 switch (viewId) {
-                    case R.id.starred:
-
-                        //TODO: from the ID, update the fav column of this row, then modify the image to notStarred.
-                        break;
-
-                    case R.id.notstarred:
-                        break;
-
                     case R.id.more:
                         BadassImageButton moreButton = (BadassImageButton) v;
 
-                        GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId());
+                        GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId(), moreButton.getmRuntime());
                         final long popupId = popup.getMovieId();
+                        final long popupRuntime = popup.getMRuntime();
                         if (header.equals("Bucket")){
                             popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
                         }else if (header.equals("History")){
@@ -130,16 +138,16 @@ public class MyListAdapter extends CursorAdapter {
                                         notifyDataSetChanged();
                                         break;
                                     case R.id.schedule:
-                                        /*Calendar cal = Calendar.getInstance();
+                                        Calendar cal = Calendar.getInstance();
                                         GregorianCalendar calDate = new GregorianCalendar();
                                         Intent calIntent = new Intent(Intent.ACTION_EDIT);
                                         calIntent.setType("vnd.android.cursor.item/event");
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
                                                 calDate.getTimeInMillis());
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                                                calDate.getTimeInMillis() + movie.getRuntime()*60*1000);
+                                                calDate.getTimeInMillis() + popupRuntime*60*1000);
                                         calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
-                                        context.startActivity(calIntent);*/
+                                        context.startActivity(calIntent);
                                         break;
                                     case R.id.delete:
                                         dbh.removeFromDB(popupId);

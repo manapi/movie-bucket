@@ -72,11 +72,11 @@ public class DBHandler extends SQLiteOpenHelper {
     public void markAsViewed(long id){
         ContentValues cv = new ContentValues();
         cv.put(KEY_VIEWED, 1);
-        db.update(TABLE_HEAD, cv,KEY_ID + "= " + id, null);
+        db.update(TABLE_HEAD, cv, KEY_ID + "= " + id, null);
     }
 
     public Cursor movieLister(String pageName){
-        String[] columns = {KEY_ID, KEY_TITLE, KEY_FAV};
+        String[] columns = {KEY_ID, KEY_TITLE, KEY_FAV, KEY_RUNTIME};
         String criteria = KEY_VIEWED + " = ?";
         String viewed = "0";
         if(pageName.equals("History")) {
@@ -105,5 +105,24 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         cursor.close();
         return 0;
+    }
+
+    public void swapFavoriteValue(long id){
+        String[] columns = {KEY_ID, KEY_FAV};
+        String criteria = KEY_ID + " = ?";
+        String[] criteriaArgs = {Long.toString(id)};
+
+        Cursor cursor = db.query(TABLE_HEAD, columns, criteria, criteriaArgs , null, null, null);
+        cursor.moveToNext();
+        int favValue = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
+
+        ContentValues cv = new ContentValues();
+        if(favValue == 0){
+            cv.put(KEY_FAV, 1);
+        } else {
+            cv.put(KEY_FAV, 0);
+        }
+        db.update(TABLE_HEAD, cv, KEY_ID + "= " + id, null);
+        cursor.close();
     }
 }

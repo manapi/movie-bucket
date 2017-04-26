@@ -7,22 +7,13 @@
     android:orientation="horizontal">
 
         <ift2905.moviebucket.BadassImageButton
-            android:id="@+id/starred"
-            android:layout_height="match_parent"
+            android:id="@+id/star"
             android:layout_width="0dp"
-            android:layout_weight="0"
+            android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:layout_weight="0"
             android:background="@null"
             app:srcCompat="@drawable/ic_star_black_24dp" />
-
-        <ift2905.moviebucket.BadassImageButton
-            android:id="@+id/notstarred"
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="0"
-            android:layout_gravity="start"
-            android:background="@null"
-            app:srcCompat="@drawable/ic_star_border_black_24dp" />
 
         <TextView
             android:id="@+id/mytitle"

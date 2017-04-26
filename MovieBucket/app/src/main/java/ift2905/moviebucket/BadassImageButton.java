@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 public class BadassImageButton extends android.support.v7.widget.AppCompatImageButton{
 
     private long movieId;
-
+    private long mRuntime;
     public BadassImageButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -22,4 +22,14 @@ public class BadassImageButton extends android.support.v7.widget.AppCompatImageB
     public long getMovieId(){
         return this.movieId;
     }
+
+    public long getmRuntime(){
+        return mRuntime;
+    }
+
+    public void setmRuntime(long runtime){
+        this.mRuntime = runtime;
+    }
+
+
 }

@@ -11,22 +11,29 @@ import android.view.View;
 public class GodlyPopupMenu extends PopupMenu {
 
     private long movieId;
+    private long mRuntime;
 
-    public GodlyPopupMenu(Context context, View anchor, long movieId){
+    public GodlyPopupMenu(Context context, View anchor, long movieId, long mRuntime){
         super(context, anchor);
 
         //TODO: make this class able to use the setForceShowIcon(boolean) method
         //That's what's needed to make icons visible in a popup menu
         this.movieId = movieId;
+        this.mRuntime = mRuntime;
 
     }
-    
+    /*
     public void setMovieId(long id){
         this.movieId = id;
     }
+    */
     
     public long getMovieId(){
         return this.movieId;
+    }
+
+    public long getMRuntime(){
+        return this.mRuntime;
     }
     
 }
