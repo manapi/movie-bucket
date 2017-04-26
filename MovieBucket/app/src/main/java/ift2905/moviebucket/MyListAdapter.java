@@ -17,6 +17,8 @@ import android.widget.Toast;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static ift2905.moviebucket.R.drawable.ic_star_black_24dp;
+import static ift2905.moviebucket.R.drawable.ic_star_border_black_24dp;
 import static ift2905.moviebucket.R.layout.mylist_row_item_view;
 
 // TODO: Expand adapter to include buttons, on click listeners, etc
@@ -77,17 +79,27 @@ public class MyListAdapter extends CursorAdapter {
 
 
         int fav = cursor.getInt(cursor.getColumnIndexOrThrow("favorite"));
+        starStatus = (BadassImageButton) view.findViewById(R.id.star);
+
         if(fav == 0) {
-            starStatus = (BadassImageButton) view.findViewById(R.id.notstarred);
-            starStatus.setTag("R.id.notstarred");
+            starStatus.setImageResource(ic_star_border_black_24dp);
         } else {
-            starStatus = (BadassImageButton) view.findViewById(R.id.starred);
-            starStatus.setTag("R.id.starred");
+            starStatus.setImageResource(ic_star_black_24dp);
         }
 
+        starStatus.setMovieId(entryId);
         LinearLayout.LayoutParams paramsStar = (LinearLayout.LayoutParams) starStatus.getLayoutParams();
         paramsStar.weight = 1.0f;
         starStatus.setLayoutParams(paramsStar);
+        starStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbh.swapFavoriteValue(starStatus.getMovieId());
+                //Toast.makeText(context, Long.toString(starStatus.getMovieId()), Toast.LENGTH_LONG).show();
+                updateCursor();
+                notifyDataSetChanged();
+            }
+        });
 
 
         //"More" Section
@@ -103,14 +115,6 @@ public class MyListAdapter extends CursorAdapter {
             public void onClick(View v) {
                 int viewId = v.getId();
                 switch (viewId) {
-                    case R.id.starred:
-
-                        //TODO: from the ID, update the fav column of this row, then modify the image to notStarred.
-                        break;
-
-                    case R.id.notstarred:
-                        break;
-
                     case R.id.more:
                         BadassImageButton moreButton = (BadassImageButton) v;
 
