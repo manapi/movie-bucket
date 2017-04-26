@@ -131,12 +131,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        //Expand / collapse search when switching fragments
-        /*if(searchView != null && id == R.id.nav_discover) {
-            searchView.setIconifiedByDefault(true);
-        } else {
-            searchView.setIconifiedByDefault(true);
-        }*/
+        searchView.setIconified(true);
+        searchView.setIconified(true);
+
 
         if (id == R.id.nav_discover) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();

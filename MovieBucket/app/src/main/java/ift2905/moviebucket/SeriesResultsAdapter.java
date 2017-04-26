@@ -5,6 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
@@ -18,8 +19,9 @@ public class SeriesResultsAdapter extends AbstractResultsAdapter{
         this.results = new ArrayList<>();
         this.results.addAll(results);
         this.context = context;
-        this.type = Type.tv;
     }
+
+    public Multi.MediaType getItemType(int position) { return Multi.MediaType.TV_SERIES; }
 
     @Override
     public long getItemId(int position) {

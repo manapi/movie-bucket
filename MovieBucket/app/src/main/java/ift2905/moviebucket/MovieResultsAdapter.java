@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Multi;
 
 /**
  * Created by Amélie on 2017-04-25.
@@ -18,8 +19,9 @@ public class MovieResultsAdapter extends AbstractResultsAdapter{
         this.results = new ArrayList<>();
         this.results.addAll(results);
         this.context = context;
-        this.type = Type.movie;
     }
+
+    public Multi.MediaType getItemType(int position) { return Multi.MediaType.MOVIE; }
 
     @Override
     public long getItemId(int position) {

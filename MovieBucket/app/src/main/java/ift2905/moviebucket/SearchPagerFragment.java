@@ -19,6 +19,7 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.Genre;
 import info.movito.themoviedbapi.model.MovieDb;
+import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.people.PersonCredit;
 import info.movito.themoviedbapi.model.people.PersonCredits;
@@ -36,17 +37,12 @@ public class SearchPagerFragment extends Fragment {
     private final String LANG = "en";
     private final Boolean ADULT = false; //include adult movies in search results
 
-    protected MyAdapter mAdapter;
-    ViewPager mPager;
-    FragmentManager mFragmentManager;
     protected ListFragment[] listArray;
 
+    protected TopResultsAdapter topAdapter;
     protected MovieResultsAdapter movieAdapter;
     protected SeriesResultsAdapter seriesAdapter;
     protected PeopleResultsAdapter peopleAdapter;
-    protected GenreAdapter genreAdapter;
-
-    protected PeopleListListener peopleListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +56,7 @@ public class SearchPagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pager_frag, container, false);
 
         TabLayout tabs = (TabLayout) rootView.findViewById(R.id.tabLayout);
-        mPager = (ViewPager) rootView.findViewById(R.id.viewPager);
+        ViewPager mPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 
         listArray = new ListFragment[4];
         listArray[0] = new ListFragment();
@@ -68,21 +64,19 @@ public class SearchPagerFragment extends Fragment {
         listArray[2] = new ListFragment();
         listArray[3] = new ListFragment();
 
+        topAdapter = new TopResultsAdapter(new ArrayList<Multi>(), getContext());
+        listArray[0].setListAdapter(topAdapter);
+
         movieAdapter = new MovieResultsAdapter(new ArrayList<MovieDb>(), getContext());
-        listArray[0].setListAdapter(movieAdapter);
+        listArray[1].setListAdapter(movieAdapter);
 
         seriesAdapter = new SeriesResultsAdapter(new ArrayList<TvSeries>(), getContext());
-        listArray[1].setListAdapter(seriesAdapter);
+        listArray[2].setListAdapter(seriesAdapter);
 
-        peopleListener = new PeopleListListener();
-        peopleAdapter = new PeopleResultsAdapter(new ArrayList<Person>(), getContext(), peopleListener);
-        listArray[2].setListAdapter(peopleAdapter);
+        peopleAdapter = new PeopleResultsAdapter(new ArrayList<Person>(), getContext());
+        listArray[3].setListAdapter(peopleAdapter);
 
-        new FetchGenres().execute();
-
-        mAdapter = new MyAdapter((getChildFragmentManager()));
-
-        mFragmentManager = getChildFragmentManager();
+        MyAdapter mAdapter = new MyAdapter((getChildFragmentManager()));
 
         mPager.setAdapter(mAdapter);
 
@@ -125,43 +119,13 @@ public class SearchPagerFragment extends Fragment {
         }*/
     }
 
-    private final class PeopleListListener implements
-                AbstractResultsAdapter.InnerListFragmentListener {
-            public void onSwitchToNextFragment(int personId) {
-                /*mFragmentManager.beginTransaction().remove(listArray[3])
-                        .commit();*/
-                if (listArray[2].getListAdapter() instanceof PeopleResultsAdapter){
-                    new FetchCreditsFromPerson().execute(personId + "");
-
-                }else{
-                    listArray[2].setListAdapter(peopleAdapter);
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-
-    private final class GenreListListener implements
-            AbstractResultsAdapter.InnerListFragmentListener {
-        public void onSwitchToNextFragment(int genreId) {
-                /*mFragmentManager.beginTransaction().remove(listArray[3])
-                        .commit();*/
-            if (listArray[3].getListAdapter() instanceof GenreAdapter){
-                new FetchMoviesFromGenre().execute(genreId + "");
-
-            }else{
-                listArray[3].setListAdapter(genreAdapter);
-            }
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
     private class MyAdapter extends FragmentPagerAdapter {
 
         private final String[] titles = new String[]{
+                "Top",
                 "Movies",
                 "TV",
                 "People",
-                "Genre"
         };
 
         private FragmentManager mFragmentManager;
@@ -189,9 +153,37 @@ public class SearchPagerFragment extends Fragment {
     };
 
     public void search(String query) {
+        new FetchTop().execute(query);
         new FetchMovies().execute(query);
         new FetchSeries().execute(query);
         new FetchPeople().execute(query);
+    }
+
+    /**
+     * Fetch top results from API
+     */
+    // TODO : get multiple pages...!!
+    public class FetchTop extends AsyncTask<String, Object,  List<Multi>> {
+
+        @Override
+        protected List<Multi> doInBackground(String... params) {
+            if(params[0] != null) {
+                String query = params[0];
+                TmdbApi api = new TmdbApi(API_KEY);
+                TmdbSearch search = api.getSearch();
+                return search.searchMulti(query, LANG, 1).getResults();
+            }
+            return new ArrayList<>();
+        }
+
+        @Override
+        protected void onPostExecute(List<Multi> results) {
+            if(topAdapter != null) {
+                topAdapter.getData().clear();
+                topAdapter.getData().addAll(results);
+                topAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     /**
@@ -269,115 +261,12 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Person> results) {
-            if(listArray[2] != null && peopleAdapter != null) {
+            if(listArray[3] != null && peopleAdapter != null) {
                 peopleAdapter.getData().clear();
                 peopleAdapter.getData().addAll(results);
                 peopleAdapter.notifyDataSetChanged();
-                listArray[2].setListAdapter(peopleAdapter);
+                listArray[3].setListAdapter(peopleAdapter);
             }
-        }
-    }
-
-    public class FetchCreditsFromPerson extends AsyncTask<String, Object,  List<PersonCredit>> {
-
-        @Override
-        protected List<PersonCredit> doInBackground(String... params) {
-
-            if(params[0] != null) {
-                int id =  new Integer(params[0]);
-                TmdbApi api = new TmdbApi(API_KEY);
-                PersonCredits cred = api.getPeople().getPersonCredits(id);
-
-                ArrayList<PersonCredit> credits = new ArrayList<>();
-
-                for(PersonCredit c : cred.getCrew()) {
-                    if (!credits.contains(c)){
-                        credits.add(c);
-                    }
-                }
-                credits.addAll(cred.getCast());
-                return credits;
-            }
-            return new ArrayList<>();
-        }
-
-        @Override
-        protected void onPostExecute(List<PersonCredit> credits) {
-            if(listArray[2] != null) {
-                listArray[2].setListAdapter(new CreditsResultsAdapter(credits, getContext()));
-            }
-        }
-    }
-
-    public class FetchMoviesFromGenre extends AsyncTask<String, Object,  List<MovieDb>> {
-
-        @Override
-        protected List<MovieDb> doInBackground(String... params) {
-
-            if(params[0] != null) {
-                int id =  new Integer(params[0]);
-                TmdbApi api = new TmdbApi(API_KEY);
-
-                return api.getGenre().getGenreMovies(id, LANG, 1, false).getResults();
-            }
-            return new ArrayList<>();
-        }
-
-        @Override
-        protected void onPostExecute(List<MovieDb> results) {
-            if(listArray[3] != null) {
-                listArray[3].setListAdapter(new MovieResultsAdapter(results, getContext()));
-            }
-        }
-    }
-
-    public class FetchGenres extends AsyncTask<String, Object,  List<Genre>> {
-
-        @Override
-        protected List<Genre> doInBackground(String... params) {
-
-            TmdbApi api = new TmdbApi(API_KEY);
-            return api.getGenre().getGenreList(LANG);
-        }
-
-        @Override
-        protected void onPostExecute(List<Genre> genres) {
-
-            if(listArray[3] != null) {
-                GenreListListener listener = new GenreListListener();
-                genreAdapter = new GenreAdapter(genres, getContext(), listener);
-                listArray[3].setListAdapter(genreAdapter);
-
-            }
-        }
-    }
-
-    private class GenreAdapter extends AbstractResultsAdapter {
-
-        private GenreAdapter(List<Genre> genres, Context context, GenreListListener listener) {
-            super();
-            this.results = new ArrayList<>();
-            this.results.addAll(genres);
-            this.context = context;
-            this.type = Type.genre;
-            this.listener = listener;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return ((Genre) results.get(position)).getId();
-        }
-
-        public String getItemName(int position) {
-            return ((Genre) results.get(position)).getName();
-        }
-
-        public String getItemDate(int position) {
-            return null;
-        }
-
-        public String getItemUrl(int position) {
-            return null;
         }
     }
 }
