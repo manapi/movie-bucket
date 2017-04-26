@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 

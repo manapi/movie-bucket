@@ -627,10 +627,16 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-                creatorView.setText(creator);
-                if (count>1){
-                    creatorTitleView.setText("Creators");
+                if (creator.isEmpty()){
+                    creatorView.setText(DEF);
+                } else {
+                    creatorView.setText(creator);
+                    if (count>1){
+                        creatorTitleView.setText("Creators");
+                    }
                 }
+
+
 
             } catch (Exception e){
                 e.printStackTrace();
