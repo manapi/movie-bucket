@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -75,6 +78,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
         bucketButton.setOnClickListener(this);
 
@@ -93,6 +102,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             historyButton.setText("-My History");
         }
 
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -450,6 +467,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             try {
                 Picasso.with(getApplicationContext())
                         .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
                         .into(image);
             } catch (Exception e){
                 // TODO : Find a default image
@@ -741,6 +760,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             try {
                 Picasso.with(getApplicationContext())
                         .load(BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath())
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
                         .into(image);
             } catch (Exception e){
                 // TODO : Find a default image

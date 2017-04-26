@@ -3,9 +3,12 @@ package ift2905.moviebucket;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -25,10 +28,6 @@ import info.movito.themoviedbapi.model.people.PersonCredits;
 
 public class PersonView extends AppCompatActivity {
 
-    public enum Job {
-        Director, Producer, Writer, Actor
-    }
-
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     protected ExpandableListView creditsList;
 
@@ -36,11 +35,18 @@ public class PersonView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person_view);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         int id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.person.name());
         String name = getIntent().getExtras().getString("name");
 
-        setTitle(name);
+        if(name != null) {
+            setTitle(name);
+        }
 
         creditsList = (ExpandableListView) findViewById(R.id.credisList);
 
@@ -48,7 +54,17 @@ public class PersonView extends AppCompatActivity {
             FetchCredits mf = new FetchCredits();
             mf.execute(id + "");
         }
+
     }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private class FetchCredits extends AsyncTask<String, Object, PersonCredits> {
 
         @Override
@@ -68,18 +84,24 @@ public class PersonView extends AppCompatActivity {
                 List<String> jobs = new ArrayList<>();
                 HashMap<String, List<PersonCredit>> creds = new HashMap<>();
 
-                List<PersonCredit> crew = new ArrayList<>();
+                List<PersonCredit> crew = credits.getCrew();
 
-                for (PersonCredit c : credits.getCrew()) {
-                    if (!jobs.contains(c.getJob())) {
-                        jobs.add(c.getJob());
-                        creds.put(c.getJob(), new ArrayList<PersonCredit>());
+                if(!crew.isEmpty()) {
+                    for (PersonCredit c : crew) {
+                        if (!jobs.contains(c.getJob())) {
+                            jobs.add(c.getJob());
+                            creds.put(c.getJob(), new ArrayList<PersonCredit>());
+                        }
+                        creds.get(c.getJob()).add(c);
                     }
-                    creds.get(c.getJob()).add(c);
                 }
 
-                jobs.add("Actor");
-                creds.put("Actor", credits.getCast());
+                List<PersonCredit> cast = credits.getCast();
+
+                if(!cast.isEmpty()) {
+                    jobs.add("Actor");
+                    creds.put("Actor", cast);
+                }
 
                 CreditsExpandableAdapter adapter = new CreditsExpandableAdapter(getApplication(), jobs, creds);
                 creditsList.setAdapter(adapter);
@@ -152,6 +174,8 @@ public class PersonView extends AppCompatActivity {
 
             Picasso.with(context)
                     .load(url)
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
                     .into(image);
 
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -215,4 +239,5 @@ public class PersonView extends AppCompatActivity {
             return true;
         }
     }
+
 }

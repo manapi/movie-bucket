@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
@@ -104,8 +105,10 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
         }
 
         Picasso.with(context)
-                .load(url)
-                .into(image);
+                    .load(url)
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
+                    .into(image);
 
         convertView.setOnClickListener(new View.OnClickListener() {
 

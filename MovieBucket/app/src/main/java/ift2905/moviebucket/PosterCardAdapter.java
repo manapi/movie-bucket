@@ -40,8 +40,8 @@ public class PosterCardAdapter extends RecyclerView.Adapter<PosterCardAdapter.Cu
 
         //Render image using Picasso library
         Picasso.with(mContext).load("http://image.tmdb.org/t/p/w300" + movie.getPosterPath())
-                    //.error(R.drawable.placeholder)
-                    //.placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
                     .into(customViewHolder.imageView);
 
 
