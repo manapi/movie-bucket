@@ -3,6 +3,7 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
 import android.support.v7.app.ActionBar;
@@ -96,13 +97,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
         state = dbh.inWhichList(id);
         if(state == 1){
-            bucketButton.setText("-My Bucket");
+            bucketButton.setSelected(true);
+
         } else if(state == 2) {
             bucketButton.setEnabled(false);
-            bucketButton.setText("In My History");
-            historyButton.setText("-My History");
+            bucketButton.setSelected(false);
         }
-
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -120,13 +120,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 if(state == 0) {
                     dbh.addToDB(id, title, 0, runtimeDB);
                     state = 1;
-                    bucketButton.setText("- My Bucket");
-
+                    bucketButton.setSelected(true);
                 } else if(state == 1){
                     dbh.removeFromDB(id);
-                    bucketButton.setText("+ My Bucket");
                     state = 0;
-
+                    bucketButton.setSelected(false);
                 }
                 break;
 
@@ -135,22 +133,20 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     dbh.addToDB(id, title, 1, runtimeDB);
                     state = 2;
                     bucketButton.setEnabled(false);
-                    bucketButton.setText("In my history");
-                    historyButton.setText("- My history");
+                    historyButton.setSelected(true);
 
                 } else if(state == 1) {
                     state = 2;
                     dbh.markAsViewed(id);
                     bucketButton.setEnabled(false);
-                    bucketButton.setText("In my history");
-                    historyButton.setText("- My History");
+                    historyButton.setSelected(true);
 
                 } else {
                     state = 0;
                     dbh.removeFromDB(id);
                     bucketButton.setEnabled(true);
-                    bucketButton.setText("+ My Bucket");
-                    historyButton.setText("+ My History");
+                    bucketButton.setSelected(false);
+                    historyButton.setSelected(false);
 
                 }
                 break;

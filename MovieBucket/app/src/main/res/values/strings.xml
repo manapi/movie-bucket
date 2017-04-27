@@ -111,4 +111,7 @@
     <string name="search_title">Search</string>
     <string name="title_activity_person_view">Person</string>
     <string name="title_activity_movie_view">Movie</string>
+    <string name="add_bucket_button">My Bucket</string>
+    <string name="add_history_button">My History</string>
+    <string name="calendar_button">Schedule</string>
 </resources>
