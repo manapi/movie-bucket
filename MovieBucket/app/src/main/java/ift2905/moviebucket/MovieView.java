@@ -52,7 +52,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
-    final String SIZE_MEDIUM = "w342";
+    final String SIZE_MEDIUM = "w500";
     final String DEF = "Unknown";
 
     @Override
@@ -119,11 +119,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 if(state == 0) {
                     dbh.addToDB(id, title, 0, movie.getRuntime());
                     state = 1;
-                    bucketButton.setText("-My Bucket");
+                    bucketButton.setText("- My Bucket");
 
                 } else if(state == 1){
                     dbh.removeFromDB(id);
-                    bucketButton.setText("+My Bucket");
+                    bucketButton.setText("+ My Bucket");
                     state = 0;
 
                 }
@@ -135,21 +135,21 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     state = 2;
                     bucketButton.setEnabled(false);
                     bucketButton.setText("In my history");
-                    historyButton.setText("-My history");
+                    historyButton.setText("- My history");
 
                 } else if(state == 1) {
                     state = 2;
                     dbh.markAsViewed(id);
                     bucketButton.setEnabled(false);
                     bucketButton.setText("In my history");
-                    historyButton.setText("-My History");
+                    historyButton.setText("- My History");
 
                 } else {
                     state = 0;
                     dbh.removeFromDB(id);
                     bucketButton.setEnabled(true);
-                    bucketButton.setText("+My Bucket");
-                    historyButton.setText("+My History");
+                    bucketButton.setText("+ My Bucket");
+                    historyButton.setText("+ My History");
 
                 }
                 break;
@@ -222,7 +222,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 String genres = "";
                 while(genreListIterator.hasNext()){
                     Genre g = genreListIterator.next();
-                    genres = genres+g.getName()+"\n";
+                    if (genres.isEmpty()) {
+                        genres = g.getName();
+                    }else {
+                        genres = genres+", " +g.getName();
+                    }
+
                 }
                 if (genres.isEmpty()){
                     genresView.setText(DEF);
@@ -537,7 +542,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 String genres = "";
                 while(genreListIterator.hasNext()){
                     Genre g = genreListIterator.next();
-                    genres = genres+g.getName()+"\n";
+                    if (genres.isEmpty()) {
+                        genres = g.getName();
+                    }else {
+                        genres = genres+", " +g.getName();
+                    }
+
                 }
                 if (genres.isEmpty()){
                     genresView.setText(DEF);
