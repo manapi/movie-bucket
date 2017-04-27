@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -69,9 +67,22 @@ public class MyListAdapter extends CursorAdapter {
         long mRuntime = cursor.getLong(cursor.getColumnIndexOrThrow("runtime"));
 
         //Title section
-        TextView myTitleText = (TextView) view.findViewById(R.id.mytitle);
+        IntuitiveTextView myTitleText = (IntuitiveTextView) view.findViewById(R.id.mytitle);
         final String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
         myTitleText.setText(processTitle(title));
+
+        myTitleText.setMovieId(entryId);
+
+        myTitleText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                IntuitiveTextView title = (IntuitiveTextView) v;
+                Intent intent = new Intent(context, MovieView.class);
+                intent.putExtra("movie", title.getMovieId());
+                context.startActivity(intent);
+            }
+        });
 
         //Star section
         if(header.equals("Bucket")){
@@ -98,6 +109,13 @@ public class MyListAdapter extends CursorAdapter {
                     notifyDataSetChanged();
                 }
             });
+        }else if(header.equals("History")){
+
+            BadassImageButton checkmark = (BadassImageButton) view.findViewById(R.id.checked);
+
+            LinearLayout.LayoutParams paramsCheck = (LinearLayout.LayoutParams) checkmark.getLayoutParams();
+            paramsCheck.weight = 1.0f;
+            checkmark.setLayoutParams(paramsCheck);
         }
 
         //"More" Section
@@ -152,11 +170,7 @@ public class MyListAdapter extends CursorAdapter {
                                         updateCursor();
                                         notifyDataSetChanged();
                                         break;
-                                    case R.id.details:
-                                        Intent intent = new Intent(context, MovieView.class);
-                                        intent.putExtra("movie", popupId);
-                                        context.startActivity(intent);
-                                        break;
+
                                 }
                                 return true;
                             }
@@ -164,10 +178,6 @@ public class MyListAdapter extends CursorAdapter {
                         popup.show();
                         break;
 
-                    case R.id.mytitle:
-                        //the code here creates a new intent for the Movie View activity and adds to it
-                        //the selected movie's Movie Db id as an extra
-                        break;
                 }
             }
         });
