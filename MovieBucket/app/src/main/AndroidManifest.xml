@@ -38,8 +38,13 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".MovieView" />
-        <activity android:name=".PersonView"></activity>
+        <activity android:name=".MovieView"
+            android:label="@string/title_activity_movie_view"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".PersonView"
+            android:label="@string/title_activity_person_view"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

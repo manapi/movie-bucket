@@ -2,6 +2,9 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
@@ -27,11 +31,6 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
 
     public enum Type {
         top, movie, tv, person
-    }
-
-
-    public interface InnerListFragmentListener {
-        void onSwitchToNextFragment(int personId);
     }
 
     final String BASE_URL = "http://image.tmdb.org/t/p/";
@@ -97,6 +96,8 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
                 arg = null;
         }
         type.setText(arg);
+        type.setTextColor(Color.parseColor("#919191"));
+        type.setTypeface(null, Typeface.BOLD);
 
         String url = getItemUrl(position);
         if(url != null) {
@@ -104,8 +105,10 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
         }
 
         Picasso.with(context)
-                .load(url)
-                .into(image);
+                    .load(url)
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
+                    .into(image);
 
         convertView.setOnClickListener(new View.OnClickListener() {
 

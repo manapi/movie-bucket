@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -49,7 +52,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
-    final String SIZE_MEDIUM = "w342";
+    final String SIZE_MEDIUM = "w500";
     final String DEF = "Unknown";
 
     @Override
@@ -75,6 +78,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             e.printStackTrace();
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
         bucketButton.setOnClickListener(this);
 
@@ -95,6 +104,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if(itemId == android.R.id.home){
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -102,11 +119,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 if(state == 0) {
                     dbh.addToDB(id, title, 0, movie.getRuntime());
                     state = 1;
-                    bucketButton.setText("-My Bucket");
+                    bucketButton.setText("- My Bucket");
 
                 } else if(state == 1){
                     dbh.removeFromDB(id);
-                    bucketButton.setText("+My Bucket");
+                    bucketButton.setText("+ My Bucket");
                     state = 0;
 
                 }
@@ -118,21 +135,21 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     state = 2;
                     bucketButton.setEnabled(false);
                     bucketButton.setText("In my history");
-                    historyButton.setText("-My history");
+                    historyButton.setText("- My history");
 
                 } else if(state == 1) {
                     state = 2;
                     dbh.markAsViewed(id);
                     bucketButton.setEnabled(false);
                     bucketButton.setText("In my history");
-                    historyButton.setText("-My History");
+                    historyButton.setText("- My History");
 
                 } else {
                     state = 0;
                     dbh.removeFromDB(id);
                     bucketButton.setEnabled(true);
-                    bucketButton.setText("+My Bucket");
-                    historyButton.setText("+My History");
+                    bucketButton.setText("+ My Bucket");
+                    historyButton.setText("+ My History");
 
                 }
                 break;
@@ -205,7 +222,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 String genres = "";
                 while(genreListIterator.hasNext()){
                     Genre g = genreListIterator.next();
-                    genres = genres+g.getName()+"\n";
+                    if (genres.isEmpty()) {
+                        genres = g.getName();
+                    }else {
+                        genres = genres+", " +g.getName();
+                    }
+
                 }
                 if (genres.isEmpty()){
                     genresView.setText(DEF);
@@ -450,6 +472,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             try {
                 Picasso.with(getApplicationContext())
                         .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
                         .into(image);
             } catch (Exception e){
                 // TODO : Find a default image
@@ -518,7 +542,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 String genres = "";
                 while(genreListIterator.hasNext()){
                     Genre g = genreListIterator.next();
-                    genres = genres+g.getName()+"\n";
+                    if (genres.isEmpty()) {
+                        genres = g.getName();
+                    }else {
+                        genres = genres+", " +g.getName();
+                    }
+
                 }
                 if (genres.isEmpty()){
                     genresView.setText(DEF);
@@ -608,10 +637,16 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-                creatorView.setText(creator);
-                if (count>1){
-                    creatorTitleView.setText("Creators");
+                if (creator.isEmpty()){
+                    creatorView.setText(DEF);
+                } else {
+                    creatorView.setText(creator);
+                    if (count>1){
+                        creatorTitleView.setText("Creators");
+                    }
                 }
+
+
 
             } catch (Exception e){
                 e.printStackTrace();
@@ -741,6 +776,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             try {
                 Picasso.with(getApplicationContext())
                         .load(BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath())
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
                         .into(image);
             } catch (Exception e){
                 // TODO : Find a default image
