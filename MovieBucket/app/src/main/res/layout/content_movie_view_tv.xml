@@ -13,6 +13,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:visibility="visible"
+    android:nestedScrollingEnabled="true"
     tools:context="ift2905.moviebucket.MovieView">
 
 
@@ -273,6 +274,32 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/directorTitle"
                 android:text="-" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/Episodes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:id="@+id/episodesTitle"
+                style="@android:style/Widget.TextView.SpinnerItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Number of episodes" />
+
+            <TextView
+                android:id="@+id/tvEpisodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:text="-" />
+
         </LinearLayout>
 
         <LinearLayout

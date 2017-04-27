@@ -47,6 +47,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     Button bucketButton;
     Button historyButton;
     Button calendarButton;
+    int runtimeDB;
     DBHandler dbh;
     int state;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
@@ -118,7 +119,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.buttonAddMb:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 0, movie.getRuntime());
+                    dbh.addToDB(id, title, 0, runtimeDB);
                     state = 1;
                     bucketButton.setText("- My Bucket");
 
@@ -132,7 +133,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             case R.id.buttonAddH:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 1, movie.getRuntime());
+                    dbh.addToDB(id, title, 1, runtimeDB);
                     state = 2;
                     bucketButton.setEnabled(false);
                     bucketButton.setText("In my history");
@@ -163,7 +164,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
                         calDate.getTimeInMillis());
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                        calDate.getTimeInMillis() +movie.getRuntime()*60*1000);
+                        calDate.getTimeInMillis() +runtimeDB*60*1000);
                 intent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
                 startActivity(intent);
                 break;
@@ -259,6 +260,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
             try {
                 long runTime = movie.getRuntime();
+                runtimeDB = (int)runTime;
                 if (runTime == 0){
                     runtimeView.setText(DEF);
                 } else {
@@ -351,6 +353,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 writerView.setText(DEF);
 
             }
+
 
             //Cast
             TextView mainCast1 = (TextView) findViewById(R.id.movieActor1);
@@ -588,12 +591,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
                     if(rtListString.isEmpty()) {
                         rtListString = rtToString;
+                        runtimeDB = rt;
                     } else {
                         rtListString = rtListString +", " + rtToString;
                     }
                 }
                 if (rtListString.isEmpty()){
                     runtimeView.setText(DEF);
+                    runtimeDB = 0;
                 } else {
                     runtimeView.setText(rtListString);
                 }
@@ -721,6 +726,34 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 mainChar2.setVisibility(View.GONE);
                 mainChar3.setVisibility(View.GONE);
             }
+
+            //Episodes
+            TextView episodesView = (TextView) findViewById(R.id.tvEpisodes);
+            try{
+                int nbEp = tvSeries.getNumberOfEpisodes();
+
+                if (nbEp == 0){
+                    episodesView.setText(DEF);
+                } else {
+                    int nbSeas = tvSeries.getNumberOfSeasons();
+                    String ep = " episodes (";
+                    String seas = " seasons)";
+                    if (nbEp <2){
+                        ep = " episode (";
+                    }
+                    if (nbSeas<2){
+                        seas = " season)";
+                    }
+
+                    episodesView.setText(Integer.toString(nbEp) + ep + Integer.toString(nbSeas) + seas);
+                }
+
+
+            } catch (Exception e) {
+                episodesView.setText(DEF);
+            }
+
+
 
             // Network
             TextView networkView = (TextView) findViewById(R.id.tvNetwork);
