@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
@@ -10,7 +11,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.17"
         android:text="@string/about_diro"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:layout_marginTop="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/textView4"
@@ -18,7 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.17"
         android:text="@string/about_devs"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:layout_marginTop="26dp"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/textView6"
@@ -26,7 +33,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.17"
         android:text="@string/about_thanks"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/textView4"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:id="@+id/textView2"
@@ -34,14 +44,49 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.17"
         android:text="@string/about_tmdb"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:layout_marginTop="21dp"
+        android:layout_below="@+id/textView6"
+        android:layout_alignParentStart="true" />
 
-    <TextView
-        android:id="@+id/textView5"
+    <ImageView
+        android:id="@+id/tmdb_logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.17"
-        android:text="@string/about_arr"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium" />
+        android:layout_above="@+id/textView5"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/diro_logo"
+        android:layout_weight="1"
+        android:layout_below="@+id/textView2" />
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/textView5">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:text="@string/about_arr"
+            android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+            android:layout_alignParentStart="true" />
+
+        <ImageView
+            android:id="@+id/diro_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="248dp"
+            android:layout_marginTop="96dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
