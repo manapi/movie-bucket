@@ -47,7 +47,7 @@
                 <ImageView
                     android:id="@+id/tvPoster"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
@@ -189,7 +189,7 @@
                 <Button
                     android:id="@+id/buttonAddMb"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="false"
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/check"

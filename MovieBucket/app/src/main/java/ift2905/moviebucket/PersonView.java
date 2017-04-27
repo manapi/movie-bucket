@@ -188,6 +188,7 @@ public class PersonView extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, MovieView.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(AbstractResultsAdapter.Type.movie.name(), getChildId(groupPosition, childPosition));
                     context.startActivity(intent);
                 }
