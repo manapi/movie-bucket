@@ -96,8 +96,6 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
                 arg = null;
         }
         type.setText(arg);
-        type.setTextColor(Color.parseColor("#919191"));
-        type.setTypeface(null, Typeface.BOLD);
 
         String url = getItemUrl(position);
         if(url != null) {

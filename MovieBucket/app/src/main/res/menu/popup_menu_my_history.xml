@@ -8,9 +8,6 @@
         app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
     <item
-        android:id="@+id/details"
-        android:title="Movie details" />
-    <item
         android:id="@+id/delete"
         android:title="Remove from list"
         app:srcCompat="@drawable/ic_close_black_24dp" />

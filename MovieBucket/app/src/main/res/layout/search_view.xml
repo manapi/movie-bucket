@@ -53,6 +53,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/colorIcon"
+                android:textStyle="bold"
                 android:text="Type" />
         </LinearLayout>
 
