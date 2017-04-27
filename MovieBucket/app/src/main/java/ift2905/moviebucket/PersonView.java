@@ -2,6 +2,8 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -157,7 +159,9 @@ public class PersonView extends AppCompatActivity {
             TextView type = (TextView) convertView.findViewById(R.id.type);
             ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-            type.setVisibility(View.GONE);
+            type.setText("Movie");
+            type.setTextColor(Color.parseColor("#919191"));
+            type.setTypeface(null, Typeface.BOLD);
 
             String year = child.getReleaseDate();
             if(year != null && year.length() >= 4) {

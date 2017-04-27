@@ -2,6 +2,9 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +31,6 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
 
     public enum Type {
         top, movie, tv, person
-    }
-
-
-    public interface InnerListFragmentListener {
-        void onSwitchToNextFragment(int personId);
     }
 
     final String BASE_URL = "http://image.tmdb.org/t/p/";
@@ -98,6 +96,8 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
                 arg = null;
         }
         type.setText(arg);
+        type.setTextColor(Color.parseColor("#919191"));
+        type.setTypeface(null, Typeface.BOLD);
 
         String url = getItemUrl(position);
         if(url != null) {
