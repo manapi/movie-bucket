@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -51,6 +52,9 @@ public class MainActivity extends AppCompatActivity
         //Initialize discover fragment by default
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
         setTitle(R.string.title_fragment_discover);
+
+        //Sets the used Settings.
+        //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
     //TODO: handle back from search fragments back to *any* fragment?
@@ -106,7 +110,7 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            Intent intent = new Intent(MainActivity.this, Settings.class);
             startActivity(intent);
             return true;
         }

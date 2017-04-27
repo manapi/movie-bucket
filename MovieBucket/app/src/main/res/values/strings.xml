@@ -7,14 +7,13 @@
 
     <!-- Strings related to About -->
     <string name="about_devs">
-            "The main developers are:\n"
+            "The main developers are:\n "
             <ol>
                 <li>"Christophe Apollon-Roy\n"</li>
                 <li>"Adèle Aubin\n"</li>
                 <li>"Amélie Lacombe-Robillard\n"</li>
                 <li>"Stéphane Verville-Vohl"</li>
             </ol>
-
 
     </string>
     <string name="about_tmdb">"This product uses the TMDb API but is not endorsed or certified by TMDb.\n"</string>

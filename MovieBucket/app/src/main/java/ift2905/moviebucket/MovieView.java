@@ -50,6 +50,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     DBHandler dbh;
     int state;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+
     final String LANG = "en";
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_MEDIUM = "w500";
