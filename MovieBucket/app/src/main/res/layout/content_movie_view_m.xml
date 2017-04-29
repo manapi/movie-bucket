@@ -26,7 +26,8 @@
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,7 +43,6 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignWithParentIfMissing="false"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/cardview_shadow_start_color"
                     android:isScrollContainer="false"
                     android:padding="2dp" />
 
@@ -61,7 +61,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.13"
                         android:orientation="vertical"
-                        android:paddingBottom="7dp">
+                        android:paddingBottom="7dp"
+                        >
 
                         <TextView
                             android:id="@+id/titleTitle"
@@ -242,8 +243,10 @@
             android:id="@+id/Overview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:showDividers="middle">
 
             <TextView
                 android:id="@+id/overviewTitle"
@@ -268,8 +271,10 @@
             android:id="@+id/Director"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:showDividers="middle">
 
             <TextView
                 android:id="@+id/directorTitle"
@@ -292,8 +297,10 @@
             android:id="@+id/Writer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:showDividers="middle">
 
             <TextView
                 android:id="@+id/writerTitle"
@@ -316,8 +323,10 @@
             android:id="@+id/Production"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:showDividers="middle">
 
             <TextView
                 android:id="@+id/productionTitle"
@@ -341,8 +350,11 @@
             android:id="@+id/Country"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
+            android:showDividers="middle"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            >
 
             <TextView
                 android:id="@+id/countryTitle"
@@ -366,15 +378,17 @@
             android:id="@+id/Cast"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
             android:orientation="vertical"
-            android:paddingTop="10dp">
+            android:paddingTop="10dp"
+            android:showDividers="middle">
 
             <TextView
                 android:id="@+id/castTitle"
                 style="@android:style/Widget.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cast" />
+                android:text="Main cast" />
 
             <TableLayout
                 android:id="@+id/movieMainCast"
@@ -437,7 +451,7 @@
                 <TableRow
                     android:id="@+id/movieCast3"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:weightSum="1">
 
                     <TextView
