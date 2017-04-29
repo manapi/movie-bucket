@@ -1,7 +1,9 @@
 package ift2905.moviebucket;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,8 +32,8 @@ public class SearchPagerFragment extends Fragment {
 
     //TODO : get from bundle
     private final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
-    private final String LANG = "en";
-    private final Boolean ADULT = false; //include adult movies in search results
+    private String lang;
+    private Boolean adult; //include adult movies in search results
 
     protected ListFragment[] listArray;
 
@@ -43,6 +45,11 @@ public class SearchPagerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Sets up the information language.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        lang = prefs.getString(SettingsActivity.KEY_LOCALE, "en");
+        adult = prefs.getBoolean(SettingsActivity.KEY_ADULT_PREF, false);
     }
 
     @Override
@@ -167,7 +174,7 @@ public class SearchPagerFragment extends Fragment {
                 String query = params[0];
                 TmdbApi api = new TmdbApi(API_KEY);
                 TmdbSearch search = api.getSearch();
-                return search.searchMulti(query, LANG, 1).getResults();
+                return search.searchMulti(query, lang, 1).getResults();
             }
             return new ArrayList<>();
         }
@@ -194,7 +201,7 @@ public class SearchPagerFragment extends Fragment {
                 String query = params[0];
                 TmdbApi api = new TmdbApi(API_KEY);
                 TmdbSearch search = api.getSearch();
-                return search.searchMovie(query, null, LANG, ADULT, 1).getResults();
+                return search.searchMovie(query, null, lang, adult, 1).getResults();
             }
             return new ArrayList<>();
         }
@@ -222,7 +229,7 @@ public class SearchPagerFragment extends Fragment {
                 String query = params[0];
                 TmdbApi api = new TmdbApi(API_KEY);
                 TmdbSearch search = api.getSearch();
-                return search.searchTv(query, LANG, 1).getResults();
+                return search.searchTv(query, lang, 1).getResults();
             }
             return new ArrayList<>();
         }
@@ -250,7 +257,7 @@ public class SearchPagerFragment extends Fragment {
                 String query = params[0];
                 TmdbApi api = new TmdbApi(API_KEY);
                 TmdbSearch search = api.getSearch();
-                return search.searchPerson(query, ADULT, 1).getResults();
+                return search.searchPerson(query, adult, 1).getResults();
             }
             return new ArrayList<>();
         }
