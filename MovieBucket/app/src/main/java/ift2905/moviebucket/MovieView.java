@@ -3,6 +3,7 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.provider.CalendarContract;
 import android.support.v7.app.ActionBar;
@@ -65,12 +66,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         try {
             dbh = new DBHandler(this);
             id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
+            setContentView(R.layout.activity_movie_view_m);
             if (id > 0){
-                setContentView(R.layout.activity_movie_view_m);
                 MovieFetcher mf = new MovieFetcher(id);
                 mf.execute();
             } else {
-                setContentView(R.layout.activity_movie_view_tv);
                 id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.tv.name());
                 TvFetcher tf = new TvFetcher(id);
                 tf.execute();
@@ -97,13 +97,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
         state = dbh.inWhichList(id);
         if(state == 1){
-            bucketButton.setText("-My Bucket");
+            bucketButton.setSelected(true);
+
         } else if(state == 2) {
             bucketButton.setEnabled(false);
-            bucketButton.setText("In My History");
-            historyButton.setText("-My History");
+            bucketButton.setSelected(false);
         }
-
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -121,13 +120,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 if(state == 0) {
                     dbh.addToDB(id, title, 0, runtimeDB);
                     state = 1;
-                    bucketButton.setText("- My Bucket");
-
+                    bucketButton.setSelected(true);
                 } else if(state == 1){
                     dbh.removeFromDB(id);
-                    bucketButton.setText("+ My Bucket");
                     state = 0;
-
+                    bucketButton.setSelected(false);
                 }
                 break;
 
@@ -136,22 +133,20 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     dbh.addToDB(id, title, 1, runtimeDB);
                     state = 2;
                     bucketButton.setEnabled(false);
-                    bucketButton.setText("In my history");
-                    historyButton.setText("- My history");
+                    historyButton.setSelected(true);
 
                 } else if(state == 1) {
                     state = 2;
                     dbh.markAsViewed(id);
                     bucketButton.setEnabled(false);
-                    bucketButton.setText("In my history");
-                    historyButton.setText("- My History");
+                    historyButton.setSelected(true);
 
                 } else {
                     state = 0;
                     dbh.removeFromDB(id);
                     bucketButton.setEnabled(true);
-                    bucketButton.setText("+ My Bucket");
-                    historyButton.setText("+ My History");
+                    bucketButton.setSelected(false);
+                    historyButton.setSelected(false);
 
                 }
                 break;
@@ -512,7 +507,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         protected void onPostExecute(TvSeries tvSeries) {
 
             // Title
-            TextView titleView = (TextView) findViewById(R.id.tvTitle);
+            TextView titleView = (TextView) findViewById(R.id.movieTitle);
             try {
                 title = tvSeries.getName();
                 setTitle(title);
@@ -523,23 +518,25 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Year
-            TextView yearView = (TextView) findViewById(R.id.tvRelease);
+            TextView releaseView = (TextView) findViewById(R.id.movieYear);
+            TextView releaseTitleView = (TextView) findViewById(R.id.yearTitle);
+            releaseTitleView.setText("Release Year");
             try {
                 String beg = tvSeries.getFirstAirDate().substring(0,4);
                 if (tvSeries.getStatus().contains("Ended")) {
                     String end = tvSeries.getLastAirDate().substring(0,4);
-                    yearView.setText(beg + " - " + end);
+                    releaseView.setText(beg + " - " + end);
                 } else {
-                    yearView.setText("Since " + beg);
+                    releaseView.setText("Since " + beg);
                 }
 
             } catch (Exception e) {
-                yearView.setText(DEF);
+                releaseView.setText(DEF);
             }
 
 
             // Genres
-            TextView genresView = (TextView) findViewById(R.id.tvGenres);
+            TextView genresView = (TextView) findViewById(R.id.movieGenres);
             try {
                 List<Genre> listGenres = tvSeries.getGenres();
                 ListIterator<Genre> genreListIterator = listGenres.listIterator();
@@ -564,7 +561,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             //Rating
-            TextView ratingView = (TextView) findViewById(R.id.tvRating);
+            TextView ratingView = (TextView) findViewById(R.id.movieRating);
             try {
                 if (tvSeries.getVoteCount() == 0){
                     ratingView.setText("Not rated yet");
@@ -579,7 +576,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Run time
-            TextView runtimeView = (TextView) findViewById(R.id.tvRuntime);
+            TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
+            TextView runtimeTitleView = (TextView) findViewById(R.id.runtimeTitle);
+            runtimeTitleView.setText("Episode runtime");
             try {
                 List<Integer> listRunTime = tvSeries.getEpisodeRuntime();
                 ListIterator<Integer> runTimeListIterator = listRunTime.listIterator();
@@ -608,7 +607,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Overview
-            TextView overviewView = (TextView) findViewById(R.id.tvOverview);
+            TextView overviewView = (TextView) findViewById(R.id.movieOverview);
             try{
                 String overview = tvSeries.getOverview();
                 if (overview.isEmpty()){
@@ -623,8 +622,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Creator
-            TextView creatorView = (TextView) findViewById(R.id.tvCreator);
-            TextView creatorTitleView = (TextView) findViewById(R.id.creatorTitle);
+            TextView creatorView = (TextView) findViewById(R.id.movieDirector);
+            TextView creatorTitleView = (TextView) findViewById(R.id.directorTitle);
+            creatorTitleView.setText("Creator");
 
             try{
                 List<Person> listCreator = tvSeries.getCreatedBy();
@@ -728,7 +728,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             }
 
             //Episodes
-            TextView episodesView = (TextView) findViewById(R.id.tvEpisodes);
+            TextView episodesView = (TextView) findViewById(R.id.movieWriter);
+            TextView episodeTitleView = (TextView)findViewById(R.id.writerTitle);
+            episodeTitleView.setText("Number of episodes");
             try{
                 int nbEp = tvSeries.getNumberOfEpisodes();
 
@@ -756,7 +758,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Network
-            TextView networkView = (TextView) findViewById(R.id.tvNetwork);
+            TextView networkView = (TextView) findViewById(R.id.movieProduction);
+            TextView networkTitleView = (TextView) findViewById(R.id.productionTitle);
+            networkTitleView.setText("Network");
             try {
                 List<Network> listNetwork = tvSeries.getNetworks();
                 ListIterator<Network> networkListIterator = listNetwork.listIterator();
@@ -780,7 +784,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Country
-            TextView countryView = (TextView) findViewById(R.id.tvCountry);
+            TextView countryView = (TextView) findViewById(R.id.movieCountry);
             TextView countryTitleView = (TextView) findViewById(R.id.countryTitle);
             try {
                 List<String> listCountry = tvSeries.getOriginCountry();
@@ -806,7 +810,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
 
             // Poster
-            ImageView image = (ImageView) findViewById(R.id.tvPoster);
+            ImageView image = (ImageView) findViewById(R.id.moviePoster);
             try {
                 Picasso.with(getApplicationContext())
                         .load(BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath())

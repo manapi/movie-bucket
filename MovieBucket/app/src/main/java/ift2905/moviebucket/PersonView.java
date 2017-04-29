@@ -160,8 +160,6 @@ public class PersonView extends AppCompatActivity {
             ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
             type.setText("Movie");
-            type.setTextColor(Color.parseColor("#919191"));
-            type.setTypeface(null, Typeface.BOLD);
 
             String year = child.getReleaseDate();
             if(year != null && year.length() >= 4) {
@@ -188,6 +186,7 @@ public class PersonView extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, MovieView.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(AbstractResultsAdapter.Type.movie.name(), getChildId(groupPosition, childPosition));
                     context.startActivity(intent);
                 }

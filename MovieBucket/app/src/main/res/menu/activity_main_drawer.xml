@@ -12,7 +12,7 @@
             android:title="@string/title_fragment_my_bucket" />
         <item
             android:id="@+id/nav_myhistory"
-            android:icon="@drawable/ic_history_black_24dp"
+            android:icon="@drawable/ic_playlist_add_check_black_24dp"
             android:title="@string/title_fragment_my_history" />
         <item
             android:id="@+id/nav_about"
