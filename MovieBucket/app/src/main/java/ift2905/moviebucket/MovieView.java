@@ -357,8 +357,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TextView mainChar2 = (TextView) findViewById(R.id.movieChar2);
             TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
 
+
             try {
-                // TODO: Display rest of the cast
                 List<PersonCast> listCast = movie.getCast();
                 ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
@@ -366,7 +366,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 boolean row2 = false;
                 boolean row3 = false;
 
-                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true)){
+                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true )){
                     PersonCast pc = castListIterator.next();
                     if (row1 == false){
                         mainCast1.setText(pc.getName());
@@ -398,11 +398,19 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-                if (row2 == false) {
+                if (row1 == false){
+                    mainCast1.setText(DEF);
                     mainCast2.setVisibility(View.GONE);
+                    mainCast3.setVisibility(View.GONE);
+                    mainChar1.setVisibility(View.GONE);
                     mainChar2.setVisibility(View.GONE);
-                }
-                if (row3 == false) {
+                    mainChar3.setVisibility(View.GONE);
+                } else if (row2 == false){
+                    mainCast2.setVisibility(View.GONE);
+                    mainCast3.setVisibility(View.GONE);
+                    mainChar2.setVisibility(View.GONE);
+                    mainChar3.setVisibility(View.GONE);
+                } else if (row3 == false) {
                     mainCast3.setVisibility(View.GONE);
                     mainChar3.setVisibility(View.GONE);
                 }
@@ -659,7 +667,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             }
 
-            //Cast
+            // Cast
             TextView mainCast1 = (TextView) findViewById(R.id.movieActor1);
             TextView mainCast2 = (TextView) findViewById(R.id.movieActor2);
             TextView mainCast3 = (TextView) findViewById(R.id.movieActor3);
@@ -668,15 +676,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
 
             try {
-                // TODO: Display rest of the cast
-                List<PersonCast> listCast = tvSeries.getCredits().getCast();
+                List<PersonCast> listCast = movie.getCast();
                 ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
                 boolean row1 = false;
                 boolean row2 = false;
                 boolean row3 = false;
 
-                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true)){
+                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true )){
                     PersonCast pc = castListIterator.next();
                     if (row1 == false){
                         mainCast1.setText(pc.getName());
@@ -708,11 +715,19 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-                if (row2 == false) {
+                if (row1 == false){
+                    mainCast1.setText(DEF);
                     mainCast2.setVisibility(View.GONE);
+                    mainCast3.setVisibility(View.GONE);
+                    mainChar1.setVisibility(View.GONE);
                     mainChar2.setVisibility(View.GONE);
-                }
-                if (row3 == false) {
+                    mainChar3.setVisibility(View.GONE);
+                } else if (row2 == false){
+                    mainCast2.setVisibility(View.GONE);
+                    mainCast3.setVisibility(View.GONE);
+                    mainChar2.setVisibility(View.GONE);
+                    mainChar3.setVisibility(View.GONE);
+                } else if (row3 == false) {
                     mainCast3.setVisibility(View.GONE);
                     mainChar3.setVisibility(View.GONE);
                 }
