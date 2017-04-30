@@ -107,7 +107,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
         } else if(state == 2) {
             bucketButton.setEnabled(false);
-            bucketButton.setSelected(false);
+            historyButton.setSelected(true);
         }
     }
 

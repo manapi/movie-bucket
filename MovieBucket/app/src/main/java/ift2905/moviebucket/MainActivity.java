@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity
         //Initialize discover fragment by default
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
 
+        setTitle(R.string.title_fragment_discover);
+
         //Sets the used Settings.
         //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
@@ -152,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         // Collapse search widget
         if(searchView != null) {
             searchView.setIconified(true);
-            searchView.setIconified(true);
         }
 
         if (id == R.id.nav_discover) {
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity
                 discoverFragment = new RecyclerViewFragment();
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
+            setTitle(R.string.title_fragment_discover);
 
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {

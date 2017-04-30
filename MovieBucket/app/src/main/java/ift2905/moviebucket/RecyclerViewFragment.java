@@ -99,9 +99,6 @@ public class RecyclerViewFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        getActivity().setTitle(R.string.title_fragment_discover);
-
-
         return rootView;
     }
 
