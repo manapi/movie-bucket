@@ -19,20 +19,20 @@ public class SettingsFragment extends PreferenceFragment
     {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        //TODO: THERE HAS TO BE A BETTER WAY
+        Preference localePref = findPreference("locale");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        localePref.setSummary(summary(prefs.getString("locale", "")));
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String k) {
         if(k.equals(KEY_LOCALE)) {
-            Toast.makeText(getActivity(), k, Toast.LENGTH_SHORT).show();
             Preference localePref = findPreference(k);
             //TODO: there has to be a better way...
-            String verifier = (sharedPreferences.getString(k, ""));
-            if (verifier.equals("en")) {
-                localePref.setSummary("English");
-            } else {
-                localePref.setSummary("Français");
-            }
+            localePref.setSummary(summary(sharedPreferences.getString(k, "")));
+
+
         } else  if(k.equals(KEY_ADULT_PREF)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SearchPagerFragment.adult = prefs.getBoolean(SettingsFragment.KEY_ADULT_PREF, false);
@@ -52,5 +52,13 @@ public class SettingsFragment extends PreferenceFragment
         super.onPause();
         getPreferenceScreen().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    public String summary(String verifier) {
+        if (verifier.equals("en")) {
+            return "English";
+        } else {
+            return "Français";
+        }
     }
 }
