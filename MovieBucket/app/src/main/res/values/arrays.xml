@@ -2,7 +2,7 @@
 <resources>
     <string-array name="locale">
         <item>English</item>
-        <item>French</item>
+        <item>Français</item>
     </string-array>
 
     <string-array name="locale_values">

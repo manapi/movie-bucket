@@ -68,7 +68,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         try {
             //Sets up the information language.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            lang = prefs.getString(SettingsActivity.KEY_LOCALE, "en");
+            lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
 
             dbh = new DBHandler(this);
             id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());

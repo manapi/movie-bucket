@@ -32,8 +32,8 @@ public class SearchPagerFragment extends Fragment {
 
     //TODO : get from bundle
     private final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
-    private String lang;
-    private Boolean adult; //include adult movies in search results
+    private static String lang;
+    static Boolean adult = true; //include adult movies in search results
 
     protected ListFragment[] listArray;
 
@@ -48,8 +48,8 @@ public class SearchPagerFragment extends Fragment {
 
         //Sets up the information language.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        lang = prefs.getString(SettingsActivity.KEY_LOCALE, "en");
-        adult = prefs.getBoolean(SettingsActivity.KEY_ADULT_PREF, false);
+        lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
+        //adult = prefs.getBoolean(SettingsFragment.KEY_ADULT_PREF, false);
     }
 
     @Override
@@ -271,6 +271,9 @@ public class SearchPagerFragment extends Fragment {
                 listArray[3].setListAdapter(peopleAdapter);
             }
         }
+    }
+    public void setAdult(Boolean bool){
+        adult = bool;
     }
 }
 
