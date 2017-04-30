@@ -143,7 +143,6 @@ public class MyListAdapter extends CursorAdapter {
                             popup.getMenuInflater().inflate(R.menu.popup_menu_my_history, popup.getMenu());
                         }
 
-
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
                             public boolean onMenuItemClick(MenuItem item) {
@@ -162,7 +161,8 @@ public class MyListAdapter extends CursorAdapter {
                                                 calDate.getTimeInMillis());
                                         calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
                                                 calDate.getTimeInMillis() + popupRuntime*60*1000);
-                                        calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
+                                        calIntent.putExtra(CalendarContract.Events.TITLE,
+                                                context.getResources().getString(R.string.watch)+ " " + title);
                                         context.startActivity(calIntent);
                                         break;
                                     case R.id.delete:

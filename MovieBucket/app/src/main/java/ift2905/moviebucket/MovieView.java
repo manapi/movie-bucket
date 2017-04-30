@@ -4,7 +4,6 @@ package ift2905.moviebucket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
@@ -59,7 +58,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_MEDIUM = "w500";
-    final String DEF = "Unknown";
+    String DEF;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +68,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             //Sets up the information language.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
+            DEF = getString(R.string.default_info);
 
             dbh = new DBHandler(this);
             id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
@@ -166,7 +166,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         calDate.getTimeInMillis());
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
                         calDate.getTimeInMillis() +runtimeDB*60*1000);
-                intent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
+                intent.putExtra(CalendarContract.Events.TITLE, getString(R.string.watch)+" "+title);
                 startActivity(intent);
                 break;
         }
@@ -246,7 +246,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TextView ratingView = (TextView) findViewById(R.id.movieRating);
             try {
                 if (movie.getVoteCount() == 0){
-                    ratingView.setText("Not rated yet");
+                    ratingView.setText(getString(R.string.unrated));
                 } else {
                     float rating = movie.getVoteAverage();
                     ratingView.setText(rating + "/10");
@@ -314,7 +314,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                             director = pc.getName();
                         } else {
                             director = director + ", " + pc.getName();
-                            directorTitleView.setText("Directors");
+                            directorTitleView.setText(getString(R.string.directors));
                         }
                     }
 
@@ -326,12 +326,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         } else {
                             if (!writer.contains(name)){
                                 writer = writer + ", " + pc.getName();
-                                writerTitleView.setText("Writers");
+                                writerTitleView.setText(getString(R.string.writers));
                             }
                         }
                     }
                     if (job.equals("Novel")){
-                        novel = " (based on novel by "+pc.getName()+")";
+                        novel = " " + getString(R.string.novel) + " " +pc.getName()+ ")";
                     }
                 }
 
@@ -467,7 +467,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         country = pc.getName();
                     } else {
                         country = country + ", " + pc.getName();
-                        countryTitleView.setText("Countries");
+                        countryTitleView.setText(getString(R.string.countries));
                     }
                 }
                 if (country.isEmpty()){
@@ -534,14 +534,14 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             // Year
             TextView releaseView = (TextView) findViewById(R.id.movieYear);
             TextView releaseTitleView = (TextView) findViewById(R.id.yearTitle);
-            releaseTitleView.setText("Release Year");
+            releaseTitleView.setText(getString(R.string.release_year));
             try {
                 String beg = tvSeries.getFirstAirDate().substring(0,4);
-                if (tvSeries.getStatus().contains("Ended")) {
+                if (tvSeries.getStatus().contains(getString(R.string.ended))) {
                     String end = tvSeries.getLastAirDate().substring(0,4);
                     releaseView.setText(beg + " - " + end);
                 } else {
-                    releaseView.setText("Since " + beg);
+                    releaseView.setText( getString(R.string.since)+ " " + beg);
                 }
 
             } catch (Exception e) {
@@ -578,7 +578,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TextView ratingView = (TextView) findViewById(R.id.movieRating);
             try {
                 if (tvSeries.getVoteCount() == 0){
-                    ratingView.setText("Not rated yet");
+                    ratingView.setText(getString(R.string.unrated));
                 } else {
                     float rating = tvSeries.getVoteAverage();
                     ratingView.setText(rating + "/10");
@@ -592,7 +592,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             // Run time
             TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
             TextView runtimeTitleView = (TextView) findViewById(R.id.runtimeTitle);
-            runtimeTitleView.setText("Episode runtime");
+            runtimeTitleView.setText(getString(R.string.episode_runtime));
             try {
                 List<Integer> listRunTime = tvSeries.getEpisodeRuntime();
                 ListIterator<Integer> runTimeListIterator = listRunTime.listIterator();
@@ -638,7 +638,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             // Creator
             TextView creatorView = (TextView) findViewById(R.id.movieDirector);
             TextView creatorTitleView = (TextView) findViewById(R.id.directorTitle);
-            creatorTitleView.setText("Creator");
+            creatorTitleView.setText(getString(R.string.creator));
 
             try{
                 List<Person> listCreator = tvSeries.getCreatedBy();
@@ -662,7 +662,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 } else {
                     creatorView.setText(creator);
                     if (count>1){
-                        creatorTitleView.setText("Creators");
+                        creatorTitleView.setText(getString(R.string.creators));
                     }
                 }
 
@@ -751,7 +751,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             //Episodes
             TextView episodesView = (TextView) findViewById(R.id.movieWriter);
             TextView episodeTitleView = (TextView)findViewById(R.id.writerTitle);
-            episodeTitleView.setText("Number of episodes");
+            episodeTitleView.setText(getString(R.string.number_of_episodes));
             try{
                 int nbEp = tvSeries.getNumberOfEpisodes();
 
@@ -759,13 +759,13 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     episodesView.setText(DEF);
                 } else {
                     int nbSeas = tvSeries.getNumberOfSeasons();
-                    String ep = " episodes (";
-                    String seas = " seasons)";
+                    String ep = " " + getString(R.string.episodes);
+                    String seas = " " + getString(R.string.seasons);
                     if (nbEp <2){
-                        ep = " episode (";
+                        ep = " " + getString(R.string.episode);
                     }
                     if (nbSeas<2){
-                        seas = " season)";
+                        seas = " " + getString(R.string.season);
                     }
 
                     episodesView.setText(Integer.toString(nbEp) + ep + Integer.toString(nbSeas) + seas);
@@ -781,7 +781,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             // Network
             TextView networkView = (TextView) findViewById(R.id.movieProduction);
             TextView networkTitleView = (TextView) findViewById(R.id.productionTitle);
-            networkTitleView.setText("Network");
+            networkTitleView.setText(getString(R.string.network));
             try {
                 List<Network> listNetwork = tvSeries.getNetworks();
                 ListIterator<Network> networkListIterator = listNetwork.listIterator();
@@ -817,7 +817,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         country = element;
                     } else {
                         country = country + ", " + element;
-                        countryTitleView.setText("Countries");
+                        countryTitleView.setText(getString(R.string.countries));
                     }
                 }
                 if (country.isEmpty()){

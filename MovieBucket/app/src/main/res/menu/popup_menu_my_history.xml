@@ -4,12 +4,12 @@
 
     <item
         android:id="@+id/schedule"
-        android:title="Schedule"
+        android:title="@string/list_schedule"
         app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
     <item
         android:id="@+id/delete"
-        android:title="Remove from list"
+        android:title="@string/list_remove"
         app:srcCompat="@drawable/ic_close_black_24dp" />
 
 </menu>

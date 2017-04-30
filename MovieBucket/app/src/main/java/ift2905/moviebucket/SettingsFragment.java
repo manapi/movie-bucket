@@ -1,11 +1,14 @@
 package ift2905.moviebucket;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 
 public class SettingsFragment extends PreferenceFragment
@@ -31,8 +34,6 @@ public class SettingsFragment extends PreferenceFragment
             Preference localePref = findPreference(k);
             //TODO: there has to be a better way...
             localePref.setSummary(summary(sharedPreferences.getString(k, "")));
-
-
         } else  if(k.equals(KEY_ADULT_PREF)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SearchPagerFragment.adult = prefs.getBoolean(SettingsFragment.KEY_ADULT_PREF, false);

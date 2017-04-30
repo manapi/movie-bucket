@@ -69,7 +69,7 @@
                             style="@android:style/Widget.TextView.SpinnerItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Title" />
+                            android:text= "@string/mv_title" />
 
                         <TextView
                             android:id="@+id/movieTitle"
@@ -95,7 +95,7 @@
                             style="@android:style/Widget.TextView.SpinnerItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Year" />
+                            android:text="@string/mv_year" />
 
                         <TextView
                             android:id="@+id/movieYear"
@@ -121,7 +121,7 @@
                             style="@android:style/Widget.TextView.SpinnerItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Runtime" />
+                            android:text="@string/mv_runtime" />
 
                         <TextView
                             android:id="@+id/movieRuntime"
@@ -148,7 +148,7 @@
                             style="@android:style/Widget.TextView.SpinnerItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Average rating" />
+                            android:text="@string/mv_avg_rating" />
 
                         <TextView
                             android:id="@+id/movieRating"
@@ -175,7 +175,7 @@
                             style="@android:style/Widget.TextView.SpinnerItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Genres" />
+                            android:text="@string/mv_genres" />
 
                         <TextView
                             android:id="@+id/movieGenres"
@@ -254,7 +254,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Overview" />
+                android:text="@string/mv_overview" />
 
             <TextView
                 android:id="@+id/movieOverview"
@@ -281,7 +281,7 @@
                 style="@android:style/Widget.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Director" />
+                android:text="@string/mv_director" />
 
             <TextView
                 android:id="@+id/movieDirector"
@@ -307,7 +307,7 @@
                 style="@android:style/Widget.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Writer" />
+                android:text="@string/mv_writer" />
 
             <TextView
                 android:id="@+id/movieWriter"
@@ -333,7 +333,7 @@
                 style="@android:style/Widget.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Production" />
+                android:text="@string/mv_production" />
 
             <TextView
                 android:id="@+id/movieProduction"
@@ -361,7 +361,7 @@
                 style="@android:style/Widget.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Country" />
+                android:text="@string/mv_country" />
 
             <TextView
                 android:id="@+id/movieCountry"
@@ -388,7 +388,7 @@
                 style="@android:style/Widget.TextView.SpinnerItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Main cast" />
+                android:text="@string/mv_main_cast" />
 
             <TableLayout
                 android:id="@+id/movieMainCast"
