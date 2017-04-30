@@ -50,6 +50,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     Button historyButton;
     Button calendarButton;
     String lang;
+    int ismovie;
     int runtimeDB;
     DBHandler dbh;
     int state;
@@ -76,10 +77,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             if (id > 0){
                 MovieFetcher mf = new MovieFetcher(id);
                 mf.execute();
+                ismovie = 1;
             } else {
                 id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.tv.name());
                 TvFetcher tf = new TvFetcher(id);
                 tf.execute();
+                ismovie = 0;
             }
 
         } catch (Exception e) {
@@ -124,7 +127,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.buttonAddMb:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 0, runtimeDB);
+                    dbh.addToDB(id, title, 0, runtimeDB, ismovie);
                     state = 1;
                     bucketButton.setSelected(true);
                 } else if(state == 1){
@@ -136,7 +139,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             case R.id.buttonAddH:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 1, runtimeDB);
+                    dbh.addToDB(id, title, 1, runtimeDB, ismovie);
                     state = 2;
                     bucketButton.setEnabled(false);
                     historyButton.setSelected(true);
