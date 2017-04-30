@@ -20,7 +20,7 @@
         </string>
     <string name="about_tmdb">"Ce produit utilise l'API de TMDb mais n'est pas certifiée par ce dernier.\n"</string>
     <string name="about_diro">
-                "Cette application Android a été développée à fins éducatifs, dans le cadre du cours IFT2905, à l'Université de Montréal."
+                "Cette application Android a été développée à fins éducatives, dans le cadre du cours IFT2905, à l'Université de Montréal."
         </string>
     <string name="about_thanks">"Remerciements spéciaux à holgerbrandl sur GitHub, développeur du wrapper de l'API de TMDb."</string>
     <string name="about_arr"><i>"Tout droits réservés, 2017"</i></string>
@@ -37,7 +37,7 @@
 
 
     <!-- MovieView Strings -->
-    <string name ="default_info">Inconnu</string>
+    <string name ="default_info">Inconnu(es)</string>
     <string name ="watch">Écouter</string>
     <string name ="unrated">Non-évalué</string>
     <string name ="directors">Directeurs</string>
@@ -69,6 +69,11 @@
     <string name ="mv_production">Production</string>
     <string name ="mv_country">Pays</string>
     <string name ="mv_main_cast">Acteurs principaux</string>
+
+    <!-- List popup menu Strings -->
+    <string name ="list_viewed">Déplacer vers historique</string>
+    <string name ="list_remove">Enlever</string>
+    <string name ="list_schedule">Planifier</string>
 
 
     <!-- Example General settings -->

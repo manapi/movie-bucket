@@ -70,6 +70,11 @@
     <string name ="mv_country">Country</string>
     <string name ="mv_main_cast">Main cast</string>
 
+    <!-- List popup menu Strings -->
+    <string name ="list_viewed">Move to history</string>
+    <string name ="list_remove">Remove</string>
+    <string name ="list_schedule">Schedule</string>
+
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 

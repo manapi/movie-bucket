@@ -71,8 +71,8 @@
     <string name ="mv_main_cast">Main cast</string>
 
     <!-- List popup menu Strings -->
-    <string name ="list_viewed">Mark as viewed</string>
-    <string name ="list_remove">Remove from list</string>
+    <string name ="list_viewed">Move to history</string>
+    <string name ="list_remove">Remove</string>
     <string name ="list_schedule">Schedule</string>
 
     <!-- Example General settings -->
