@@ -5,7 +5,7 @@
     <item
         android:id="@+id/markAsViewed"
         android:title="@string/list_viewed"
-        app:srcCompat="@drawable/ic_remove_red_eye_black_24dp" />
+        app:srcCompat="@drawable/ic_playlist_add_check_black_24dp" />
 
     <item
         android:id="@+id/schedule"

@@ -147,7 +147,7 @@ public class PersonView extends AppCompatActivity {
         public View getChildView(final int groupPosition, final int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
 
-            final PersonCredit child = (PersonCredit) getChild(groupPosition, childPosition);
+            final PersonCredit child = getChild(groupPosition, childPosition);
 
             LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
