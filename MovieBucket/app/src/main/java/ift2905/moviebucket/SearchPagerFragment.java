@@ -34,7 +34,7 @@ public class SearchPagerFragment extends Fragment {
 
     // Settings
     private static String lang;
-    static Boolean adult = true; //include adult movies in search results
+    static Boolean adult; //include adult movies in search results
 
     protected ListFragment[] pagerList;
 
@@ -50,7 +50,7 @@ public class SearchPagerFragment extends Fragment {
         //Sets up the information language.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
-        //adult = prefs.getBoolean(SettingsFragment.KEY_ADULT_PREF, false);
+        adult = prefs.getBoolean(SettingsFragment.KEY_ADULT_PREF, false);
     }
 
     @Override
@@ -94,10 +94,10 @@ public class SearchPagerFragment extends Fragment {
     private class MyAdapter extends FragmentPagerAdapter {
 
         private final String[] titles = new String[]{
-                "Top",
-                "Movies",
-                "TV",
-                "People",
+                getString(R.string.spf_top),
+                getString(R.string.spf_movies),
+                getString(R.string.spf_tv),
+                getString(R.string.spf_people),
         };
 
         private FragmentManager mFragmentManager;

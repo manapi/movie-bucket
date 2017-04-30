@@ -168,7 +168,7 @@ public class PersonView extends AppCompatActivity {
             TextView type = (TextView) convertView.findViewById(R.id.type);
             ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-            type.setText("Movie");
+            type.setText(getString(R.string.pv_movie));
 
             String year = child.getReleaseDate();
             if(year != null && year.length() >= 4) {
