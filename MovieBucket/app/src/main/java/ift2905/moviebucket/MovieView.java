@@ -3,8 +3,10 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -48,11 +50,13 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     Button bucketButton;
     Button historyButton;
     Button calendarButton;
+    String lang;
     int runtimeDB;
     DBHandler dbh;
     int state;
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
-    final String LANG = "en";
+
+
     final String BASE_URL = "http://image.tmdb.org/t/p/";
     final String SIZE_MEDIUM = "w500";
     final String DEF = "Unknown";
@@ -61,8 +65,11 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         try {
+            //Sets up the information language.
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            lang = prefs.getString(SettingsActivity.KEY_LOCALE, "en");
+
             dbh = new DBHandler(this);
             id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
             setContentView(R.layout.activity_movie_view_m);
@@ -178,7 +185,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TmdbApi api = new TmdbApi(API_KEY);
             try {
                 TmdbMovies tmdbm = new TmdbMovies(api);
-                movie = tmdbm.getMovie(id, LANG, TmdbMovies.MovieMethod.credits);
+                movie = tmdbm.getMovie(id, lang, TmdbMovies.MovieMethod.credits);
                 return movie;
             } catch (Exception e){
                 e.printStackTrace();
@@ -502,7 +509,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TmdbApi api = new TmdbApi(API_KEY);
             try {
                 TmdbTV tmdbtv = api.getTvSeries();
-                tvSeries = tmdbtv.getSeries(id, LANG, TmdbTV.TvMethod.credits);
+                tvSeries = tmdbtv.getSeries(id, lang, TmdbTV.TvMethod.credits);
                 return tvSeries;
             } catch (Exception e){
                 e.printStackTrace();

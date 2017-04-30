@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:key="adult_filter"
-        android:title="@string/adult_filter"
-        android:defaultValue="true"
-    />
 
     <ListPreference
         android:key="locale"
         android:title="@string/locale"
+        android:summary="@string/locale_summary"
         android:entries="@array/locale"
         android:entryValues="@array/locale_values"
-        android:defaultValue="@string/def_locale"
+        android:defaultValue="@string/default_locale"
+        />
+
+    <SwitchPreference
+        android:key="adult_filter"
+        android:title="@string/adult_filter"
+        android:defaultValue="true"
         />
 </PreferenceScreen>

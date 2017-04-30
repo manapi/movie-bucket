@@ -18,9 +18,11 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +47,7 @@ public class RecyclerViewFragment extends Fragment {
     private static final int SPAN_COUNT = 2;
 
     final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
-    final String LANG = "en";
+    String lang;
 
 
     private enum LayoutManagerType {
@@ -64,7 +66,12 @@ public class RecyclerViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Sets up the information language.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        lang = prefs.getString(SettingsActivity.KEY_LOCALE, "en");
+
         // Initialize dataset
+
         FetchSuggestions fetcher = new FetchSuggestions();
         fetcher.execute();
 
@@ -146,7 +153,7 @@ public class RecyclerViewFragment extends Fragment {
         protected List<MovieDb> doInBackground(String... params) {
 
             TmdbApi api = new TmdbApi(API_KEY);
-            List<MovieDb> suggestions = api.getMovies().getPopularMovies(LANG, 1).getResults();
+            List<MovieDb> suggestions = api.getMovies().getPopularMovies(lang, 1).getResults();
             return suggestions;
         }
         @Override

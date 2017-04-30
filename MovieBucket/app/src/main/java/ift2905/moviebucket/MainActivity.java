@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -51,9 +52,11 @@ public class MainActivity extends AppCompatActivity
 
         //Initialize discover fragment by default
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
+
+        //Sets the used Settings.
+        //PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
-    //TODO: handle back from search fragments back to *any* fragment?
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
