@@ -158,18 +158,19 @@ public class MyListAdapter extends CursorAdapter {
 
                 final long mId = ((BadassImageButton) v).getMovieId();
                 final long mRuntime = ((BadassImageButton) v).getmRuntime();
-
-                View markAsViewed = fakePopupMenuLayout.findViewById(R.id.markAsViewed);
-                markAsViewed.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dbh.markAsViewed(mId);
-                        updateCursor();
-                        notifyDataSetChanged();
-                        ersatzPopupMenu.dismiss();
-                    }
-                });
-
+                
+                if(header.equals("Bucket")){
+                    View markAsViewed = fakePopupMenuLayout.findViewById(R.id.markAsViewed);
+                    markAsViewed.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dbh.markAsViewed(mId);
+                            updateCursor();
+                            notifyDataSetChanged();
+                            ersatzPopupMenu.dismiss();
+                        }
+                    });
+                }
                 View schedule = fakePopupMenuLayout.findViewById(R.id.schedule);
                 schedule.setOnClickListener(new View.OnClickListener() {
                     @Override
