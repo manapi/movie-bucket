@@ -68,7 +68,7 @@ public class RecyclerViewFragment extends Fragment {
 
         //Sets up the information language.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
-        lang = prefs.getString(SettingsActivity.KEY_LOCALE, "en");
+        lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
 
         // Initialize dataset
 

@@ -20,7 +20,7 @@
     <string name="about_diro">
             "This android application has been created for educational purposes, during the IFT2905 class, at the University of Montreal."
     </string>
-    <string name="about_thanks">"Special thanks to Holger Brandl, developer of the TMDb API wrapper."</string>
+    <string name="about_thanks">"Special thanks to holgerbrandl on GitHub, developer of the TMDb API wrapper."</string>
     <string name="about_arr"><i>"All rights reserved, 2017"</i></string>
 
     <!-- Strings related to Settings -->
