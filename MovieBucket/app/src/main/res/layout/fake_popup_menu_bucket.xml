@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:srcCompat="@drawable/ic_playlist_add_check_black_24dp" />
+            app:srcCompat="@drawable/ic_done_black_24dp" />
 
         <TextView
             android:text="Mark as viewed"

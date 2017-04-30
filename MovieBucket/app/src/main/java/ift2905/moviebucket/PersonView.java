@@ -28,9 +28,12 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.people.PersonCredit;
 import info.movito.themoviedbapi.model.people.PersonCredits;
 
+/**
+ * Activity to display person results
+ */
 public class PersonView extends AppCompatActivity {
 
-    final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+    final static String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
     protected ExpandableListView creditsList;
 
     @Override
@@ -72,10 +75,16 @@ public class PersonView extends AppCompatActivity {
         @Override
         protected PersonCredits doInBackground(String... params) {
 
-            if (params[0] != null) {
+            if (params.length > 0) {
                 int id = new Integer(params[0]);
-                TmdbApi api = new TmdbApi(API_KEY);
-                return api.getPeople().getPersonCredits(id);
+
+                try {
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    return api.getPeople().getPersonCredits(id);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }

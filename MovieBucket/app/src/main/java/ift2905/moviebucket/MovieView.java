@@ -75,13 +75,13 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
             setContentView(R.layout.activity_movie_view_m);
             if (id > 0){
-                MovieFetcher mf = new MovieFetcher(id);
-                mf.execute();
+                MovieFetcher mf = new MovieFetcher();
+                mf.execute(Integer.valueOf(id).toString());
                 ismovie = 1;
             } else {
                 id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.tv.name());
-                TvFetcher tf = new TvFetcher(id);
-                tf.execute();
+                TvFetcher tf = new TvFetcher();
+                tf.execute(Integer.valueOf(id).toString());;
                 ismovie = 0;
             }
 
@@ -176,346 +176,341 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     }
 
     public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
-        int id;
-
-        public MovieFetcher (int id){
-            this.id = id;
-        }
 
         // Get movie
         @Override
         protected MovieDb doInBackground(String... params) {
-            TmdbApi api = new TmdbApi(API_KEY);
-            try {
-                TmdbMovies tmdbm = new TmdbMovies(api);
-                movie = tmdbm.getMovie(id, lang, TmdbMovies.MovieMethod.credits);
-                return movie;
-            } catch (Exception e){
-                e.printStackTrace();
+            if (params.length > 0) {
+                int id = new Integer(params[0]);
+
+                try {
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    TmdbMovies tmdbm = new TmdbMovies(api);
+                    movie = tmdbm.getMovie(id, lang, TmdbMovies.MovieMethod.credits);
+                    return movie;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }
 
         @Override
-
         protected void onPostExecute(MovieDb movie) {
 
-            // Title
-            TextView titleView = (TextView) findViewById(R.id.movieTitle);
-            try {
-                title = movie.getTitle();
-                setTitle(title);
-                titleView.setText(title);
-            } catch (Exception e){
-                titleView.setText(DEF);
-            }
-
-
-            // Year
-            TextView yearView = (TextView) findViewById(R.id.movieYear);
-            try {
-                yearView.setText(movie.getReleaseDate().substring(0,4));
-            } catch (Exception e) {
-                yearView.setText(DEF);
-            }
-
-
-            // Genres
-            TextView genresView = (TextView) findViewById(R.id.movieGenres);
-            try {
-                List<Genre> listGenres = movie.getGenres();
-                ListIterator<Genre> genreListIterator = listGenres.listIterator();
-                String genres = "";
-                while(genreListIterator.hasNext()){
-                    Genre g = genreListIterator.next();
-                    if (genres.isEmpty()) {
-                        genres = g.getName();
-                    }else {
-                        genres = genres+", " +g.getName();
-                    }
-
+                // Title
+                TextView titleView = (TextView) findViewById(R.id.movieTitle);
+                try {
+                    title = movie.getTitle();
+                    setTitle(title);
+                    titleView.setText(title);
+                } catch (Exception e){
+                    titleView.setText(DEF);
                 }
-                if (genres.isEmpty()){
-                    genresView.setText(DEF);
-                } else {
-                    genresView.setText(genres);
+
+
+                // Year
+                TextView yearView = (TextView) findViewById(R.id.movieYear);
+                try {
+                    yearView.setText(movie.getReleaseDate().substring(0,4));
+                } catch (Exception e) {
+                    yearView.setText(DEF);
                 }
-            } catch (Exception e){
-                genresView.setText(DEF);
-            }
 
 
-            //Rating
-            TextView ratingView = (TextView) findViewById(R.id.movieRating);
-            try {
-                if (movie.getVoteCount() == 0){
-                    ratingView.setText(getString(R.string.unrated));
-                } else {
-                    float rating = movie.getVoteAverage();
-                    ratingView.setText(rating + "/10");
-                }
-            } catch (Exception e){
-                e.printStackTrace();
-                ratingView.setText(DEF);
-            }
-
-
-            // Run time
-            TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
-            try {
-                long runTime = movie.getRuntime();
-                runtimeDB = (int)runTime;
-                if (runTime == 0){
-                    runtimeView.setText(DEF);
-                } else {
-                    long hours = runTime/60;
-                    long minutes = runTime-(hours*60);
-                    String minutesT = Long.toString(minutes);
-                    if (minutes<10){
-                        minutesT = "0"+minutesT;
-                    }
-                    runtimeView.setText(Long.toString(hours)+"h"+minutesT);
-                }
-            } catch (Exception e){
-                runtimeView.setText(DEF);
-            }
-
-
-            // Overview
-            TextView overviewView = (TextView) findViewById(R.id.movieOverview);
-            try{
-                String overview = movie.getOverview();
-                if (overview.isEmpty()){
-                    overviewView.setText(DEF);
-                } else {
-                    overviewView.setText(overview);
-                }
-            } catch (Exception e){
-                overviewView.setText(DEF);
-            }
-
-            // Director and writer
-            TextView directorView = (TextView) findViewById(R.id.movieDirector);
-            TextView directorTitleView = (TextView) findViewById(R.id.directorTitle);
-            TextView writerView = (TextView) findViewById(R.id.movieWriter);
-            TextView writerTitleView = (TextView) findViewById(R.id.writerTitle);
-
-            try{
-                List<PersonCrew> listCrew = movie.getCrew();
-                ListIterator<PersonCrew> crewListIterator = listCrew.listIterator();
-                String director = "";
-                String writer = "";
-                String novel = "";
-
-                while(crewListIterator.hasNext()){
-                    PersonCrew pc = crewListIterator.next();
-                    String job = pc.getJob();
-
-                    //Director
-                    if (job.equals("Director")){
-                        if (director.isEmpty()){
-                            director = pc.getName();
-                        } else {
-                            director = director + ", " + pc.getName();
-                            directorTitleView.setText(getString(R.string.directors));
+                // Genres
+                TextView genresView = (TextView) findViewById(R.id.movieGenres);
+                try {
+                    List<Genre> listGenres = movie.getGenres();
+                    ListIterator<Genre> genreListIterator = listGenres.listIterator();
+                    String genres = "";
+                    while(genreListIterator.hasNext()){
+                        Genre g = genreListIterator.next();
+                        if (genres.isEmpty()) {
+                            genres = g.getName();
+                        }else {
+                            genres = genres+", " +g.getName();
                         }
-                    }
 
-                    // Writer
-                    if (job.equals("Writer")|| job.equals("Screenplay") || job.equals("Story")){
-                        String name = pc.getName();
-                        if (writer.isEmpty()){
-                            writer = name;
-                        } else {
-                            if (!writer.contains(name)){
-                                writer = writer + ", " + pc.getName();
-                                writerTitleView.setText(getString(R.string.writers));
+                    }
+                    if (genres.isEmpty()){
+                        genresView.setText(DEF);
+                    } else {
+                        genresView.setText(genres);
+                    }
+                } catch (Exception e){
+                    genresView.setText(DEF);
+                }
+
+
+                //Rating
+                TextView ratingView = (TextView) findViewById(R.id.movieRating);
+                try {
+                    if (movie.getVoteCount() == 0){
+                        ratingView.setText(getString(R.string.unrated));
+                    } else {
+                        float rating = movie.getVoteAverage();
+                        ratingView.setText(rating + "/10");
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                    ratingView.setText(DEF);
+                }
+
+
+                // Run time
+                TextView runtimeView = (TextView) findViewById(R.id.movieRuntime);
+                try {
+                    long runTime = movie.getRuntime();
+                    runtimeDB = (int)runTime;
+                    if (runTime == 0){
+                        runtimeView.setText(DEF);
+                    } else {
+                        long hours = runTime/60;
+                        long minutes = runTime-(hours*60);
+                        String minutesT = Long.toString(minutes);
+                        if (minutes<10){
+                            minutesT = "0"+minutesT;
+                        }
+                        runtimeView.setText(Long.toString(hours)+"h"+minutesT);
+                    }
+                } catch (Exception e){
+                    runtimeView.setText(DEF);
+                }
+
+
+                // Overview
+                TextView overviewView = (TextView) findViewById(R.id.movieOverview);
+                try{
+                    String overview = movie.getOverview();
+                    if (overview.isEmpty()){
+                        overviewView.setText(DEF);
+                    } else {
+                        overviewView.setText(overview);
+                    }
+                } catch (Exception e){
+                    overviewView.setText(DEF);
+                }
+
+                // Director and writer
+                TextView directorView = (TextView) findViewById(R.id.movieDirector);
+                TextView directorTitleView = (TextView) findViewById(R.id.directorTitle);
+                TextView writerView = (TextView) findViewById(R.id.movieWriter);
+                TextView writerTitleView = (TextView) findViewById(R.id.writerTitle);
+
+                try{
+                    List<PersonCrew> listCrew = movie.getCrew();
+                    ListIterator<PersonCrew> crewListIterator = listCrew.listIterator();
+                    String director = "";
+                    String writer = "";
+                    String novel = "";
+
+                    while(crewListIterator.hasNext()){
+                        PersonCrew pc = crewListIterator.next();
+                        String job = pc.getJob();
+
+                        //Director
+                        if (job.equals("Director")){
+                            if (director.isEmpty()){
+                                director = pc.getName();
+                            } else {
+                                director = director + ", " + pc.getName();
+                                directorTitleView.setText(getString(R.string.directors));
                             }
                         }
-                    }
-                    if (job.equals("Novel")){
-                        novel = " " + getString(R.string.novel) + " " +pc.getName()+ ")";
-                    }
-                }
 
-                writer = writer + novel;
-                if (director.isEmpty()){
+                        // Writer
+                        if (job.equals("Writer")|| job.equals("Screenplay") || job.equals("Story")){
+                            String name = pc.getName();
+                            if (writer.isEmpty()){
+                                writer = name;
+                            } else {
+                                if (!writer.contains(name)){
+                                    writer = writer + ", " + pc.getName();
+                                    writerTitleView.setText(getString(R.string.writers));
+                                }
+                            }
+                        }
+                        if (job.equals("Novel")){
+                            novel = " " + getString(R.string.novel) + " " +pc.getName()+ ")";
+                        }
+                    }
+
+                    writer = writer + novel;
+                    if (director.isEmpty()){
+                        directorView.setText(DEF);
+                    } else {
+                        directorView.setText(director);
+                    }
+
+                    if (writer.isEmpty()){
+                        writerView.setText(DEF);
+                    } else {
+                        writerView.setText(writer);
+                    }
+
+                } catch (Exception e){
+                    e.printStackTrace();
                     directorView.setText(DEF);
-                } else {
-                    directorView.setText(director);
-                }
-
-                if (writer.isEmpty()){
                     writerView.setText(DEF);
-                } else {
-                    writerView.setText(writer);
+
                 }
 
-            } catch (Exception e){
-                e.printStackTrace();
-                directorView.setText(DEF);
-                writerView.setText(DEF);
 
-            }
-
-
-            //Cast
-            TextView mainCast1 = (TextView) findViewById(R.id.movieActor1);
-            TextView mainCast2 = (TextView) findViewById(R.id.movieActor2);
-            TextView mainCast3 = (TextView) findViewById(R.id.movieActor3);
-            TextView mainChar1 = (TextView) findViewById(R.id.movieChar1);
-            TextView mainChar2 = (TextView) findViewById(R.id.movieChar2);
-            TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
+                //Cast
+                TextView mainCast1 = (TextView) findViewById(R.id.movieActor1);
+                TextView mainCast2 = (TextView) findViewById(R.id.movieActor2);
+                TextView mainCast3 = (TextView) findViewById(R.id.movieActor3);
+                TextView mainChar1 = (TextView) findViewById(R.id.movieChar1);
+                TextView mainChar2 = (TextView) findViewById(R.id.movieChar2);
+                TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
 
 
-            try {
-                List<PersonCast> listCast = movie.getCast();
-                ListIterator<PersonCast> castListIterator = listCast.listIterator();
+                try {
+                    List<PersonCast> listCast = movie.getCast();
+                    ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
-                boolean row1 = false;
-                boolean row2 = false;
-                boolean row3 = false;
+                    boolean row1 = false;
+                    boolean row2 = false;
+                    boolean row3 = false;
 
-                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true )){
-                    PersonCast pc = castListIterator.next();
-                    if (row1 == false){
-                        mainCast1.setText(pc.getName());
-                        String character = pc.getCharacter();
-                        if (character.isEmpty()){
-                            mainChar1.setText(DEF);
-                        } else {
-                            mainChar1.setText(pc.getCharacter());
+                    while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true )){
+                        PersonCast pc = castListIterator.next();
+                        if (row1 == false){
+                            mainCast1.setText(pc.getName());
+                            String character = pc.getCharacter();
+                            if (character.isEmpty()){
+                                mainChar1.setText(DEF);
+                            } else {
+                                mainChar1.setText(pc.getCharacter());
+                            }
+                            row1 = true;
+                        }else if (row2 == false){
+                            mainCast2.setText(pc.getName());
+                            String character = pc.getCharacter();
+                            if (character.isEmpty()){
+                                mainChar2.setText(DEF);
+                            } else {
+                                mainChar2.setText(pc.getCharacter());
+                            }
+                            row2 = true;
+                        }else if (row3 == false){
+                            mainCast3.setText(pc.getName());
+                            String character = pc.getCharacter();
+                            if (character.isEmpty()){
+                                mainChar3.setText(DEF);
+                            } else {
+                                mainChar3.setText(pc.getCharacter());
+                            }
+                            row3 = true;
                         }
-                        row1 = true;
-                    }else if (row2 == false){
-                        mainCast2.setText(pc.getName());
-                        String character = pc.getCharacter();
-                        if (character.isEmpty()){
-                            mainChar2.setText(DEF);
-                        } else {
-                            mainChar2.setText(pc.getCharacter());
-                        }
-                        row2 = true;
-                    }else if (row3 == false){
-                        mainCast3.setText(pc.getName());
-                        String character = pc.getCharacter();
-                        if (character.isEmpty()){
-                            mainChar3.setText(DEF);
-                        } else {
-                            mainChar3.setText(pc.getCharacter());
-                        }
-                        row3 = true;
                     }
-                }
 
-                if (row1 == false){
+                    if (row1 == false){
+                        mainCast1.setText(DEF);
+                        mainCast2.setVisibility(View.GONE);
+                        mainCast3.setVisibility(View.GONE);
+                        mainChar1.setVisibility(View.GONE);
+                        mainChar2.setVisibility(View.GONE);
+                        mainChar3.setVisibility(View.GONE);
+                    } else if (row2 == false){
+                        mainCast2.setVisibility(View.GONE);
+                        mainCast3.setVisibility(View.GONE);
+                        mainChar2.setVisibility(View.GONE);
+                        mainChar3.setVisibility(View.GONE);
+                    } else if (row3 == false) {
+                        mainCast3.setVisibility(View.GONE);
+                        mainChar3.setVisibility(View.GONE);
+                    }
+
+                } catch (Exception e) {
                     mainCast1.setText(DEF);
                     mainCast2.setVisibility(View.GONE);
                     mainCast3.setVisibility(View.GONE);
                     mainChar1.setVisibility(View.GONE);
                     mainChar2.setVisibility(View.GONE);
                     mainChar3.setVisibility(View.GONE);
-                } else if (row2 == false){
-                    mainCast2.setVisibility(View.GONE);
-                    mainCast3.setVisibility(View.GONE);
-                    mainChar2.setVisibility(View.GONE);
-                    mainChar3.setVisibility(View.GONE);
-                } else if (row3 == false) {
-                    mainCast3.setVisibility(View.GONE);
-                    mainChar3.setVisibility(View.GONE);
                 }
 
-            } catch (Exception e) {
-                mainCast1.setText(DEF);
-                mainCast2.setVisibility(View.GONE);
-                mainCast3.setVisibility(View.GONE);
-                mainChar1.setVisibility(View.GONE);
-                mainChar2.setVisibility(View.GONE);
-                mainChar3.setVisibility(View.GONE);
-            }
-
-            // Production
-            TextView prodView = (TextView) findViewById(R.id.movieProduction);
-            try {
-                List<ProductionCompany> listCompany = movie.getProductionCompanies();
-                ListIterator<ProductionCompany> prodCompanyListIterator = listCompany.listIterator();
-                String prod = "";
-                while(prodCompanyListIterator.hasNext()){
-                    ProductionCompany pc = prodCompanyListIterator.next();
+                // Production
+                TextView prodView = (TextView) findViewById(R.id.movieProduction);
+                try {
+                    List<ProductionCompany> listCompany = movie.getProductionCompanies();
+                    ListIterator<ProductionCompany> prodCompanyListIterator = listCompany.listIterator();
+                    String prod = "";
+                    while(prodCompanyListIterator.hasNext()){
+                        ProductionCompany pc = prodCompanyListIterator.next();
+                        if (prod.isEmpty()){
+                            prod = pc.getName();
+                        } else {
+                            prod = prod + ", " + pc.getName();
+                        }
+                    }
                     if (prod.isEmpty()){
-                        prod = pc.getName();
+                        prodView.setText(DEF);
                     } else {
-                        prod = prod + ", " + pc.getName();
+                        prodView.setText(prod);
                     }
-                }
-                if (prod.isEmpty()){
+                } catch (Exception e){
                     prodView.setText(DEF);
-                } else {
-                    prodView.setText(prod);
                 }
-            } catch (Exception e){
-                prodView.setText(DEF);
-            }
 
-            // Country
-            TextView countryView = (TextView) findViewById(R.id.movieCountry);
-            TextView countryTitleView = (TextView) findViewById(R.id.countryTitle);
-            try {
-                List<ProductionCountry> listCountry = movie.getProductionCountries();
-                ListIterator<ProductionCountry> countryIterator = listCountry.listIterator();
-                String country = "";
-                while(countryIterator.hasNext()){
-                    ProductionCountry pc = countryIterator.next();
-                    if (country.isEmpty()){
-                        country = pc.getName();
-                    } else {
-                        country = country + ", " + pc.getName();
-                        countryTitleView.setText(getString(R.string.countries));
+                // Country
+                TextView countryView = (TextView) findViewById(R.id.movieCountry);
+                TextView countryTitleView = (TextView) findViewById(R.id.countryTitle);
+                try {
+                    List<ProductionCountry> listCountry = movie.getProductionCountries();
+                    ListIterator<ProductionCountry> countryIterator = listCountry.listIterator();
+                    String country = "";
+                    while(countryIterator.hasNext()){
+                        ProductionCountry pc = countryIterator.next();
+                        if (country.isEmpty()){
+                            country = pc.getName();
+                        } else {
+                            country = country + ", " + pc.getName();
+                            countryTitleView.setText(getString(R.string.countries));
+                        }
                     }
-                }
-                if (country.isEmpty()){
+                    if (country.isEmpty()){
+                        countryView.setText(DEF);
+                    } else {
+                        countryView.setText(country);
+                    }
+                } catch (Exception e){
                     countryView.setText(DEF);
-                } else {
-                    countryView.setText(country);
                 }
-            } catch (Exception e){
-                countryView.setText(DEF);
-            }
 
 
-            // Poster
-            ImageView image = (ImageView) findViewById(R.id.moviePoster);
-            try {
-                Picasso.with(getApplicationContext())
-                        .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
-                        .error(R.drawable.placeholder)
-                        .placeholder(R.drawable.placeholder)
-                        .into(image);
-            } catch (Exception e){
-                // TODO : Find a default image
-            }
-
+                // Poster
+                ImageView image = (ImageView) findViewById(R.id.moviePoster);
+                try {
+                    Picasso.with(getApplicationContext())
+                            .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
+                            .error(R.drawable.placeholder)
+                            .placeholder(R.drawable.placeholder)
+                            .into(image);
+                } catch (Exception e){
+                }
 
         };
     }
 
     public class TvFetcher extends AsyncTask<String, Object, TvSeries> {
-        int id;
-
-        public TvFetcher (int id){
-            this.id = id;
-        }
 
         // Get TvSeries
         @Override
         protected TvSeries doInBackground(String... params) {
-            TmdbApi api = new TmdbApi(API_KEY);
-            try {
-                TmdbTV tmdbtv = api.getTvSeries();
-                tvSeries = tmdbtv.getSeries(id, lang, TmdbTV.TvMethod.credits);
-                return tvSeries;
-            } catch (Exception e){
-                e.printStackTrace();
+            if (params.length > 0) {
+                int id = new Integer(params[0]);
+
+                try {
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    TmdbTV tmdbtv = api.getTvSeries();
+                    tvSeries = tmdbtv.getSeries(id, lang, TmdbTV.TvMethod.credits);
+                    return tvSeries;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return null;
         }
@@ -844,9 +839,6 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             } catch (Exception e){
                 // TODO : Find a default image
             }
-
-
         };
     }
-
 }

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity
             // Case 2 : go back to discover fragment
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
             navigationView.getMenu().findItem(R.id.nav_discover).setChecked(true);
+            setTitle(R.string.title_fragment_discover);
         } else {
             // Case 3 : exit app
             super.onBackPressed();
