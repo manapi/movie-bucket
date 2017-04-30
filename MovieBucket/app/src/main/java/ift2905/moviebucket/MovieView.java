@@ -683,8 +683,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             TextView mainChar3 = (TextView) findViewById(R.id.movieChar3);
 
             try {
-                List<PersonCast> listCast = movie.getCast();
-                ListIterator<PersonCast> castListIterator = listCast.listIterator();
+                List<PersonCast> listCast = tvSeries.getCredits().getCast();
+                ListIterator<PersonCast> castListIterator = listCast.listIterator();;
 
                 boolean row1 = false;
                 boolean row2 = false;
