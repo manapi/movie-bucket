@@ -24,18 +24,19 @@ import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
- * Pager in fragment for search
+ * Pager view in fragment for search
  * Created by Amélie on 2017-04-22.
  */
 
 public class SearchPagerFragment extends Fragment {
 
-    //TODO : get from bundle
-    private final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+    private final static String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
+
+    // Settings
     private static String lang;
     static Boolean adult = true; //include adult movies in search results
 
-    protected ListFragment[] listArray;
+    protected ListFragment[] pagerList;
 
     protected TopResultsAdapter topAdapter;
     protected MovieResultsAdapter movieAdapter;
@@ -61,65 +62,33 @@ public class SearchPagerFragment extends Fragment {
         TabLayout tabs = (TabLayout) rootView.findViewById(R.id.tabLayout);
         ViewPager mPager = (ViewPager) rootView.findViewById(R.id.viewPager);
 
-        listArray = new ListFragment[4];
-        listArray[0] = new ListFragment();
-        listArray[1] = new ListFragment();
-        listArray[2] = new ListFragment();
-        listArray[3] = new ListFragment();
+        // Create fragments to be added to pager
+        pagerList = new ListFragment[4];
+        pagerList[0] = new ListFragment();
+        pagerList[1] = new ListFragment();
+        pagerList[2] = new ListFragment();
+        pagerList[3] = new ListFragment();
 
+        // Set adapters to fragments
         topAdapter = new TopResultsAdapter(new ArrayList<Multi>(), getContext());
-        listArray[0].setListAdapter(topAdapter);
+        pagerList[0].setListAdapter(topAdapter);
 
         movieAdapter = new MovieResultsAdapter(new ArrayList<MovieDb>(), getContext());
-        listArray[1].setListAdapter(movieAdapter);
+        pagerList[1].setListAdapter(movieAdapter);
 
         seriesAdapter = new SeriesResultsAdapter(new ArrayList<TvSeries>(), getContext());
-        listArray[2].setListAdapter(seriesAdapter);
+        pagerList[2].setListAdapter(seriesAdapter);
 
         peopleAdapter = new PeopleResultsAdapter(new ArrayList<Person>(), getContext());
-        listArray[3].setListAdapter(peopleAdapter);
+        pagerList[3].setListAdapter(peopleAdapter);
 
+        // Set pager adapter
         MyAdapter mAdapter = new MyAdapter((getChildFragmentManager()));
-
         mPager.setAdapter(mAdapter);
-
-        /*vpPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-            // This method will be invoked when a new page becomes selected.
-            @Override
-            public void onPageSelected(int position) {
-                Toast.makeText(getActivity(),
-                        "Selected page position: " + position, Toast.LENGTH_SHORT).show();
-            }
-
-            // This method will be invoked when the current page is scrolled
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Code goes here
-            }
-
-            // Called when the scroll state changes:
-            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
-            @Override
-            public void onPageScrollStateChanged(int state) {
-                // Code goes here
-            }
-        });*/
 
         tabs.setupWithViewPager(mPager);
 
         return rootView;
-    }
-
-    public void onBackPressed() {
-        /*if(mPager.getCurrentItem() == 0) {
-            if (mAdapter.getItem(0) instanceof DetallesFacturaFragment) {
-                ((DetallesFacturaFragment) mAdapter.getItem(0)).backPressed();
-            }
-            else if (mAdapter.getItem(0) instanceof FacturasFragment) {
-                finish();
-            }
-        }*/
     }
 
     private class MyAdapter extends FragmentPagerAdapter {
@@ -140,7 +109,7 @@ public class SearchPagerFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
 
-            return listArray[position];
+            return pagerList[position];
         }
 
         @Override
@@ -149,12 +118,12 @@ public class SearchPagerFragment extends Fragment {
         }
 
         @Override
-        public CharSequence getPageTitle(int position) {
-
-            return titles[position];
-        }
+        public CharSequence getPageTitle(int position) { return titles[position]; }
     };
 
+    /**
+     * Fetch all search results from API
+     */
     public void search(String query) {
         new FetchTop().execute(query);
         new FetchMovies().execute(query);
@@ -170,11 +139,17 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected List<Multi> doInBackground(String... params) {
-            if(params[0] != null) {
+            if(params.length > 0) {
                 String query = params[0];
-                TmdbApi api = new TmdbApi(API_KEY);
-                TmdbSearch search = api.getSearch();
-                return search.searchMulti(query, lang, 1).getResults();
+
+                try{
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    TmdbSearch search = api.getSearch();
+                    return search.searchMulti(query, lang, 1).getResults();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return new ArrayList<>();
         }
@@ -197,11 +172,17 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected List<MovieDb> doInBackground(String... params) {
-            if(params[0] != null) {
+            if(params.length > 0) {
                 String query = params[0];
-                TmdbApi api = new TmdbApi(API_KEY);
-                TmdbSearch search = api.getSearch();
-                return search.searchMovie(query, null, lang, adult, 1).getResults();
+
+                try {
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    TmdbSearch search = api.getSearch();
+                    return search.searchMovie(query, null, lang, adult, 1).getResults();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return new ArrayList<>();
         }
@@ -225,11 +206,17 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected List<TvSeries> doInBackground(String... params) {
 
-            if(params[0] != null) {
+            if(params.length > 0) {
                 String query = params[0];
-                TmdbApi api = new TmdbApi(API_KEY);
-                TmdbSearch search = api.getSearch();
-                return search.searchTv(query, lang, 1).getResults();
+
+                try{
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    TmdbSearch search = api.getSearch();
+                    return search.searchTv(query, lang, 1).getResults();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return new ArrayList<>();
         }
@@ -253,22 +240,27 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected List<Person> doInBackground(String... params) {
 
-            if(params[0] != null) {
+            if(params.length > 0) {
                 String query = params[0];
-                TmdbApi api = new TmdbApi(API_KEY);
-                TmdbSearch search = api.getSearch();
-                return search.searchPerson(query, adult, 1).getResults();
+
+                try {
+                    TmdbApi api = new TmdbApi(API_KEY);
+                    TmdbSearch search = api.getSearch();
+                    return search.searchPerson(query, adult, 1).getResults();
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return new ArrayList<>();
         }
 
         @Override
         protected void onPostExecute(List<Person> results) {
-            if(listArray[3] != null && peopleAdapter != null) {
+            if(peopleAdapter != null) {
                 peopleAdapter.getData().clear();
                 peopleAdapter.getData().addAll(results);
                 peopleAdapter.notifyDataSetChanged();
-                listArray[3].setListAdapter(peopleAdapter);
             }
         }
     }
