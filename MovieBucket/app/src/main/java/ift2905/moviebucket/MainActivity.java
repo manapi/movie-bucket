@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -50,16 +51,23 @@ public class MainActivity extends AppCompatActivity
 
         //Initialize discover fragment by default
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
-        setTitle(R.string.title_fragment_discover);
     }
 
     //TODO: handle back from search fragments back to *any* fragment?
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
+            // Case 1 : close drawer
             drawer.closeDrawer(GravityCompat.START);
+        } else if(!navigationView.getMenu().findItem(R.id.nav_discover).isChecked()) {
+            // Case 2 : go back to discover fragment
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
+            navigationView.getMenu().findItem(R.id.nav_discover).setChecked(true);
         } else {
+            // Case 3 : exit app
             super.onBackPressed();
         }
     }
@@ -80,6 +88,8 @@ public class MainActivity extends AppCompatActivity
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(MainActivity.this.getComponentName()));
             searchView.setIconifiedByDefault(true);
+
+            // Handle search fragment navigation
             searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -87,14 +97,15 @@ public class MainActivity extends AppCompatActivity
                         searchPagerFragment = new SearchPagerFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchPagerFragment).addToBackStack(null).commit();
                     }
-                    else {
+                    else if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                        // Simulate back
                         getSupportFragmentManager().popBackStack();
+                        searchView.setIconified(true);
                     }
                 }
             });
         }
         return super.onCreateOptionsMenu(menu);
-
     }
 
     @Override
@@ -110,34 +121,42 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-        // TODO: replace with advanced search button
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * Method to catch new search query, fetch and display results from API
+     * Catch new search query and send it to search fragment
      */
     @Override
     protected void onNewIntent(Intent intent) {
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            searchPagerFragment.search(query);
+            if(searchPagerFragment != null) {
+                searchPagerFragment.search(query);
+            }
         }
     }
 
+    /**
+     * Handle drawer navigation
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        searchView.setIconified(true);
-        searchView.setIconified(true);
-
+        // Collapse search widget
+        if(searchView != null) {
+            searchView.setIconified(true);
+            searchView.setIconified(true);
+        }
 
         if (id == R.id.nav_discover) {
+            if (discoverFragment == null) {
+                discoverFragment = new RecyclerViewFragment();
+            }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
-            setTitle(R.string.title_fragment_discover);
 
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {
@@ -147,7 +166,7 @@ public class MainActivity extends AppCompatActivity
                 myBucketFragment.setListAdapter(adapter);
             }
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myBucketFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myBucketFragment).commit();
             setTitle(R.string.title_fragment_my_bucket);
 
         } else if (id == R.id.nav_myhistory) {
@@ -157,14 +176,14 @@ public class MainActivity extends AppCompatActivity
                 Cursor cursor = dbh.movieLister("History");
                 myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myHistoryFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myHistoryFragment).commit();
             setTitle(R.string.title_fragment_my_history);
 
         } else if (id == R.id.nav_about) {
             if (aboutFragment == null) {
                 aboutFragment = new AbootFragment();
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, aboutFragment).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, aboutFragment).commit();
             setTitle(R.string.title_fragment_about);
         }
 
@@ -177,15 +196,5 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         dbh.getDb().close();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 }

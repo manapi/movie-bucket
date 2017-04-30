@@ -67,6 +67,7 @@ public class RecyclerViewFragment extends Fragment {
         // Initialize dataset
         FetchSuggestions fetcher = new FetchSuggestions();
         fetcher.execute();
+
     }
 
     @Override
@@ -77,6 +78,10 @@ public class RecyclerViewFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
+        if(list != null) {
+            settingAdapter();
+        }
+
         mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
         mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
 
@@ -86,6 +91,9 @@ public class RecyclerViewFragment extends Fragment {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+        getActivity().setTitle(R.string.title_fragment_discover);
+
 
         return rootView;
     }
@@ -158,17 +166,9 @@ public class RecyclerViewFragment extends Fragment {
             public void onItemClick(MovieDb movie) {
                 Context context = getActivity();
                 Intent intent = new Intent(context, MovieView.class);
-                intent.putExtra("movie", ((long)movie.getId()));
+                intent.putExtra(AbstractResultsAdapter.Type.movie.name(), ((long)movie.getId()));
                 context.startActivity(intent);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mAdapter != null) {
-            mRecyclerView.setAdapter(mAdapter);
-        }
     }
 }
