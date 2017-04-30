@@ -20,7 +20,7 @@
     </string>
     <string name="about_tmdb">"This product uses the TMDb API but is not endorsed or certified by TMDb.\n"</string>
     <string name="about_diro">
-            "This android application has been created for educational purposes, during the IFT2905 class, at the University of Montreal."
+            "This Android application has been created for educational purposes, during the IFT2905 class, at the University of Montreal."
     </string>
     <string name="about_thanks">"Special thanks to holgerbrandl on GitHub, developer of the TMDb API wrapper."</string>
     <string name="about_arr"><i>"All rights reserved, 2017"</i></string>
@@ -28,7 +28,7 @@
     <!-- Strings related to Settings -->
 
     <string name="adult_filter">"Show adult content"</string>
-    <string name="locale">"Language"</string>
+    <string name="locale">"Information Language"</string>
     <string name="locale_summary">"English</string>
     <string name="default_locale">"en"</string>
 
@@ -74,6 +74,14 @@
     <string name ="list_viewed">Move to history</string>
     <string name ="list_remove">Remove</string>
     <string name ="list_schedule">Schedule</string>
+
+    <!-- SearchPagerFragment/PersonView/AbstractResultsAdapter Strings -->
+    <string name="spf_top">Top</string>
+    <string name="spf_movies">Movies</string>
+    <string name="spf_tv">TV</string>
+    <string name="spf_people">People</string>
+    <string name="ara_person">Person</string>
+    <string name="pv_movie">Movie</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

@@ -18,7 +18,7 @@
                 </ol>
 
         </string>
-    <string name="about_tmdb">"Ce produit utilise l'API de TMDb mais n'est pas certifiée par ce dernier.\n"</string>
+    <string name="about_tmdb">"Ce produit utilise l'API de TMDb mais n'est pas certifié par ce dernier.\n"</string>
     <string name="about_diro">
                 "Cette application Android a été développée à fins éducatives, dans le cadre du cours IFT2905, à l'Université de Montréal."
         </string>
@@ -28,53 +28,59 @@
     <!-- Strings related to Settings -->
 
     <string name="adult_filter">"Afficher les films pour adultes"</string>
-    <string name="locale">"Langage"</string>
+    <string name="locale">"Langue des informations"</string>
     <string name="locale_summary">Français</string>
     <string name="default_locale">"fr"</string>
-
     <string name="action_settings">Configurations</string>
     <string name="title_activity_settings">Configurations</string>
 
 
     <!-- MovieView Strings -->
-    <string name ="default_info">Inconnu(es)</string>
-    <string name ="watch">Écouter</string>
-    <string name ="unrated">Non-évalué</string>
-    <string name ="directors">Directeurs</string>
-    <string name ="writers">Auteurs</string>
-    <string name ="novel">(inspiré d\'un roman de</string>
-    <string name ="countries">Pays</string>
-    <string name ="release_year">Année de sortie</string>
-    <string name ="ended">Terminée</string>
-    <string name ="since">depuis</string>
-    <string name ="episode_runtime">Durée des épisodes</string>
-    <string name ="creator">Créateur</string>
-    <string name ="creators">Créateurs</string>
-    <string name ="number_of_episodes">Nombre d\'épisodes</string>
-    <string name ="episodes">épisodes (</string>
-    <string name ="episode">épisode (</string>
-    <string name ="seasons">saisons)</string>
-    <string name ="season">saison)</string>
-    <string name ="network">Réseau</string>
+    <string name="default_info">Inconnu(es)</string>
+    <string name="watch">Écouter</string>
+    <string name="unrated">Non-évalué</string>
+    <string name="directors">Directeurs</string>
+    <string name="writers">Auteurs</string>
+    <string name="novel">(inspiré d\'un roman de</string>
+    <string name="countries">Pays</string>
+    <string name="release_year">Année de sortie</string>
+    <string name="ended">Terminée</string>
+    <string name="since">depuis</string>
+    <string name="episode_runtime">Durée des épisodes</string>
+    <string name="creator">Créateur</string>
+    <string name="creators">Créateurs</string>
+    <string name="number_of_episodes">Nombre d\'épisodes</string>
+    <string name="episodes">épisodes (</string>
+    <string name="episode">épisode (</string>
+    <string name="seasons">saisons)</string>
+    <string name="season">saison)</string>
+    <string name="network">Réseau</string>
 
     <!-- MovieView (layout) Strings -->
-    <string name ="mv_title">Titre</string>
-    <string name ="mv_year">Année</string>
-    <string name ="mv_runtime">Durée</string>
-    <string name ="mv_avg_rating">Note des critiques</string>
-    <string name ="mv_genres">Genres</string>
-    <string name ="mv_overview">Synopsis</string>
-    <string name ="mv_director">Directeur</string>
-    <string name ="mv_writer">Auteur</string>
-    <string name ="mv_production">Production</string>
-    <string name ="mv_country">Pays</string>
-    <string name ="mv_main_cast">Acteurs principaux</string>
+    <string name="mv_title">Titre</string>
+    <string name="mv_year">Année</string>
+    <string name="mv_runtime">Durée</string>
+    <string name="mv_avg_rating">Note des critiques</string>
+    <string name="mv_genres">Genres</string>
+    <string name="mv_overview">Synopsis</string>
+    <string name="mv_director">Directeur</string>
+    <string name="mv_writer">Auteur</string>
+    <string name="mv_production">Production</string>
+    <string name="mv_country">Pays</string>
+    <string name="mv_main_cast">Acteurs principaux</string>
 
     <!-- List popup menu Strings -->
-    <string name ="list_viewed">Déplacer vers historique</string>
-    <string name ="list_remove">Enlever</string>
-    <string name ="list_schedule">Planifier</string>
+    <string name="list_viewed">Déplacer vers historique</string>
+    <string name="list_remove">Enlever</string>
+    <string name="list_schedule">Planifier</string>
 
+    <!-- SearchPagerFragment/PersonView/AbstractResultsAdapter Strings -->
+    <string name="spf_top">Populaires</string>
+    <string name="spf_movies">Films</string>
+    <string name="spf_tv">TV</string>
+    <string name="spf_people">Personnes</string>
+    <string name="ara_person">Personne</string>
+    <string name="pv_movie">Film</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
@@ -154,7 +160,7 @@
     <string name="search_hint">Recherche</string>
     <string name="search_title">Recherche</string>
     <string name="title_activity_person_view">Personne</string>
-    <string name="title_activity_movie_view">Flilm</string>
+    <string name="title_activity_movie_view">Film</string>
     <string name="add_bucket_button">Mon Bucket</string>
     <string name="add_history_button">Mon Historique</string>
     <string name="calendar_button">Planifier</string>
