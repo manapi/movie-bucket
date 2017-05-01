@@ -13,19 +13,20 @@ import java.util.Locale;
 
 public class SettingsFragment extends PreferenceFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-
-    public static final String KEY_ADULT_PREF = "adult_filter";
-    public static final String KEY_LOCALE = "locale";
+    static final String KEY_ADULT_PREF = "adult_filter";
+    static final String KEY_LOCALE = "locale";
+    DBHandler dbh;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        dbh = new DBHandler(getActivity());
         addPreferencesFromResource(R.xml.preferences);
         //TODO: THERE HAS TO BE A BETTER WAY
-        Preference localePref = findPreference("locale");
+        Preference localePref = findPreference(KEY_LOCALE);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        localePref.setSummary(summary(prefs.getString("locale", "")));
+        localePref.setSummary(summary(prefs.getString(KEY_LOCALE, "")));
     }
 
     @Override
@@ -34,10 +35,14 @@ public class SettingsFragment extends PreferenceFragment
             Preference localePref = findPreference(k);
             //TODO: there has to be a better way...
             localePref.setSummary(summary(sharedPreferences.getString(k, "")));
+            //dbh.rebuild();
+
+            //TODO: Show a dialog saying that upon change, we have to restart.
+            //TODO: reset the app.
+
         } else  if(k.equals(KEY_ADULT_PREF)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SearchPagerFragment.adult = prefs.getBoolean(SettingsFragment.KEY_ADULT_PREF, false);
-            Toast.makeText(getActivity(), SearchPagerFragment.adult.toString(), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -57,9 +62,9 @@ public class SettingsFragment extends PreferenceFragment
 
     public String summary(String verifier) {
         if (verifier.equals("en")) {
-            return "English";
+            return getString(R.string.locale_en);
         } else {
-            return "Français";
+            return getString(R.string.locale_fr);
         }
     }
 }

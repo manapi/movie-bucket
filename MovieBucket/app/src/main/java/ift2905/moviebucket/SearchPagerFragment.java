@@ -264,8 +264,5 @@ public class SearchPagerFragment extends Fragment {
             }
         }
     }
-    public void setAdult(Boolean bool){
-        adult = bool;
-    }
 }
 
