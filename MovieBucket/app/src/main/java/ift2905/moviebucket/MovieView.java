@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ListIterator;
@@ -50,6 +49,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
     Button historyButton;
     Button calendarButton;
     String lang;
+    int ismovie;
     int runtimeDB;
     DBHandler dbh;
     int state;
@@ -76,10 +76,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             if (id > 0){
                 MovieFetcher mf = new MovieFetcher();
                 mf.execute(Integer.valueOf(id).toString());
+                ismovie = 1;
             } else {
                 id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.tv.name());
                 TvFetcher tf = new TvFetcher();
                 tf.execute(Integer.valueOf(id).toString());
+                ismovie = 0;
             }
 
         } catch (Exception e) {
@@ -124,7 +126,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         switch (view.getId()){
             case R.id.buttonAddMb:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 0, runtimeDB);
+                    dbh.addToDB(id, title, 0, runtimeDB, ismovie);
                     state = 1;
                     bucketButton.setSelected(true);
                 } else if(state == 1){
@@ -136,7 +138,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             case R.id.buttonAddH:
                 if(state == 0) {
-                    dbh.addToDB(id, title, 1, runtimeDB);
+                    dbh.addToDB(id, title, 1, runtimeDB, ismovie);
                     state = 2;
                     bucketButton.setEnabled(false);
                     historyButton.setSelected(true);
@@ -158,7 +160,6 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 break;
 
             case R.id.toCalendar:
-                Calendar cal = Calendar.getInstance();
                 GregorianCalendar calDate = new GregorianCalendar();
                 Intent intent = new Intent(Intent.ACTION_EDIT);
                 intent.setType("vnd.android.cursor.item/event");
@@ -178,7 +179,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         @Override
         protected MovieDb doInBackground(String... params) {
             if (params.length > 0) {
-                int id = new Integer(params[0]);
+                int id = Integer.valueOf(params[0]);
 
                 try {
                     TmdbApi api = new TmdbApi(API_KEY);
@@ -371,9 +372,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     boolean row2 = false;
                     boolean row3 = false;
 
-                    while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true )){
+                    while(castListIterator.hasNext() && !(row1 && row2 && row3)){
                         PersonCast pc = castListIterator.next();
-                        if (row1 == false){
+                        if (!row1){
                             mainCast1.setText(pc.getName());
                             String character = pc.getCharacter();
                             if (character.isEmpty()){
@@ -382,7 +383,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                                 mainChar1.setText(pc.getCharacter());
                             }
                             row1 = true;
-                        }else if (row2 == false){
+                        }else if (!row2){
                             mainCast2.setText(pc.getName());
                             String character = pc.getCharacter();
                             if (character.isEmpty()){
@@ -391,7 +392,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                                 mainChar2.setText(pc.getCharacter());
                             }
                             row2 = true;
-                        }else if (row3 == false){
+                        }else if (!row3){
                             mainCast3.setText(pc.getName());
                             String character = pc.getCharacter();
                             if (character.isEmpty()){
@@ -403,19 +404,19 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         }
                     }
 
-                    if (row1 == false){
+                    if (!row1){
                         mainCast1.setText(DEF);
                         mainCast2.setVisibility(View.GONE);
                         mainCast3.setVisibility(View.GONE);
                         mainChar1.setVisibility(View.GONE);
                         mainChar2.setVisibility(View.GONE);
                         mainChar3.setVisibility(View.GONE);
-                    } else if (row2 == false){
+                    } else if (!row2){
                         mainCast2.setVisibility(View.GONE);
                         mainCast3.setVisibility(View.GONE);
                         mainChar2.setVisibility(View.GONE);
                         mainChar3.setVisibility(View.GONE);
-                    } else if (row3 == false) {
+                    } else if (!row3) {
                         mainCast3.setVisibility(View.GONE);
                         mainChar3.setVisibility(View.GONE);
                     }
@@ -493,7 +494,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 } catch (Exception e){
                 }
 
-        };
+        }
     }
 
     public class TvFetcher extends AsyncTask<String, Object, TvSeries> {
@@ -502,7 +503,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         @Override
         protected TvSeries doInBackground(String... params) {
             if (params.length > 0) {
-                int id = new Integer(params[0]);
+                int id = Integer.valueOf(params[0]);
 
                 try {
                     TmdbApi api = new TmdbApi(API_KEY);
@@ -683,15 +684,15 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             try {
                 List<PersonCast> listCast = tvSeries.getCredits().getCast();
-                ListIterator<PersonCast> castListIterator = listCast.listIterator();;
+                ListIterator<PersonCast> castListIterator = listCast.listIterator();
 
                 boolean row1 = false;
                 boolean row2 = false;
                 boolean row3 = false;
 
-                while(castListIterator.hasNext() && !(row1 == true && row2 == true && row3 == true )){
+                while(castListIterator.hasNext() && !(row1 && row2 && row3)){
                     PersonCast pc = castListIterator.next();
-                    if (row1 == false){
+                    if (!row1){
                         mainCast1.setText(pc.getName());
                         String character = pc.getCharacter();
                         if (character.isEmpty()){
@@ -700,7 +701,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                             mainChar1.setText(pc.getCharacter());
                         }
                         row1 = true;
-                    }else if (row2 == false){
+                    }else if (!row2){
                         mainCast2.setText(pc.getName());
                         String character = pc.getCharacter();
                         if (character.isEmpty()){
@@ -709,7 +710,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                             mainChar2.setText(pc.getCharacter());
                         }
                         row2 = true;
-                    }else if (row3 == false){
+                    }else if (!row3){
                         mainCast3.setText(pc.getName());
                         String character = pc.getCharacter();
                         if (character.isEmpty()){
@@ -721,19 +722,19 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                     }
                 }
 
-                if (row1 == false){
+                if (!row1){
                     mainCast1.setText(DEF);
                     mainCast2.setVisibility(View.GONE);
                     mainCast3.setVisibility(View.GONE);
                     mainChar1.setVisibility(View.GONE);
                     mainChar2.setVisibility(View.GONE);
                     mainChar3.setVisibility(View.GONE);
-                } else if (row2 == false){
+                } else if (!row2){
                     mainCast2.setVisibility(View.GONE);
                     mainCast3.setVisibility(View.GONE);
                     mainChar2.setVisibility(View.GONE);
                     mainChar3.setVisibility(View.GONE);
-                } else if (row3 == false) {
+                } else if (!row3) {
                     mainCast3.setVisibility(View.GONE);
                     mainChar3.setVisibility(View.GONE);
                 }
@@ -843,6 +844,6 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         .into(image);
             } catch (Exception e){
             }
-        };
+        }
     }
 }

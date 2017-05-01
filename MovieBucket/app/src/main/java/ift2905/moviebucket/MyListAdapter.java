@@ -37,7 +37,7 @@ import static ift2905.moviebucket.R.layout.mylist_row_item_view;
  * Created by Amélie on 2017-04-09.
  */
 
-public class MyListAdapter extends CursorAdapter {
+public class MyListAdapter extends CursorAdapter{
 
     Cursor c;
     final String header;
@@ -80,8 +80,13 @@ public class MyListAdapter extends CursorAdapter {
 
                 IntuitiveTextView title = (IntuitiveTextView) v;
                 Intent intent = new Intent(context, MovieView.class);
-                intent.putExtra("movie", title.getMovieId());
-                context.startActivity(intent);
+                Boolean isMovie = dbh.checkIfMovie(title.getMovieId());
+                if (isMovie) {
+                    intent.putExtra("movie", title.getMovieId());
+                } else {
+                    intent.putExtra("tv", title.getMovieId());
+                    context.startActivity(intent);
+                }
             }
         });
 
@@ -158,18 +163,19 @@ public class MyListAdapter extends CursorAdapter {
 
                 final long mId = ((BadassImageButton) v).getMovieId();
                 final long mRuntime = ((BadassImageButton) v).getmRuntime();
-
-                View markAsViewed = fakePopupMenuLayout.findViewById(R.id.markAsViewed);
-                markAsViewed.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dbh.markAsViewed(mId);
-                        updateCursor();
-                        notifyDataSetChanged();
-                        ersatzPopupMenu.dismiss();
-                    }
-                });
-
+                
+                if(header.equals("Bucket")){
+                    View markAsViewed = fakePopupMenuLayout.findViewById(R.id.markAsViewed);
+                    markAsViewed.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dbh.markAsViewed(mId);
+                            updateCursor();
+                            notifyDataSetChanged();
+                            ersatzPopupMenu.dismiss();
+                        }
+                    });
+                }
                 View schedule = fakePopupMenuLayout.findViewById(R.id.schedule);
                 schedule.setOnClickListener(new View.OnClickListener() {
                     @Override
