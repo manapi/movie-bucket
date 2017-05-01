@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
         android:key="locale"
@@ -11,8 +12,9 @@
         />
 
     <SwitchPreference
-        android:key="adult_filter"
-        android:title="@string/adult_filter"
         android:defaultValue="true"
-        />
+        android:key="adult_filter"
+        android:thumbTint="@color/colorSwitch"
+        android:title="@string/adult_filter" />
+
 </PreferenceScreen>

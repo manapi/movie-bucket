@@ -30,9 +30,14 @@
     <string name="adult_filter">"Afficher les films pour adultes"</string>
     <string name="locale">"Langue des informations"</string>
     <string name="locale_summary">Français</string>
+    <string name="locale_en">Anglais</string>
+    <string name="locale_fr">Français</string>
     <string name="default_locale">"fr"</string>
     <string name="action_settings">Configurations</string>
     <string name="title_activity_settings">Configurations</string>
+    <string name="restart_dialog">This is currently le placeholder du fromage.</string>
+    <string name="restart">Redémarrer</string>
+    <string name="cancel">Annuler</string>
 
 
     <!-- MovieView Strings -->
@@ -75,11 +80,11 @@
     <string name="list_schedule">Planifier</string>
 
     <!-- SearchPagerFragment/PersonView/AbstractResultsAdapter Strings -->
-    <string name="spf_top">Populaires</string>
+    <string name="spf_top">Top</string>
     <string name="spf_movies">Films</string>
     <string name="spf_tv">TV</string>
-    <string name="spf_people">Personnes</string>
-    <string name="ara_person">Personne</string>
+    <string name="spf_people">Artistes</string>
+    <string name="ara_person">Artiste</string>
     <string name="pv_movie">Film</string>
 
     <!-- Example General settings -->
