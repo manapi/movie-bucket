@@ -37,43 +37,43 @@
 
 
     <!-- MovieView Strings -->
-    <string name ="default_info">Unknown</string>
-    <string name ="watch">Watch</string>
-    <string name ="unrated">Not rated yet</string>
-    <string name ="directors">Directors</string>
-    <string name ="writers">Writers</string>
-    <string name ="novel">(based on novel by</string>
-    <string name ="countries">Countries</string>
-    <string name ="release_year">Release Year</string>
-    <string name ="ended">Ended</string>
-    <string name ="since">since</string>
-    <string name ="episode_runtime">Episode runtime</string>
-    <string name ="creator">Creator</string>
-    <string name ="creators">Creators</string>
-    <string name ="number_of_episodes">Number of episodes</string>
-    <string name ="episodes">episodes (</string>
-    <string name ="episode">episode (</string>
-    <string name ="seasons">seasons)</string>
-    <string name ="season">season)</string>
-    <string name ="network">Network</string>
+    <string name="default_info">Unknown</string>
+    <string name="watch">Watch</string>
+    <string name="unrated">Not rated yet</string>
+    <string name="directors">Directors</string>
+    <string name="writers">Writers</string>
+    <string name="novel">(based on novel by</string>
+    <string name="countries">Countries</string>
+    <string name="release_year">Release Year</string>
+    <string name="ended">Ended</string>
+    <string name="since">since</string>
+    <string name="episode_runtime">Episode runtime</string>
+    <string name="creator">Creator</string>
+    <string name="creators">Creators</string>
+    <string name="number_of_episodes">Number of episodes</string>
+    <string name="episodes">episodes (</string>
+    <string name="episode">episode (</string>
+    <string name="seasons">seasons)</string>
+    <string name="season">season)</string>
+    <string name="network">Network</string>
 
     <!-- MovieView (layout) Strings -->
-    <string name ="mv_title">Title</string>
-    <string name ="mv_year">Year</string>
-    <string name ="mv_runtime">Runtime</string>
-    <string name ="mv_avg_rating">Average rating</string>
-    <string name ="mv_genres">Genres</string>
-    <string name ="mv_overview">Overview</string>
-    <string name ="mv_director">Director</string>
-    <string name ="mv_writer">Writer</string>
-    <string name ="mv_production">Production</string>
-    <string name ="mv_country">Country</string>
-    <string name ="mv_main_cast">Main cast</string>
+    <string name="mv_title">Title</string>
+    <string name="mv_year">Year</string>
+    <string name="mv_runtime">Runtime</string>
+    <string name="mv_avg_rating">Average rating</string>
+    <string name="mv_genres">Genres</string>
+    <string name="mv_overview">Overview</string>
+    <string name="mv_director">Director</string>
+    <string name="mv_writer">Writer</string>
+    <string name="mv_production">Production</string>
+    <string name="mv_country">Country</string>
+    <string name="mv_main_cast">Main cast</string>
 
     <!-- List popup menu Strings -->
-    <string name ="list_viewed">Move to history</string>
-    <string name ="list_remove">Remove</string>
-    <string name ="list_schedule">Schedule</string>
+    <string name="list_viewed">Move to history</string>
+    <string name="list_remove">Remove</string>
+    <string name="list_schedule">Schedule</string>
 
     <!-- SearchPagerFragment/PersonView/AbstractResultsAdapter Strings -->
     <string name="spf_top">Top</string>
@@ -165,4 +165,9 @@
     <string name="add_bucket_button">My Bucket</string>
     <string name="add_history_button">My History</string>
     <string name="calendar_button">Schedule</string>
+
+    <string name="offline_title">No internet connection</string>
+    <string name="offline_message">You can still view your Bucket while offline.</string>
+    <string name="no_results">No results found</string>
+    <string name="retry_button">Retry</string>
 </resources>

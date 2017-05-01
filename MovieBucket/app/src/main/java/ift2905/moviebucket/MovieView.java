@@ -481,8 +481,12 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 // Poster
                 ImageView image = (ImageView) findViewById(R.id.moviePoster);
                 try {
+                    String url = null;
+                    if(movie != null) {
+                        url = movie.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + movie.getPosterPath() : null;
+                    }
                     Picasso.with(getApplicationContext())
-                            .load(BASE_URL + SIZE_MEDIUM + movie.getPosterPath())
+                            .load(url)
                             .error(R.drawable.placeholder)
                             .placeholder(R.drawable.placeholder)
                             .into(image);
@@ -828,13 +832,16 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             // Poster
             ImageView image = (ImageView) findViewById(R.id.moviePoster);
             try {
+                String url = null;
+                if(movie != null) {
+                    url = tvSeries.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath() : null;
+                }
                 Picasso.with(getApplicationContext())
-                        .load(BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath())
+                        .load(url)
                         .error(R.drawable.placeholder)
                         .placeholder(R.drawable.placeholder)
                         .into(image);
             } catch (Exception e){
-                // TODO : Find a default image
             }
         };
     }

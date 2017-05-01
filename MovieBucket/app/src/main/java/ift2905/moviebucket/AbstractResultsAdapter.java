@@ -65,83 +65,89 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
 
         LayoutInflater li = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        if (convertView == null)
-            convertView = li.inflate(R.layout.search_view, parent, false);
+        if(getItem(position) != null) {
+            if (convertView == null)
+                convertView = li.inflate(R.layout.search_view, parent, false);
 
-        TextView title = (TextView) convertView.findViewById(R.id.title);
-        TextView release = (TextView) convertView.findViewById(R.id.release);
-        TextView type = (TextView) convertView.findViewById(R.id.type);
-        ImageView image = (ImageView) convertView.findViewById(R.id.image);
+            TextView title = (TextView) convertView.findViewById(R.id.title);
+            TextView release = (TextView) convertView.findViewById(R.id.release);
+            TextView type = (TextView) convertView.findViewById(R.id.type);
+            ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-        String year = getItemDate(position);
-        if(year != null && year.length() >= 4) {
-            year = year.substring(0, 4);
-        }
 
-        title.setText(getItemName(position));
-        release.setText(year);
+            String year = getItemDate(position);
+            if(year != null && year.length() >= 4) {
+                year = year.substring(0, 4);
+            }
 
-        String arg;
-        switch(getItemType(position)){
-            case MOVIE:
-                arg = "Movie";
-                break;
-            case TV_SERIES:
-                arg = "TV";
-                break;
-            case PERSON:
-                arg = "Person";
-                break;
-            default:
-                arg = null;
-        }
-        type.setText(arg);
+            title.setText(getItemName(position));
+            release.setText(year);
 
-        String url = getItemUrl(position);
-        if(url != null) {
-            url = BASE_URL + SIZE_SMALL + url;
-        }
+            String arg;
+            switch(getItemType(position)){
+                case MOVIE:
+                    arg = "Movie";
+                    break;
+                case TV_SERIES:
+                    arg = "TV";
+                    break;
+                case PERSON:
+                    arg = "Person";
+                    break;
+                default:
+                    arg = null;
+            }
+            type.setText(arg);
 
-        Picasso.with(context)
+            String url = getItemUrl(position);
+            if(url != null) {
+                url = BASE_URL + SIZE_SMALL + url;
+            }
+
+            Picasso.with(context)
                     .load(url)
                     .error(R.drawable.placeholder)
                     .placeholder(R.drawable.placeholder)
                     .into(image);
 
-        convertView.setOnClickListener(new View.OnClickListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
 
-            // Create a new activity (detailed view of the selected movie)
-            @Override
-            public void onClick(View v) {
-                String arg;
-                Intent intent;
-                switch(getItemType(position)) {
-                    case MOVIE:
-                        arg = Type.movie.name();
-                        intent = new Intent(context, MovieView.class);
-                        intent.putExtra(arg, getItemId(position));
-                        break;
-                    case TV_SERIES:
-                        arg = Type.tv.name();
-                        intent = new Intent(context, MovieView.class);
-                        intent.putExtra(arg, getItemId(position));
-                        break;
-                    case PERSON:
-                        arg = Type.person.name();
-                        intent = new Intent(context, PersonView.class);
-                        intent.putExtra(arg, getItemId(position));
-                        intent.putExtra("name", getItemName(position));
-                        break;
-                    default :
-                        intent = null;
+                // Create a new activity (detailed view of the selected movie)
+                @Override
+                public void onClick(View v) {
+                    String arg;
+                    Intent intent;
+                    switch(getItemType(position)) {
+                        case MOVIE:
+                            arg = Type.movie.name();
+                            intent = new Intent(context, MovieView.class);
+                            intent.putExtra(arg, getItemId(position));
+                            break;
+                        case TV_SERIES:
+                            arg = Type.tv.name();
+                            intent = new Intent(context, MovieView.class);
+                            intent.putExtra(arg, getItemId(position));
+                            break;
+                        case PERSON:
+                            arg = Type.person.name();
+                            intent = new Intent(context, PersonView.class);
+                            intent.putExtra(arg, getItemId(position));
+                            intent.putExtra("name", getItemName(position));
+                            break;
+                        default :
+                            intent = null;
+                    }
+
+                    if (intent != null) {
+                        context.startActivity(intent);
+                    }
+
                 }
-
-                if (intent != null) {
-                    context.startActivity(intent);
-                }
-
-            }
-        });
+            });
+        }
+        else {
+            convertView = li.inflate(R.layout.search_empty_view, parent, false);
+        }
         return convertView;
     }
 

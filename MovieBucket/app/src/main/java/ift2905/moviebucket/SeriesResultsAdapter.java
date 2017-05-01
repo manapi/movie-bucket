@@ -25,7 +25,10 @@ public class SeriesResultsAdapter extends AbstractResultsAdapter{
 
     @Override
     public long getItemId(int position) {
-        return ((TvSeries)results.get(position)).getId();
+        if(getItem(position) != null) {
+            return ((TvSeries)results.get(position)).getId();
+        }
+        return 0;
     }
 
     public String getItemName(int position) {

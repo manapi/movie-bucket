@@ -164,4 +164,9 @@
     <string name="add_bucket_button">Mon Bucket</string>
     <string name="add_history_button">Mon Historique</string>
     <string name="calendar_button">Planifier</string>
+
+    <string name="offline_title">Pas de connection internet</string>
+    <string name="offline_message">Vous pouvez accéder votre Bucket hors-ligne.</string>
+    <string name="no_results">Aucun résultat trouvé</string>
+    <string name="retry_button">Réessayer</string>
 </resources>

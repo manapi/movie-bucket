@@ -31,16 +31,19 @@ public class TopResultsAdapter extends AbstractResultsAdapter{
 
     @Override
     public long getItemId(int position) {
-        switch(getItemType(position)) {
-            case MOVIE:
-                return ((MovieDb)results.get(position)).getId();
-            case TV_SERIES:
-                return ((TvSeries)results.get(position)).getId();
-            case PERSON:
-                return ((Person)results.get(position)).getId();
-            default:
-                return 0;
+        if(getItem(position) != null) {
+            switch(getItemType(position)) {
+                case MOVIE:
+                    return ((MovieDb)results.get(position)).getId();
+                case TV_SERIES:
+                    return ((TvSeries)results.get(position)).getId();
+                case PERSON:
+                    return ((Person)results.get(position)).getId();
+                default:
+                    return 0;
+            }
         }
+        return 0;
     }
 
     public String getItemName(int position) {
@@ -52,7 +55,7 @@ public class TopResultsAdapter extends AbstractResultsAdapter{
             case PERSON:
                 return ((Person)results.get(position)).getName();
             default:
-                return null;
+                return "No results";
         }
     }
 
