@@ -20,7 +20,7 @@
             app:srcCompat="@drawable/ic_date_range_black_24dp" />
 
         <TextView
-            android:text="Schedule"
+            android:text="@string/list_schedule"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="3"
@@ -42,7 +42,7 @@
             app:srcCompat="@drawable/ic_close_black_24dp" />
 
         <TextView
-            android:text="Remove from list"
+            android:text="@string/list_remove"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="3"
