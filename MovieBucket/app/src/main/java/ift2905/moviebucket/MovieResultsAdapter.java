@@ -21,11 +21,15 @@ public class MovieResultsAdapter extends AbstractResultsAdapter{
         this.context = context;
     }
 
-    public Multi.MediaType getItemType(int position) { return Multi.MediaType.MOVIE; }
+    public Multi.MediaType getItemType(int position) {
+        return Multi.MediaType.MOVIE; }
 
     @Override
     public long getItemId(int position) {
-        return ((MovieDb)results.get(position)).getId();
+        if(getItem(position) != null) {
+            return ((MovieDb)results.get(position)).getId();
+        }
+        return 0;
     }
 
     public String getItemName(int position) {

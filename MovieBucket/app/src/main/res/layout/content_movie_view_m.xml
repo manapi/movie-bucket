@@ -43,7 +43,6 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignWithParentIfMissing="false"
                     android:layout_weight="1"
-                    android:src="@drawable/placeholder"
                     android:isScrollContainer="false"
                     android:padding="2dp" />
 

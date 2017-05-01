@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -20,15 +22,16 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OfflineFragment.OnFragmentInteractionListener {
 
+    // Fragments
     private RecyclerViewFragment discoverFragment;
     private SearchPagerFragment searchPagerFragment;
     private SpecialListFragment myBucketFragment, myHistoryFragment;
     private AbootFragment aboutFragment;
+
     private SearchView searchView;
     private DBHandler dbh;
-    final String API_KEY = "93928f442ab5ac81f8c03b874f78fb94";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +50,13 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Displaying suggestions on startup : currently, popular movies
-        discoverFragment = new RecyclerViewFragment();
-
-        //Initialize discover fragment by default
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
-
+        if (checkConnectivity()) {
+            discoverFragment = new RecyclerViewFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
+        }
+        else {
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new OfflineFragment()).commit();
+        }
         setTitle(R.string.title_fragment_discover);
 
         //Sets the used Settings.
@@ -69,7 +73,15 @@ public class MainActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
         } else if(!navigationView.getMenu().findItem(R.id.nav_discover).isChecked()) {
             // Case 2 : go back to discover fragment
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
+            if(checkConnectivity()) {
+                if(discoverFragment == null) {
+                    discoverFragment = new RecyclerViewFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
+            }
+            else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OfflineFragment()).commit();
+            }
             navigationView.getMenu().findItem(R.id.nav_discover).setChecked(true);
             setTitle(R.string.title_fragment_discover);
         } else {
@@ -155,13 +167,20 @@ public class MainActivity extends AppCompatActivity
         // Collapse search widget
         if(searchView != null) {
             searchView.setIconified(true);
+            searchView.setIconified(true);
         }
 
         if (id == R.id.nav_discover) {
-            if (discoverFragment == null) {
-                discoverFragment = new RecyclerViewFragment();
+            if(checkConnectivity()) {
+                if (discoverFragment == null) {
+                    discoverFragment = new RecyclerViewFragment();
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
             }
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
+            else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OfflineFragment()).commit();
+            }
+
             setTitle(R.string.title_fragment_discover);
 
         } else if (id == R.id.nav_mybucket) {
@@ -202,5 +221,20 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         dbh.getDb().close();
+    }
+
+    public void onFragmentInteraction() {
+        if(checkConnectivity()) {
+            if (discoverFragment == null) {
+                discoverFragment = new RecyclerViewFragment();
+            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, discoverFragment).commit();
+        }
+    }
+
+    private boolean checkConnectivity() {
+        ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return (activeNetwork != null) && (activeNetwork.isConnectedOrConnecting());
     }
 }

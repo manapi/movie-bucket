@@ -25,7 +25,10 @@ public class PeopleResultsAdapter extends AbstractResultsAdapter{
 
     @Override
     public long getItemId(int position) {
-        return ((Person)results.get(position)).getId();
+        if(getItem(position) != null) {
+            return ((Person)results.get(position)).getId();
+        }
+        return 0;
     }
 
     public String getItemName(int position) {

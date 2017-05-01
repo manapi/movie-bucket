@@ -137,6 +137,8 @@ public class SearchPagerFragment extends Fragment {
     // TODO : get multiple pages...!!
     public class FetchTop extends AsyncTask<String, Object,  List<Multi>> {
 
+        private final Multi def = null;
+
         @Override
         protected List<Multi> doInBackground(String... params) {
             if(params.length > 0) {
@@ -158,7 +160,12 @@ public class SearchPagerFragment extends Fragment {
         protected void onPostExecute(List<Multi> results) {
             if(topAdapter != null) {
                 topAdapter.getData().clear();
-                topAdapter.getData().addAll(results);
+                if(!results.isEmpty()) {
+                    topAdapter.getData().addAll(results);
+
+                } else {
+                    topAdapter.getData().add(0, null);
+                }
                 topAdapter.notifyDataSetChanged();
             }
         }
@@ -189,9 +196,14 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<MovieDb> results) {
+            movieAdapter.getData().clear();
             if(movieAdapter != null) {
-                movieAdapter.getData().clear();
-                movieAdapter.getData().addAll(results);
+                if(!results.isEmpty()) {
+                    movieAdapter.getData().addAll(results);
+
+                } else {
+                    movieAdapter.getData().add(0, null);
+                }
                 movieAdapter.notifyDataSetChanged();
             }
         }
@@ -225,7 +237,12 @@ public class SearchPagerFragment extends Fragment {
         protected void onPostExecute(List<TvSeries> results) {
             if(seriesAdapter != null) {
                 seriesAdapter.getData().clear();
-                seriesAdapter.getData().addAll(results);
+                if(!results.isEmpty()) {
+                    seriesAdapter.getData().addAll(results);
+
+                } else {
+                    seriesAdapter.getData().add(0, null);
+                }
                 seriesAdapter.notifyDataSetChanged();
             }
         }
@@ -259,7 +276,12 @@ public class SearchPagerFragment extends Fragment {
         protected void onPostExecute(List<Person> results) {
             if(peopleAdapter != null) {
                 peopleAdapter.getData().clear();
-                peopleAdapter.getData().addAll(results);
+                if(!results.isEmpty()) {
+                    peopleAdapter.getData().addAll(results);
+
+                } else {
+                    peopleAdapter.getData().add(0, null);
+                }
                 peopleAdapter.notifyDataSetChanged();
             }
         }
