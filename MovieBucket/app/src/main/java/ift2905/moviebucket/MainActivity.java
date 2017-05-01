@@ -21,12 +21,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+/**
+ * Startup activity with navigation drawer and search
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OfflineFragment.OnFragmentInteractionListener {
 
     // Fragments
     private RecyclerViewFragment discoverFragment;
-    private SearchPagerFragment searchPagerFragment;
     private SpecialListFragment myBucketFragment, myHistoryFragment;
     private AbootFragment aboutFragment;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Initialize discover fragment
         if (checkConnectivity()) {
             discoverFragment = new RecyclerViewFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, discoverFragment).commit();
@@ -92,11 +95,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
 
+        // Inflate the menu
+        getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
 
+        // Set up search widget
         SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
 
         searchView = null;
@@ -112,7 +116,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     if (hasFocus == true){
-                        searchPagerFragment = new SearchPagerFragment();
+                        SearchPagerFragment searchPagerFragment = new SearchPagerFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchPagerFragment).addToBackStack(null).commit();
                     }
                     else if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -128,12 +132,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
+        // Handle action bar item clicks for settings
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(intent);
@@ -150,8 +152,10 @@ public class MainActivity extends AppCompatActivity
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
 
-            if(searchPagerFragment != null) {
-                searchPagerFragment.search(query);
+            // Send query to search fragment
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if(currentFragment instanceof SearchPagerFragment) {
+                ((SearchPagerFragment)currentFragment).search(query);
             }
         }
     }
@@ -170,6 +174,7 @@ public class MainActivity extends AppCompatActivity
             searchView.setIconified(true);
         }
 
+        // Drawer navigation
         if (id == R.id.nav_discover) {
             if(checkConnectivity()) {
                 if (discoverFragment == null) {
@@ -223,6 +228,9 @@ public class MainActivity extends AppCompatActivity
         dbh.getDb().close();
     }
 
+    /**
+     * Retry connectivity listener from offline fragment
+     */
     public void onFragmentInteraction() {
         if(checkConnectivity()) {
             if (discoverFragment == null) {
@@ -232,6 +240,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Check if device is connected to internet
+     */
     private boolean checkConnectivity() {
         ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();

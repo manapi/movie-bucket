@@ -15,6 +15,7 @@ import info.movito.themoviedbapi.model.people.Person;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
+ * List adapter for top results
  * Created by Amélie on 2017-04-25.
  */
 
@@ -55,7 +56,7 @@ public class TopResultsAdapter extends AbstractResultsAdapter{
             case PERSON:
                 return ((Person)results.get(position)).getName();
             default:
-                return "No results";
+                return null;
         }
     }
 

@@ -36,8 +36,10 @@ public class SearchPagerFragment extends Fragment {
     private static String lang;
     static Boolean adult; //include adult movies in search results
 
+    // Fragments for pager
     protected ListFragment[] pagerList;
 
+    // Adapaters for pager fragments
     protected TopResultsAdapter topAdapter;
     protected MovieResultsAdapter movieAdapter;
     protected SeriesResultsAdapter seriesAdapter;
@@ -100,15 +102,11 @@ public class SearchPagerFragment extends Fragment {
                 getString(R.string.spf_people),
         };
 
-        private FragmentManager mFragmentManager;
-
         public MyAdapter(FragmentManager fm){
             super(fm);
-            mFragmentManager = fm;
         }
         @Override
         public Fragment getItem(int position) {
-
             return pagerList[position];
         }
 

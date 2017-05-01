@@ -43,9 +43,11 @@ public class PersonView extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Set action bar back
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        // Set activity title
         int id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.person.name());
         String name = getIntent().getExtras().getString("name");
 
@@ -55,6 +57,7 @@ public class PersonView extends AppCompatActivity {
 
         creditsList = (ExpandableListView) findViewById(R.id.credisList);
 
+        // Get credits from api
         if (id > 0) {
             FetchCredits mf = new FetchCredits();
             mf.execute(id + "");
@@ -64,12 +67,17 @@ public class PersonView extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
+
+        // Back button
         if(itemId == android.R.id.home){
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Fetch credits from API
+     */
     private class FetchCredits extends AsyncTask<String, Object, PersonCredits> {
 
         @Override
@@ -110,8 +118,8 @@ public class PersonView extends AppCompatActivity {
                 List<PersonCredit> cast = credits.getCast();
 
                 if(!cast.isEmpty()) {
-                    jobs.add("Actor");
-                    creds.put("Actor", cast);
+                    jobs.add(getString(R.string.pv_actor));
+                    creds.put(getString(R.string.pv_actor), cast);
                 }
 
                 CreditsExpandableAdapter adapter = new CreditsExpandableAdapter(getApplication(), jobs, creds);
@@ -123,6 +131,9 @@ public class PersonView extends AppCompatActivity {
         }
     }
 
+    /**
+     * Expandable list adapter for credits
+     */
     private class CreditsExpandableAdapter extends BaseExpandableListAdapter {
 
         final String BASE_URL = "http://image.tmdb.org/t/p/";

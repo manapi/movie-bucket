@@ -26,7 +26,6 @@ import info.movito.themoviedbapi.model.MovieDb;
 /**
  * Recycler view in fragment for discover
  */
-
 public class RecyclerViewFragment extends Fragment {
 
     private static final int SPAN_COUNT = 2;
@@ -37,6 +36,8 @@ public class RecyclerViewFragment extends Fragment {
 
     protected RecyclerView mRecyclerView;
     protected PosterCardAdapter mAdapter;
+
+    // Data
     protected List<MovieDb> mList;
 
     @Override
@@ -78,6 +79,7 @@ public class RecyclerViewFragment extends Fragment {
         mAdapter = new PosterCardAdapter(getActivity(), mList);
         mRecyclerView.setAdapter(mAdapter);
 
+        // New movie view activity on click
         mAdapter.setOnItemClickListener(new PosterCardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MovieDb movie) {

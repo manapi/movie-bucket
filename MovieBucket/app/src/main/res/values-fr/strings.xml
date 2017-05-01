@@ -86,6 +86,7 @@
     <string name="spf_people">Artistes</string>
     <string name="ara_person">Artiste</string>
     <string name="pv_movie">Film</string>
+    <string name="pv_actor">Acteur</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
