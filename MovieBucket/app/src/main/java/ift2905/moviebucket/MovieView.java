@@ -834,7 +834,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
             ImageView image = (ImageView) findViewById(R.id.moviePoster);
             try {
                 String url = null;
-                if(movie != null) {
+                if(tvSeries != null) {
                     url = tvSeries.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath() : null;
                 }
                 Picasso.with(getApplicationContext())

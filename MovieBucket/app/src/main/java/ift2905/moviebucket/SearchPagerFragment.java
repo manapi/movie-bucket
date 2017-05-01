@@ -125,29 +125,30 @@ public class SearchPagerFragment extends Fragment {
      * Fetch all search results from API
      */
     public void search(String query) {
-        new FetchTop().execute(query);
-        new FetchMovies().execute(query);
-        new FetchSeries().execute(query);
-        new FetchPeople().execute(query);
+        new FetchTop().execute(query, "0");
+        new FetchMovies().execute(query, "0");
+        new FetchSeries().execute(query, "0");
+        new FetchPeople().execute(query, "0");
     }
 
     /**
      * Fetch top results from API
      */
-    // TODO : get multiple pages...!!
     public class FetchTop extends AsyncTask<String, Object,  List<Multi>> {
 
-        private final Multi def = null;
+        String query;
+        int page;
 
         @Override
         protected List<Multi> doInBackground(String... params) {
-            if(params.length > 0) {
-                String query = params[0];
+            if(params.length > 1) {
+                query = params[0];
+                page = new Integer(params[1]);
 
                 try{
                     TmdbApi api = new TmdbApi(API_KEY);
                     TmdbSearch search = api.getSearch();
-                    return search.searchMulti(query, lang, 1).getResults();
+                    return search.searchMulti(query, lang, page).getResults();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -159,14 +160,24 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Multi> results) {
             if(topAdapter != null) {
-                topAdapter.getData().clear();
-                if(!results.isEmpty()) {
-                    topAdapter.getData().addAll(results);
+                if(page == 0) {
+                    topAdapter.getData().clear();
+                    if(!results.isEmpty()) {
+                        topAdapter.getData().addAll(results);
 
-                } else {
-                    topAdapter.getData().add(0, null);
+                    } else {
+                        topAdapter.getData().add(0, null);
+                    }
+                }
+                else {
+                    topAdapter.getData().addAll(results);
                 }
                 topAdapter.notifyDataSetChanged();
+
+                if(results.size() == 20 && page < 5) {
+                    page++;
+                    new FetchTop().execute(query, new Integer(page).toString());
+                }
             }
         }
     }
@@ -174,13 +185,16 @@ public class SearchPagerFragment extends Fragment {
     /**
      * Fetch movie results from API
      */
-    // TODO : get multiple pages...!!
     public class FetchMovies extends AsyncTask<String, Object,  List<MovieDb>> {
+
+        String query;
+        int page;
 
         @Override
         protected List<MovieDb> doInBackground(String... params) {
-            if(params.length > 0) {
-                String query = params[0];
+            if(params.length > 1) {
+                query = params[0];
+                page = new Integer(params[1]);
 
                 try {
                     TmdbApi api = new TmdbApi(API_KEY);
@@ -196,15 +210,25 @@ public class SearchPagerFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<MovieDb> results) {
-            movieAdapter.getData().clear();
             if(movieAdapter != null) {
-                if(!results.isEmpty()) {
-                    movieAdapter.getData().addAll(results);
+                if(page == 0) {
+                    movieAdapter.getData().clear();
+                    if(!results.isEmpty()) {
+                        movieAdapter.getData().addAll(results);
 
-                } else {
-                    movieAdapter.getData().add(0, null);
+                    } else {
+                        movieAdapter.getData().add(0, null);
+                    }
+                }
+                else {
+                    movieAdapter.getData().addAll(results);
                 }
                 movieAdapter.notifyDataSetChanged();
+
+                if(results.size() == 20 && page < 5) {
+                    page++;
+                    new FetchMovies().execute(query, new Integer(page).toString());
+                }
             }
         }
     }
@@ -212,14 +236,16 @@ public class SearchPagerFragment extends Fragment {
     /**
      * Fetch TV series results from API
      */
-    // TODO : get multiple pages...!!
     public class FetchSeries extends AsyncTask<String, Object,  List<TvSeries>> {
+
+        String query;
+        int page;
 
         @Override
         protected List<TvSeries> doInBackground(String... params) {
-
-            if(params.length > 0) {
-                String query = params[0];
+            if(params.length > 1) {
+                query = params[0];
+                page = new Integer(params[1]);
 
                 try{
                     TmdbApi api = new TmdbApi(API_KEY);
@@ -236,14 +262,24 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<TvSeries> results) {
             if(seriesAdapter != null) {
-                seriesAdapter.getData().clear();
-                if(!results.isEmpty()) {
-                    seriesAdapter.getData().addAll(results);
+                if(page == 0) {
+                    seriesAdapter.getData().clear();
+                    if (!results.isEmpty()) {
+                        seriesAdapter.getData().addAll(results);
 
-                } else {
-                    seriesAdapter.getData().add(0, null);
+                    } else {
+                        seriesAdapter.getData().add(0, null);
+                    }
+                }
+                else {
+                    seriesAdapter.getData().addAll(results);
                 }
                 seriesAdapter.notifyDataSetChanged();
+
+                if(results.size() == 20 && page < 5) {
+                    page++;
+                    new FetchSeries().execute(query, new Integer(page).toString());
+                }
             }
         }
     }
@@ -251,14 +287,16 @@ public class SearchPagerFragment extends Fragment {
     /**
      * Fetch people results from API
      */
-    // TODO : get multiple pages...!!
     public class FetchPeople extends AsyncTask<String, Object,  List<Person>> {
+
+        String query;
+        int page;
 
         @Override
         protected List<Person> doInBackground(String... params) {
-
-            if(params.length > 0) {
-                String query = params[0];
+            if(params.length > 1) {
+                query = params[0];
+                page = new Integer(params[1]);
 
                 try {
                     TmdbApi api = new TmdbApi(API_KEY);
@@ -275,14 +313,24 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Person> results) {
             if(peopleAdapter != null) {
-                peopleAdapter.getData().clear();
-                if(!results.isEmpty()) {
-                    peopleAdapter.getData().addAll(results);
+                if(page == 0) {
+                    peopleAdapter.getData().clear();
+                    if(!results.isEmpty()) {
+                        peopleAdapter.getData().addAll(results);
 
-                } else {
-                    peopleAdapter.getData().add(0, null);
+                    } else {
+                        peopleAdapter.getData().add(0, null);
+                    }
+                }
+                else {
+                    peopleAdapter.getData().addAll(results);
                 }
                 peopleAdapter.notifyDataSetChanged();
+
+                if(results.size() == 20 && page < 5) {
+                    page++;
+                    new FetchPeople().execute(query, new Integer(page).toString());
+                }
             }
         }
     }
