@@ -197,13 +197,10 @@ public class MyListAdapter extends CursorAdapter{
 
                 //Showing the menu under the button, if possible
                 DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-                float dpOffsetX = -50f;
                 float dpOffsetY = 48f;
-                float fPixelsX = metrics.density * dpOffsetX;
                 float fPixelsY = metrics.density * dpOffsetY;
-                int OFFSET_X  = (int) (fPixelsX + 0.5f);
                 int OFFSET_Y = (int) (fPixelsY + 0.5f);
-                ersatzPopupMenu.showAtLocation(fakePopupMenuLayout, Gravity.NO_GRAVITY, point.x + OFFSET_X, point.y + OFFSET_Y);
+                ersatzPopupMenu.showAtLocation(fakePopupMenuLayout, Gravity.NO_GRAVITY, point.x, point.y + OFFSET_Y);
             }
         });
 
