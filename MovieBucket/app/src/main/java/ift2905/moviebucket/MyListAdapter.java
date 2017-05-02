@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.graphics.Point;
 import android.provider.CalendarContract;
 import android.support.v4.widget.CursorAdapter;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -19,18 +21,6 @@ import java.util.GregorianCalendar;
 import static ift2905.moviebucket.R.drawable.ic_star_black_24dp;
 import static ift2905.moviebucket.R.drawable.ic_star_border_black_24dp;
 import static ift2905.moviebucket.R.layout.mylist_row_item_view;
-
-// TODO: Expand adapter to include buttons, on click listeners, etc
-//half-way there! need to add in the pop in menu when title is clicked
-// TODO: should take MovieDb instead of Strings
-    /*Easy change. However, still using a string array here for testing purposes. And then there's
-    the problem of putting favorite and viewed data in the same array. Or one could use the chicken
-    solution and change to constructor to take in multiple arrays.*/
-//TODO: bugfix
-    /*the app seems to forget previous elements after scrolling to the last 5-10 elements of a list
-    probably has something to do with the layout used in the xml; maybe I should try using a
-    ListView as the parent instead of a LinearLayout? Anyways, I'm leaving this here as a
-    reminder to myself to fix that nonsense*/
 
 /**
  * Adapter for My Bucket and My History lists
@@ -165,7 +155,7 @@ public class MyListAdapter extends CursorAdapter{
                 final long mRuntime = ((BadassImageButton) v).getmRuntime();
                 
                 if(header.equals("Bucket")){
-                    View markAsViewed = fakePopupMenuLayout.findViewById(R.id.markAsViewed);
+                    Button markAsViewed = (Button) fakePopupMenuLayout.findViewById(R.id.markAsViewed);
                     markAsViewed.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -176,7 +166,7 @@ public class MyListAdapter extends CursorAdapter{
                         }
                     });
                 }
-                View schedule = fakePopupMenuLayout.findViewById(R.id.schedule);
+                Button schedule = (Button) fakePopupMenuLayout.findViewById(R.id.schedule);
                 schedule.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -194,7 +184,7 @@ public class MyListAdapter extends CursorAdapter{
                     }
                 });
 
-                View delete = fakePopupMenuLayout.findViewById(R.id.delete);
+                Button delete = (Button) fakePopupMenuLayout.findViewById(R.id.delete);
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -206,8 +196,13 @@ public class MyListAdapter extends CursorAdapter{
                 });
 
                 //Showing the menu under the button, if possible
-                int OFFSET_X = -20;
-                int OFFSET_Y = 130;
+                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                float dpOffsetX = -50f;
+                float dpOffsetY = 48f;
+                float fPixelsX = metrics.density * dpOffsetX;
+                float fPixelsY = metrics.density * dpOffsetY;
+                int OFFSET_X  = (int) (fPixelsX + 0.5f);
+                int OFFSET_Y = (int) (fPixelsY + 0.5f);
                 ersatzPopupMenu.showAtLocation(fakePopupMenuLayout, Gravity.NO_GRAVITY, point.x + OFFSET_X, point.y + OFFSET_Y);
             }
         });
