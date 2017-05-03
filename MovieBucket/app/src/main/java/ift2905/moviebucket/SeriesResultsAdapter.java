@@ -9,6 +9,7 @@ import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
+ * List adapter for tv series results
  * Created by Amélie on 2017-04-25.
  */
 

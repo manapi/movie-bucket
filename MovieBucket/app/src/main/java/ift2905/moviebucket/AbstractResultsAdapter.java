@@ -2,10 +2,6 @@ package ift2905.moviebucket;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,26 +11,24 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 import info.movito.themoviedbapi.model.Multi;
-import info.movito.themoviedbapi.model.tv.TvSeries;
 
 /**
- * Abstract adapter for search results
+ * Adapter root class for search results
  * Created by Amélie on 2017-04-09.
  */
 
 public abstract class AbstractResultsAdapter extends BaseAdapter {
 
     public enum Type {
-        top, movie, tv, person
+        movie, tv, person
     }
 
-    final String BASE_URL = "http://image.tmdb.org/t/p/";
-    final String SIZE_SMALL = "w154";
+    final static String BASE_URL = "http://image.tmdb.org/t/p/";
+    final static String SIZE_SMALL = "w154";
 
     protected List<Object> results;
     protected Context context;
@@ -69,12 +63,13 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
             if (convertView == null)
                 convertView = li.inflate(R.layout.search_view, parent, false);
 
+            // Get layout components
             TextView title = (TextView) convertView.findViewById(R.id.title);
             TextView release = (TextView) convertView.findViewById(R.id.release);
             TextView type = (TextView) convertView.findViewById(R.id.type);
             ImageView image = (ImageView) convertView.findViewById(R.id.image);
 
-
+            // Crop date to year
             String year = getItemDate(position);
             if(year != null && year.length() >= 4) {
                 year = year.substring(0, 4);
@@ -83,22 +78,24 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
             title.setText(getItemName(position));
             release.setText(year);
 
+            // Set item type
             String arg;
             switch(getItemType(position)){
                 case MOVIE:
-                    arg = "Movie";
+                    arg = context.getString(R.string.pv_movie);
                     break;
                 case TV_SERIES:
-                    arg = "TV";
+                    arg = context.getString(R.string.spf_tv);
                     break;
                 case PERSON:
-                    arg = "Person";
+                    arg = context.getString(R.string.ara_person);
                     break;
                 default:
                     arg = null;
             }
             type.setText(arg);
 
+            // Set image
             String url = getItemUrl(position);
             if(url != null) {
                 url = BASE_URL + SIZE_SMALL + url;
@@ -110,6 +107,7 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
                     .placeholder(R.drawable.placeholder)
                     .into(image);
 
+            // Start new movie or person activity on click
             convertView.setOnClickListener(new View.OnClickListener() {
 
                 // Create a new activity (detailed view of the selected movie)
@@ -146,6 +144,7 @@ public abstract class AbstractResultsAdapter extends BaseAdapter {
             });
         }
         else {
+            // No results case
             convertView = li.inflate(R.layout.search_empty_view, parent, false);
         }
         return convertView;

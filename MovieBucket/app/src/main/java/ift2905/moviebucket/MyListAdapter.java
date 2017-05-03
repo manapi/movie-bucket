@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.graphics.Point;
 import android.provider.CalendarContract;
 import android.support.v4.widget.CursorAdapter;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
@@ -19,18 +21,6 @@ import java.util.GregorianCalendar;
 import static ift2905.moviebucket.R.drawable.ic_star_black_24dp;
 import static ift2905.moviebucket.R.drawable.ic_star_border_black_24dp;
 import static ift2905.moviebucket.R.layout.mylist_row_item_view;
-
-// TODO: Expand adapter to include buttons, on click listeners, etc
-//half-way there! need to add in the pop in menu when title is clicked
-// TODO: should take MovieDb instead of Strings
-    /*Easy change. However, still using a string array here for testing purposes. And then there's
-    the problem of putting favorite and viewed data in the same array. Or one could use the chicken
-    solution and change to constructor to take in multiple arrays.*/
-//TODO: bugfix
-    /*the app seems to forget previous elements after scrolling to the last 5-10 elements of a list
-    probably has something to do with the layout used in the xml; maybe I should try using a
-    ListView as the parent instead of a LinearLayout? Anyways, I'm leaving this here as a
-    reminder to myself to fix that nonsense*/
 
 /**
  * Adapter for My Bucket and My History lists
@@ -44,11 +34,11 @@ public class MyListAdapter extends CursorAdapter{
     Context context;
     DBHandler dbh;
 
-    //the "to" parameter is necessary since it specifies which list requires a Db query and stuff
-    public MyListAdapter(String to, Context context, Cursor c) {
+    //the "header" parameter is necessary since it specifies which list requires a Db query and stuff
+    public MyListAdapter(String header, Context context, Cursor c) {
         super(context, c, 0);
         this.c = c;
-        this.header = to;
+        this.header = header;
         this.context = context;
         dbh = new DBHandler(context);
     }
@@ -85,8 +75,8 @@ public class MyListAdapter extends CursorAdapter{
                     intent.putExtra("movie", title.getMovieId());
                 } else {
                     intent.putExtra("tv", title.getMovieId());
-                    context.startActivity(intent);
                 }
+                context.startActivity(intent);
             }
         });
 
@@ -165,7 +155,7 @@ public class MyListAdapter extends CursorAdapter{
                 final long mRuntime = ((BadassImageButton) v).getmRuntime();
                 
                 if(header.equals("Bucket")){
-                    View markAsViewed = fakePopupMenuLayout.findViewById(R.id.markAsViewed);
+                    Button markAsViewed = (Button) fakePopupMenuLayout.findViewById(R.id.markAsViewed);
                     markAsViewed.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -176,7 +166,7 @@ public class MyListAdapter extends CursorAdapter{
                         }
                     });
                 }
-                View schedule = fakePopupMenuLayout.findViewById(R.id.schedule);
+                Button schedule = (Button) fakePopupMenuLayout.findViewById(R.id.schedule);
                 schedule.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -194,7 +184,7 @@ public class MyListAdapter extends CursorAdapter{
                     }
                 });
 
-                View delete = fakePopupMenuLayout.findViewById(R.id.delete);
+                Button delete = (Button) fakePopupMenuLayout.findViewById(R.id.delete);
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -206,55 +196,11 @@ public class MyListAdapter extends CursorAdapter{
                 });
 
                 //Showing the menu under the button, if possible
-                int OFFSET_X = -20;
-                int OFFSET_Y = 130;
-                ersatzPopupMenu.showAtLocation(fakePopupMenuLayout, Gravity.NO_GRAVITY, point.x + OFFSET_X, point.y + OFFSET_Y);
-
-                /*Previous implementation of the Popup menu kept in comments for reference
-                BadassImageButton moreButton = (BadassImageButton) v;
-
-                GodlyPopupMenu popup = new GodlyPopupMenu(context, v, moreButton.getMovieId(), moreButton.getmRuntime());
-                final long popupId = popup.getMovieId();
-                final long popupRuntime = popup.getMRuntime();
-                if (header.equals("Bucket")){
-                    popup.getMenuInflater().inflate(R.menu.popup_menu_my_bucket, popup.getMenu());
-                }else if (header.equals("History")){
-                    popup.getMenuInflater().inflate(R.menu.popup_menu_my_history, popup.getMenu());
-                }
-
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch(item.getItemId()) {
-                            case R.id.markAsViewed:
-                                dbh.markAsViewed(popupId);
-                                updateCursor();
-                                notifyDataSetChanged();
-                                break;
-                            case R.id.schedule:
-                                Calendar cal = Calendar.getInstance();
-                                GregorianCalendar calDate = new GregorianCalendar();
-                                Intent calIntent = new Intent(Intent.ACTION_EDIT);
-                                calIntent.setType("vnd.android.cursor.item/event");
-                                calIntent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                                        calDate.getTimeInMillis());
-                                calIntent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,
-                                        calDate.getTimeInMillis() + popupRuntime*60*1000);
-                                calIntent.putExtra(CalendarContract.Events.TITLE, "Watch " + title);
-                                context.startActivity(calIntent);
-                                break;
-                            case R.id.delete:
-                                dbh.removeFromDB(popupId);
-                                updateCursor();
-                                notifyDataSetChanged();
-                                break;
-
-                        }
-                        return true;
-                    }
-                });
-                popup.show();*/
-
+                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                float dpOffsetY = 48f;
+                float fPixelsY = metrics.density * dpOffsetY;
+                int OFFSET_Y = (int) (fPixelsY + 0.5f);
+                ersatzPopupMenu.showAtLocation(fakePopupMenuLayout, Gravity.NO_GRAVITY, point.x, point.y + OFFSET_Y);
             }
         });
 

@@ -9,6 +9,7 @@ import info.movito.themoviedbapi.model.Multi;
 import info.movito.themoviedbapi.model.people.Person;
 
 /**
+ * List adapter for people results
  * Created by Amélie on 2017-04-25.
  */
 

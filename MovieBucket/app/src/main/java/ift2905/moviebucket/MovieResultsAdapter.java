@@ -9,6 +9,7 @@ import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.Multi;
 
 /**
+ * List adapter for movie results
  * Created by Amélie on 2017-04-25.
  */
 

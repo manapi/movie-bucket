@@ -84,6 +84,7 @@
     <string name="spf_people">People</string>
     <string name="ara_person">Person</string>
     <string name="pv_movie">Movie</string>
+    <string name="pv_actor">Actor</string>
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>

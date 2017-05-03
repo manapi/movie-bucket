@@ -1,14 +1,11 @@
 package ift2905.moviebucket;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
-import java.util.Locale;
 
 
 public class SettingsFragment extends PreferenceFragment
@@ -32,14 +29,12 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String k) {
         if(k.equals(KEY_LOCALE)) {
-            Preference localePref = findPreference(k);
-            //TODO: there has to be a better way...
-            localePref.setSummary(summary(sharedPreferences.getString(k, "")));
-            //dbh.rebuild();
-            RestartDialogFragment rdf = new RestartDialogFragment();
-            //rdf.show(getActivity().getFragmentManager(), "test");
-            //TODO: Show a dialog saying that upon change, we have to restart.
-            //TODO: reset the app.
+            //Updates the summary
+            //TODO: probably has to go.
+            Preference localePref = findPreference(KEY_LOCALE);
+            localePref.setSummary(summary(sharedPreferences.getString(KEY_LOCALE, "")));
+            dbh.rebuild();
+            //TODO: refresh de Discover fragment here, end my misery Amé!
 
         } else  if(k.equals(KEY_ADULT_PREF)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());

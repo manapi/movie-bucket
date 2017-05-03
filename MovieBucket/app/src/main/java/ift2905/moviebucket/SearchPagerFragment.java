@@ -36,8 +36,10 @@ public class SearchPagerFragment extends Fragment {
     private static String lang;
     static Boolean adult; //include adult movies in search results
 
+    // Fragments for pager
     protected ListFragment[] pagerList;
 
+    // Adapaters for pager fragments
     protected TopResultsAdapter topAdapter;
     protected MovieResultsAdapter movieAdapter;
     protected SeriesResultsAdapter seriesAdapter;
@@ -100,15 +102,11 @@ public class SearchPagerFragment extends Fragment {
                 getString(R.string.spf_people),
         };
 
-        private FragmentManager mFragmentManager;
-
         public MyAdapter(FragmentManager fm){
             super(fm);
-            mFragmentManager = fm;
         }
         @Override
         public Fragment getItem(int position) {
-
             return pagerList[position];
         }
 
@@ -125,10 +123,10 @@ public class SearchPagerFragment extends Fragment {
      * Fetch all search results from API
      */
     public void search(String query) {
-        new FetchTop().execute(query, "0");
-        new FetchMovies().execute(query, "0");
-        new FetchSeries().execute(query, "0");
-        new FetchPeople().execute(query, "0");
+        new FetchTop().execute(query, "1");
+        new FetchMovies().execute(query, "1");
+        new FetchSeries().execute(query, "1");
+        new FetchPeople().execute(query, "1");
     }
 
     /**
@@ -160,7 +158,7 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Multi> results) {
             if(topAdapter != null) {
-                if(page == 0) {
+                if(page == 1) {
                     topAdapter.getData().clear();
                     if(!results.isEmpty()) {
                         topAdapter.getData().addAll(results);
@@ -199,7 +197,7 @@ public class SearchPagerFragment extends Fragment {
                 try {
                     TmdbApi api = new TmdbApi(API_KEY);
                     TmdbSearch search = api.getSearch();
-                    return search.searchMovie(query, null, lang, adult, 1).getResults();
+                    return search.searchMovie(query, null, lang, adult, page).getResults();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -211,7 +209,7 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<MovieDb> results) {
             if(movieAdapter != null) {
-                if(page == 0) {
+                if(page == 1) {
                     movieAdapter.getData().clear();
                     if(!results.isEmpty()) {
                         movieAdapter.getData().addAll(results);
@@ -250,7 +248,7 @@ public class SearchPagerFragment extends Fragment {
                 try{
                     TmdbApi api = new TmdbApi(API_KEY);
                     TmdbSearch search = api.getSearch();
-                    return search.searchTv(query, lang, 1).getResults();
+                    return search.searchTv(query, lang, page).getResults();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -262,7 +260,7 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<TvSeries> results) {
             if(seriesAdapter != null) {
-                if(page == 0) {
+                if(page == 1) {
                     seriesAdapter.getData().clear();
                     if (!results.isEmpty()) {
                         seriesAdapter.getData().addAll(results);
@@ -301,7 +299,7 @@ public class SearchPagerFragment extends Fragment {
                 try {
                     TmdbApi api = new TmdbApi(API_KEY);
                     TmdbSearch search = api.getSearch();
-                    return search.searchPerson(query, adult, 1).getResults();
+                    return search.searchPerson(query, adult, page).getResults();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -313,7 +311,7 @@ public class SearchPagerFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Person> results) {
             if(peopleAdapter != null) {
-                if(page == 0) {
+                if(page == 1) {
                     peopleAdapter.getData().clear();
                     if(!results.isEmpty()) {
                         peopleAdapter.getData().addAll(results);

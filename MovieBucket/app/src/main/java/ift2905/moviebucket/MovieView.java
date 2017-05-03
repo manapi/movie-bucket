@@ -72,7 +72,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             dbh = new DBHandler(this);
             id = (int) getIntent().getExtras().getLong(AbstractResultsAdapter.Type.movie.name());
-            setContentView(R.layout.activity_movie_view_m);
+            setContentView(R.layout.activity_movie_view);
             if (id > 0){
                 MovieFetcher mf = new MovieFetcher();
                 mf.execute(Integer.valueOf(id).toString());
@@ -92,7 +92,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         bucketButton = (Button)findViewById(R.id.buttonAddMb);
         bucketButton.setOnClickListener(this);
@@ -173,7 +175,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    public class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
+    private class MovieFetcher extends AsyncTask<String, Object, MovieDb> {
 
         // Get movie
         @Override
@@ -248,7 +250,8 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                         ratingView.setText(getString(R.string.unrated));
                     } else {
                         float rating = movie.getVoteAverage();
-                        ratingView.setText(rating + "/10");
+                        String ratingString = Float.toString(rating) + "/10";
+                        ratingView.setText(ratingString);
                     }
                 } catch (Exception e){
                     e.printStackTrace();
@@ -392,7 +395,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                                 mainChar2.setText(pc.getCharacter());
                             }
                             row2 = true;
-                        }else if (!row3){
+                        }else {
                             mainCast3.setText(pc.getName());
                             String character = pc.getCharacter();
                             if (character.isEmpty()){
@@ -481,23 +484,21 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
                 // Poster
                 ImageView image = (ImageView) findViewById(R.id.moviePoster);
-                try {
-                    String url = null;
-                    if(movie != null) {
-                        url = movie.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + movie.getPosterPath() : null;
-                    }
-                    Picasso.with(getApplicationContext())
-                            .load(url)
-                            .error(R.drawable.placeholder)
-                            .placeholder(R.drawable.placeholder)
-                            .into(image);
-                } catch (Exception e){
+                String url = null;
+                if(movie != null) {
+                    url = movie.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + movie.getPosterPath() : null;
                 }
+                Picasso.with(getApplicationContext())
+                        .load(url)
+                        .error(R.drawable.placeholder)
+                        .placeholder(R.drawable.placeholder)
+                        .into(image);
+
 
         }
     }
 
-    public class TvFetcher extends AsyncTask<String, Object, TvSeries> {
+    private class TvFetcher extends AsyncTask<String, Object, TvSeries> {
 
         // Get TvSeries
         @Override
@@ -580,8 +581,9 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                 if (tvSeries.getVoteCount() == 0){
                     ratingView.setText(getString(R.string.unrated));
                 } else {
-                    float rating = tvSeries.getVoteAverage();
-                    ratingView.setText(rating + "/10");
+                    float rating = movie.getVoteAverage();
+                    String ratingString = Float.toString(rating) + "/10";
+                    ratingView.setText(ratingString);
                 }
             } catch (Exception e){
                 e.printStackTrace();
@@ -710,7 +712,7 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
                             mainChar2.setText(pc.getCharacter());
                         }
                         row2 = true;
-                    }else if (!row3){
+                    }else {
                         mainCast3.setText(pc.getName());
                         String character = pc.getCharacter();
                         if (character.isEmpty()){
@@ -832,18 +834,16 @@ public class MovieView extends AppCompatActivity implements View.OnClickListener
 
             // Poster
             ImageView image = (ImageView) findViewById(R.id.moviePoster);
-            try {
-                String url = null;
-                if(tvSeries != null) {
-                    url = tvSeries.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath() : null;
-                }
-                Picasso.with(getApplicationContext())
-                        .load(url)
-                        .error(R.drawable.placeholder)
-                        .placeholder(R.drawable.placeholder)
-                        .into(image);
-            } catch (Exception e){
+            String url = null;
+            if(tvSeries != null) {
+                url = tvSeries.getPosterPath() != null ? BASE_URL + SIZE_MEDIUM + tvSeries.getPosterPath() : null;
             }
+            Picasso.with(getApplicationContext())
+                    .load(url)
+                    .error(R.drawable.placeholder)
+                    .placeholder(R.drawable.placeholder)
+                    .into(image);
+
         }
     }
 }

@@ -16,11 +16,5 @@
         android:key="adult_filter"
         android:title="@string/adult_filter" />
 
-    <ift2905.moviebucket.LanguagePreference
-        android:key="language"
-        android:title="@string/locale"
-        android:summary="@string/locale_en"
-        android:dialogMessage="@string/restart_dialog"
-        />
 
 </PreferenceScreen>

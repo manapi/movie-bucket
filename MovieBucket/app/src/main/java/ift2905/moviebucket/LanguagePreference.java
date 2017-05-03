@@ -21,7 +21,7 @@ public class LanguagePreference extends DialogPreference {
         super(context, attrs);
         mContext = context;
 
-        mDialogMessage = attrs.getAttributeValue(androidns, "dialogMessage");
+        mDialogMessage = context.getResources().getString(R.string.restart_dialog);
     }
 
     @Override
@@ -31,6 +31,7 @@ public class LanguagePreference extends DialogPreference {
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(6, 6, 6, 6);
 
+        //this.setDialogMessage(R.string.restart_dialog);
         mSplashText = new TextView(mContext);
         if (mDialogMessage != null)
             mSplashText.setText(mDialogMessage);

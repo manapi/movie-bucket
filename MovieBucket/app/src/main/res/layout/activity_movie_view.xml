@@ -32,8 +32,7 @@
             android:orientation="vertical" >
 
             <include
-                layout="@layout/content_movie_view_tv"
-                android:layout_width="match_parent" />
+                layout="@layout/content_movie_view" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
