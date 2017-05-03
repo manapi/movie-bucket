@@ -27,6 +27,7 @@ import android.view.View;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OfflineFragment.OnFragmentInteractionListener {
 
+    final static int SETTINGS = 1;
     // Fragments
     private RecyclerViewFragment discoverFragment;
     private SpecialListFragment myBucketFragment, myHistoryFragment;
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity
 
         // Inflate the menu
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        final MenuItem settingsItem = menu.findItem(R.id.action_settings);
 
         // Set up search widget
         SearchManager searchManager = (SearchManager) MainActivity.this.getSystemService(Context.SEARCH_SERVICE);
@@ -112,14 +114,18 @@ public class MainActivity extends AppCompatActivity
             searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
+
                     if (hasFocus == true){
                         SearchPagerFragment searchPagerFragment = new SearchPagerFragment();
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchPagerFragment).addToBackStack(null).commit();
+                        // Hide settings from toolbar
+                        settingsItem.setVisible(false);
                     }
                     else if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
                         // Simulate back
                         getSupportFragmentManager().popBackStack();
                         searchView.setIconified(true);
+                        settingsItem.setVisible(true);
                     }
                 }
             });
@@ -135,10 +141,30 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, SETTINGS);
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Update UI upon returning from settings
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data) {
+        if (requestCode == SETTINGS) {
+            if (resultCode == RESULT_OK) {
+                // Refresh discover fragment
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if (currentFragment instanceof RecyclerViewFragment) {
+                    ((RecyclerViewFragment)currentFragment).refresh();
+                }
+                else {
+                    discoverFragment = new RecyclerViewFragment();
+                }
+            }
+        }
     }
 
     /**

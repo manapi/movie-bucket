@@ -1,5 +1,6 @@
 package ift2905.moviebucket;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -34,7 +35,8 @@ public class SettingsFragment extends PreferenceFragment
             Preference localePref = findPreference(KEY_LOCALE);
             localePref.setSummary(summary(sharedPreferences.getString(KEY_LOCALE, "")));
             dbh.rebuild();
-            //TODO: refresh de Discover fragment here, end my misery Amé!
+            // Notify change upon return to main activity
+            getActivity().setResult(Activity.RESULT_OK);
 
         } else  if(k.equals(KEY_ADULT_PREF)) {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());

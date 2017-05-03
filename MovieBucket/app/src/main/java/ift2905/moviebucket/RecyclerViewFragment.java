@@ -92,6 +92,19 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     /**
+     * Refresh list content after settings change
+     */
+    public void refresh(){
+
+        // Update language
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
+
+        // Refetch data from API and update adapter
+        new FetchSuggestions().execute();
+    }
+
+    /**
      * Fetch suggestions for discover fragment and set to list adapter
      */
     public class FetchSuggestions extends AsyncTask<String, Object, List<MovieDb>> {
