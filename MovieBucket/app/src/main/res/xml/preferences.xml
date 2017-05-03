@@ -11,10 +11,16 @@
         android:defaultValue="@string/default_locale"
         />
 
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="true"
         android:key="adult_filter"
-        android:thumbTint="@color/colorSwitch"
         android:title="@string/adult_filter" />
+
+    <ift2905.moviebucket.LanguagePreference
+        android:key="language"
+        android:title="@string/locale"
+        android:summary="@string/locale_en"
+        android:dialogMessage="@string/restart_dialog"
+        />
 
 </PreferenceScreen>

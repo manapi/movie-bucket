@@ -36,7 +36,8 @@ public class SettingsFragment extends PreferenceFragment
             //TODO: there has to be a better way...
             localePref.setSummary(summary(sharedPreferences.getString(k, "")));
             //dbh.rebuild();
-
+            RestartDialogFragment rdf = new RestartDialogFragment();
+            //rdf.show(getActivity().getFragmentManager(), "test");
             //TODO: Show a dialog saying that upon change, we have to restart.
             //TODO: reset the app.
 

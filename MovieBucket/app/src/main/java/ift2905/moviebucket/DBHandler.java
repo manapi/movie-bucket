@@ -9,14 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbMovies;
 import info.movito.themoviedbapi.TmdbTV;
-import info.movito.themoviedbapi.model.Collection;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 
@@ -68,7 +63,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-            db.execSQL("DROP TABLE IF EXISTS `" + TABLE_HEAD + "`");
+        db.execSQL("DROP TABLE IF EXISTS `" + TABLE_HEAD + "`");
         onCreate(db);
     }
 
@@ -95,19 +90,20 @@ public class DBHandler extends SQLiteOpenHelper {
         db.update(TABLE_HEAD, cv, KEY_ID + "= " + id, null);
     }
 
-    public Cursor movieLister(String pageName){
+    public Cursor movieLister(int pageNumber){
+        // Find every item in the database that belongs in either MyBucket or MyHistory,
+        // depending on the pageNumber parameter.
+
         String[] columns = {KEY_ID, KEY_TITLE, KEY_FAV, KEY_RUNTIME};
         String criteria = KEY_VIEWED + " = ?";
-        String viewed = "0";
-        if(pageName.equals("History")) {
-            viewed = "1";
-        }
-        String[] criteriaArgs = {viewed};
+        String[] criteriaArgs = {Integer.toString(pageNumber)};
         Cursor cursor = db.query(TABLE_HEAD, columns, criteria, criteriaArgs , null, null, null);
         return cursor;
     };
 
     public int inWhichList(int id){
+        // Checks in which list the movie with the right ID should be in.
+
         String[] columns = {KEY_ID, KEY_VIEWED};
         String criteria = KEY_ID + " = ?";
         String[] criteriaArgs = {Integer.toString(id)};
@@ -115,7 +111,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         if(cursor.getCount() != 0){
             cursor.moveToNext();
-            int viewed = cursor.getInt(cursor.getColumnIndexOrThrow("viewed"));
+            int viewed = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_VIEWED));
             cursor.close();
             if( viewed == 0) {
                 return 1;
@@ -128,6 +124,8 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public boolean checkIfMovie(long id){
+        // Returns true if the row corresponding to the id is a movie.
+
         String[] columns = {KEY_ID, KEY_ISMOVIE};
         String criteria = KEY_ID + " = ?";
         String[] criteriaArgs = {Long.toString(id)};
@@ -140,6 +138,8 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void swapFavoriteValue(long id){
+        // Switches the "Favorite" value in the database of the row with the right ID.
+
         String[] columns = {KEY_ID, KEY_FAV};
         String criteria = KEY_ID + " = ?";
         String[] criteriaArgs = {Long.toString(id)};
@@ -159,74 +159,83 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void rebuild(){
-        List mIds = this.getIds(1);
-        List tvIds = this.getIds(0);
-        new mReconstructTask().execute(mIds);
-        new tvReconstructTask().execute(tvIds);
+        // Updates the database's titles to the proper language.
+        // Called when the user changes the information language in the Settings.
 
-    }
-
-    public List getIds(int isMovie) {
-        List ids = new ArrayList();
-        String[] columns = {KEY_ID, KEY_TITLE};
-        String criteria = KEY_ID + " = ?";
-        String[] criteriaArgs = {Integer.toString(isMovie)};
-        Cursor cursor = db.query(TABLE_HEAD, columns, criteria, criteriaArgs, null, null, null);
-
-        cursor.moveToNext();
-        //TODO: Check for a proper limitator.
-        while(cursor != null) {
-            ids.add(cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID)));
-            cursor.moveToNext();
-        }
-        return ids;
+        new mReconstructTask().execute();
+        new tvReconstructTask().execute();
     }
 
 
-    public class mReconstructTask extends AsyncTask<List, Void, Void>{
+    public class mReconstructTask extends AsyncTask<Void, Void, Void>{
+        // This AsyncTask renames every movie title in the database to the user's chosen language.
 
         @Override
-        protected Void doInBackground(List... ints) {
-            List ids = ints[0];
+        protected Void doInBackground(Void... aVoid) {
+            // Opening the necessary components for the rebuild.
             ContentValues cv = new ContentValues();
             TmdbApi api = new TmdbApi(API_KEY);
             TmdbMovies tmdbm = new TmdbMovies(api);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DBcontext);
-            String lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
             MovieDb movie;
 
-            for(int i=0; i<ids.size(); i++) {
+            // Setting the language of the title.
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DBcontext);
+            String lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
+
+            // Make a Query to find every movie in the list.
+            String[] columns = {KEY_ID, KEY_TITLE};
+            String criteria = KEY_ISMOVIE + " = ?";
+            String[] criteriaArgs = {"1"};
+            Cursor cursor = db.query(TABLE_HEAD, columns, criteria, criteriaArgs, null, null, null);
+
+            // Checks every movie title corresponding to every rows of the query, and updates them.
+            int i = 0;
+            while(i < cursor.getCount()){
                 cv.clear();
-                int id = (int)ids.get(i);
+                cursor.moveToNext();
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
                 movie = tmdbm.getMovie(id, lang , TmdbMovies.MovieMethod.credits);
                 cv.put(KEY_TITLE, movie.getTitle());
                 db.update(TABLE_HEAD, cv, KEY_ID + "= " + id, null);
+                i++;
             }
-
+            cursor.close();
             return null;
         }
     }
 
-    public class tvReconstructTask extends AsyncTask<List, Void, Void>{
+    public class tvReconstructTask extends AsyncTask<Void, Void, Void>{
+        // This AsyncTask renames every TV show name in the database to the user's chosen language.
 
         @Override
-        protected Void doInBackground(List... ints) {
-            List ids = ints[0];
+        protected Void doInBackground(Void... aVoid) {
+            // Opening the necessary components for the rebuild.
             ContentValues cv = new ContentValues();
             TmdbApi api = new TmdbApi(API_KEY);
             TmdbTV tmdbtv = api.getTvSeries();
             TvSeries tvSeries;
 
+            // Setting the language of the information
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DBcontext);
             String lang = prefs.getString(SettingsFragment.KEY_LOCALE, "en");
 
-            for(int i=0; i<ids.size(); i++) {
+            // Make a Query to find every movie in the list.
+            String[] columns = {KEY_ID, KEY_TITLE};
+            String criteria = KEY_ISMOVIE + " = ?";
+            String[] criteriaArgs = {"0"};
+            Cursor cursor = db.query(TABLE_HEAD, columns, criteria, criteriaArgs, null, null, null);
+
+            // Checks every TV show corresponding to every rows of the query, and updates them.
+            int i=0;
+            while(i < cursor.getCount()) {
                 cv.clear();
-                int id = (int)ids.get(i);
+                cursor.moveToNext();
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(KEY_ID));
                 tvSeries = tmdbtv.getSeries(id, lang, TmdbTV.TvMethod.credits);
                 cv.put(KEY_TITLE, tvSeries.getName());
                 db.update(TABLE_HEAD, cv, KEY_ID + "= " + id, null);
             }
+            cursor.close();
             return null;
         }
     }

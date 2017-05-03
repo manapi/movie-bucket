@@ -272,8 +272,13 @@ public class MyListAdapter extends CursorAdapter{
     //builds a new Db object with updated info and updates the associated cursor.
     // Required for refreshing view.
     public void updateCursor(){
-        Cursor cursor = dbh.movieLister(header);
+
+        int pageNumber = 0;
+        if(header.equals("History")) {
+            pageNumber = 1;
+        }
+        Cursor cursor = dbh.movieLister(pageNumber);
         changeCursor(cursor);
     }
-
 }
+

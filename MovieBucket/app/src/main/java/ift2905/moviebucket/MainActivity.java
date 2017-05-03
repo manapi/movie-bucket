@@ -84,9 +84,6 @@ public class MainActivity extends AppCompatActivity
             }
             navigationView.getMenu().findItem(R.id.nav_discover).setChecked(true);
             setTitle(R.string.title_fragment_discover);
-        } else {
-            // Case 3 : exit app
-            super.onBackPressed();
         }
     }
 
@@ -186,7 +183,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_mybucket) {
             if (myBucketFragment == null) {
                 myBucketFragment = new SpecialListFragment();
-                Cursor cursor = dbh.movieLister("Bucket");
+                Cursor cursor = dbh.movieLister(0);
                 MyListAdapter adapter = new MyListAdapter("Bucket", MainActivity.this, cursor);
                 myBucketFragment.setListAdapter(adapter);
             }
@@ -198,7 +195,7 @@ public class MainActivity extends AppCompatActivity
             //TODO: Update the list on every press.
             if (myHistoryFragment == null) {
                 myHistoryFragment = new SpecialListFragment();
-                Cursor cursor = dbh.movieLister("History");
+                Cursor cursor = dbh.movieLister(1);
                 myHistoryFragment.setListAdapter(new MyListAdapter("History", MainActivity.this, cursor));
             }
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, myHistoryFragment).commit();
